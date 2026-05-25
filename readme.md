@@ -214,7 +214,7 @@ mentriq-shadow/
 }
 ```
 
-**AI Model:** Claude Sonnet 4 (best for coherent narrative + structured output)
+**AI Model:** Grok (xAI) — `grok-3` (best for coherent narrative + structured output)
 
 **Key techniques used:**
 - System prompt with role persona and company context
@@ -275,11 +275,11 @@ mentriq-shadow/
 }
 ```
 
-**AI Model:** GPT-4o (best-in-class code understanding) for coding tasks. Claude Sonnet 4 for communication/written tasks.
+**AI Model:** Grok (xAI) — `grok-3` for all task types (code review, communication, and written evaluation)
 
 **Key techniques used:**
 - Evaluation rubrics loaded from `data/evaluation_rubrics/` and passed as context
-- Dual-model routing: detect task type, route to appropriate model
+- Single-model routing via Grok with task-type-aware system prompts
 - Chain of thought reasoning (ask the model to reason before scoring)
 - Structured output for consistent scoring format
 
@@ -350,7 +350,7 @@ AI: "Thank you, that concludes our interview. You'll receive your feedback short
 }
 ```
 
-**AI Model:** GPT-4o-mini (fast, cheap, conversational — perfect for back-and-forth chat)
+**AI Model:** Grok (xAI) — `grok-3-mini` (fast, cost-efficient, conversational — perfect for back-and-forth chat)
 
 **Key techniques used:**
 - `ConversationBufferWindowMemory` from LangChain — AI remembers what was said earlier in the interview
@@ -402,7 +402,7 @@ AI: "Thank you, that concludes our interview. You'll receive your feedback short
 }
 ```
 
-**AI Model:** Claude Sonnet 4 (best at persona consistency and natural conversation)
+**AI Model:** Grok (xAI) — `grok-3` (excellent at persona consistency and natural, expressive conversation)
 
 **Key techniques used:**
 - Strong persona definitions in the system prompt (name, age, years of experience, communication quirks)
@@ -457,7 +457,7 @@ pinecone index: "mentriq-knowledge"
 
 **Outputs:** Populated Pinecone index, tested with similarity queries
 
-**Embedding model:** `text-embedding-3-large` (OpenAI) — best quality for semantic search
+**Embedding model:** `text-embedding-3-large` (OpenAI) — used for RAG embeddings only, as xAI does not currently provide a dedicated embedding API. All chat/generation calls use Grok.
 
 **Tests to run in this notebook:**
 - [ ] Verify all documents are indexed: `index.describe_index_stats()`
@@ -514,10 +514,9 @@ Key screens:
 ### AI & ML
 | Tool | Purpose |
 |---|---|
-| Claude Sonnet 4 (Anthropic) | Simulation engine, team personas, communication evaluation |
-| GPT-4o (OpenAI) | Code review and evaluation |
-| GPT-4o-mini (OpenAI) | Interview agent (fast + cheap) |
-| text-embedding-3-large (OpenAI) | Document embeddings for RAG |
+| Grok `grok-3` (xAI) | Simulation engine, team personas, code review, communication evaluation |
+| Grok `grok-3-mini` (xAI) | Interview agent (fast + cost-efficient for multi-turn chat) |
+| text-embedding-3-large (OpenAI) | Document embeddings for RAG (xAI has no embedding API yet) |
 | LangChain | Chains, memory, RAG orchestration |
 | LangGraph | Agent loops for simulation engine |
 | Pinecone | Vector database for RAG knowledge base |
@@ -563,8 +562,7 @@ Create a `.env` file in the `backend/` folder for Phase 2.
 
 ```env
 # ── AI APIs ──────────────────────────────────────────
-ANTHROPIC_API_KEY=sk-ant-...
-OPENAI_API_KEY=sk-...
+XAI_API_KEY=xai-...
 
 # ── Pinecone (RAG) ───────────────────────────────────
 PINECONE_API_KEY=...
@@ -614,7 +612,7 @@ Student selects role
       ▼
 [Notebook 01] Simulation Engine
   → Retrieves role context from Pinecone (Notebook 05 data)
-  → Calls Claude Sonnet 4
+  → Calls Grok grok-3
   → Returns: manager message + task list
       │
       ▼
@@ -623,7 +621,7 @@ Student reads tasks and submits work
       ▼
 [Notebook 02] AI Reviewer
   → Retrieves evaluation rubric from Pinecone
-  → Calls GPT-4o (code) or Claude (written)
+  → Calls Grok grok-3 (code + written tasks)
   → Returns: scores + feedback + XP earned
       │
       ▼
@@ -646,7 +644,7 @@ Student starts interview
       ▼
 [Notebook 03] Interview Agent
   → Retrieves questions from Pinecone (Notebook 05 data)
-  → Multi-turn conversation loop (GPT-4o-mini)
+  → Multi-turn conversation loop (Grok grok-3-mini)
   → Each turn: student message → AI question/follow-up
       │
       ▼
@@ -802,7 +800,7 @@ pip install -r requirements.txt
 
 # 4. Create your .env file
 cp .env.example .env
-# Edit .env and add your API keys (ANTHROPIC_API_KEY, OPENAI_API_KEY, PINECONE_API_KEY)
+# Edit .env and add your API keys (XAI_API_KEY, PINECONE_API_KEY)
 
 # 5. Start with the RAG notebook first (it builds the knowledge base)
 jupyter notebook 05_rag_knowledge_base.ipynb
@@ -888,6 +886,7 @@ If you are using an AI coding assistant (Cursor, GitHub Copilot, Claude, etc.) t
 ```python
 print(f"Tokens used: {response.usage.input_tokens} in / {response.usage.output_tokens} out")
 print(f"Estimated cost: ${(response.usage.input_tokens * 0.000003 + response.usage.output_tokens * 0.000015):.4f}")
+# Note: update the per-token rates above when you check xAI's current pricing at x.ai/api
 ```
 
 **LangSmith is your debugger.** Set `LANGCHAIN_TRACING_V2=true` in your `.env` before writing a single line of LangChain code. Every AI call will be logged to LangSmith automatically. This saves hours of debugging.
