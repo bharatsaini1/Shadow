@@ -1,0 +1,184 @@
+[
+  {
+    "task_id": "mern_001",
+    "title": "Fix Authentication Token Expiry Bug",
+    "description": "Users are being logged out prematurely. The JWT token expiry is not being handled correctly on the frontend. Investigate the auth flow and implement a fix that properly handles token refresh.",
+    "task_type": "bug_fix",
+    "difficulty": "medium",
+    "estimated_hours": 4,
+    "requirements": [
+      "Identify the root cause of premature logout",
+      "Implement token refresh mechanism",
+      "Add proper error handling for expired tokens",
+      "Write a brief summary of the fix"
+    ],
+    "client_context": "Subject: Urgent - Users getting logged out\n\nHi Team,\n\nWe've had 15+ support tickets in the last 2 days about users being randomly logged out of the dashboard. This is affecting our retention metrics. Can you please look into this ASAP?\n\n- Rohan (Client)",
+    "expected_deliverable": "Code fix with token refresh logic + summary of changes",
+    "tags": ["authentication", "JWT", "security", "frontend"]
+  },
+  {
+    "task_id": "mern_002",
+    "title": "Design User Profile API Endpoint",
+    "description": "Create a RESTful API endpoint that allows users to view and update their profile information. Include proper validation, error handling, and authorization checks.",
+    "task_type": "coding",
+    "difficulty": "easy",
+    "estimated_hours": 3,
+    "requirements": [
+      "GET /api/users/profile endpoint",
+      "PUT /api/users/profile endpoint",
+      "Input validation for all fields",
+      "Authorization check (user can only edit own profile)",
+      "Return appropriate error messages"
+    ],
+    "client_context": "Subject: Profile Management Feature\n\nWe need the profile management feature for the upcoming release. Users should be able to view and edit their name, email, and profile picture. Nothing too complex, but it should be secure.\n\n- Sarah (Product Manager)",
+    "expected_deliverable": "Node.js/Express route handlers with validation middleware",
+    "tags": ["API", "REST", "backend", "Express"]
+  },
+  {
+    "task_id": "mern_003",
+    "title": "Implement Data Table with Sorting & Filtering",
+    "description": "Build a reusable React data table component that supports sorting by columns, filtering by text input, and pagination. The data should be fetched from an API endpoint.",
+    "task_type": "coding",
+    "difficulty": "hard",
+    "estimated_hours": 6,
+    "requirements": [
+      "Reusable React component",
+      "Column sorting (ascending/descending)",
+      "Text search/filter across all columns",
+      "Client-side pagination (10 items per page)",
+      "Loading and empty states",
+      "Responsive design"
+    ],
+    "client_context": "Subject: Dashboard Data Table\n\nHey, the admin dashboard needs a proper data table to display user analytics. We need sorting, searching, and pagination. Check out the figma mockup attached.\n\n- Priya (Team Lead)",
+    "expected_deliverable": "React component with sorting, filtering, and pagination",
+    "tags": ["React", "frontend", "UI", "table"]
+  },
+  {
+    "task_id": "mern_004",
+    "title": "Write API Integration Tests",
+    "description": "Write comprehensive integration tests for the user authentication endpoints (login, register, logout, refresh token). Use Jest and Supertest.",
+    "task_type": "coding",
+    "difficulty": "medium",
+    "estimated_hours": 4,
+    "requirements": [
+      "Test successful registration",
+      "Test registration with duplicate email",
+      "Test successful login",
+      "Test login with wrong credentials",
+      "Test token refresh flow",
+      "Test protected route access"
+    ],
+    "client_context": "Subject: Test Coverage Requirements\n\nOur CI pipeline now requires minimum 80% test coverage. The auth module is currently at 30%. Please bring it up to spec.\n\n- DevOps Team",
+    "expected_deliverable": "Integration test file with Jest + Supertest",
+    "tags": ["testing", "Jest", "backend", "CI/CD"]
+  },
+  {
+    "task_id": "mern_005",
+    "title": "Create Email Notification Service",
+    "description": "Build a microservice that sends transactional emails (welcome email, password reset, notification). Use a queue system to handle async email sending.",
+    "task_type": "coding",
+    "difficulty": "hard",
+    "estimated_hours": 5,
+    "requirements": [
+      "Email template rendering engine",
+      "Queue-based async sending",
+      "Welcome email template",
+      "Password reset email template",
+      "Notification email template",
+      "Retry logic for failed sends"
+    ],
+    "client_context": "Subject: Email Service Integration\n\nWe're launching next month and still don't have automated emails. New users aren't getting welcome emails. This is a blocker for launch.\n\n- Sneha (HR)",
+    "expected_deliverable": "Email service module with queue processing",
+    "tags": ["microservice", "email", "queue", "backend"]
+  },
+  {
+    "task_id": "mern_006",
+    "title": "Optimize MongoDB Query Performance",
+    "description": "The analytics dashboard is loading slowly (>5 seconds). Analyze the existing MongoDB queries, identify bottlenecks, and optimize them with proper indexing and query restructuring.",
+    "task_type": "bug_fix",
+    "difficulty": "hard",
+    "estimated_hours": 4,
+    "requirements": [
+      "Profile slow queries using MongoDB explain()",
+      "Create appropriate indexes",
+      "Restructure poorly performing queries",
+      "Measure before/after performance",
+      "Document the optimizations made"
+    ],
+    "client_context": "Subject: Dashboard Performance Issues\n\nThe analytics page is taking forever to load. Clients are complaining. We need this fixed before the demo on Friday.\n\n- Rohan (Client)",
+    "expected_deliverable": "Optimized queries + index definitions + performance report",
+    "tags": ["MongoDB", "performance", "database", "backend"]
+  },
+  {
+    "task_id": "mern_007",
+    "title": "Build File Upload Component",
+    "description": "Create a drag-and-drop file upload component in React with preview support for images, progress bar, and error handling. Files should be uploaded to cloud storage via a presigned URL flow.",
+    "task_type": "coding",
+    "difficulty": "medium",
+    "estimated_hours": 4,
+    "requirements": [
+      "Drag and drop zone",
+      "File type validation",
+      "Image preview before upload",
+      "Upload progress bar",
+      "Error handling (file too large, wrong type)",
+      "Presigned URL upload flow"
+    ],
+    "client_context": "Subject: File Upload Feature\n\nUsers need to be able to upload their profile pictures and documents. Make sure it supports images (jpg, png) and PDFs. Max file size: 5MB.\n\n- Sarah (Product Manager)",
+    "expected_deliverable": "React upload component + backend upload handler",
+    "tags": ["React", "file upload", "frontend", "S3"]
+  },
+  {
+    "task_id": "mern_008",
+    "title": "Prepare Weekly Progress Report",
+    "description": "Summarize the week's development progress, including tasks completed, blockers encountered, and planned work for next week. Format as a professional email to the team lead.",
+    "task_type": "report",
+    "difficulty": "easy",
+    "estimated_hours": 1,
+    "requirements": [
+      "List completed tasks with brief descriptions",
+      "Mention any blockers or issues",
+      "Outline next week's plan",
+      "Professional email format"
+    ],
+    "client_context": "Team standup reminder: Weekly progress report due every Friday EOD.\n\n- Priya (Team Lead)",
+    "expected_deliverable": "Professional email report",
+    "tags": ["communication", "report", "soft-skills"]
+  },
+  {
+    "task_id": "mern_009",
+    "title": "Implement Rate Limiting Middleware",
+    "description": "Add rate limiting to the API to prevent abuse. Different rate limits should apply to different endpoints (stricter for auth endpoints, more lenient for read-only endpoints).",
+    "task_type": "coding",
+    "difficulty": "medium",
+    "estimated_hours": 3,
+    "requirements": [
+      "Rate limiting by IP address",
+      "Different limits per endpoint category",
+      "Proper HTTP 429 responses with Retry-After header",
+      "Configurable limits via environment variables",
+      "Optional: use Redis for distributed rate limiting"
+    ],
+    "client_context": "Subject: Security Audit Findings\n\nThe security audit flagged that our API has no rate limiting. This is a high-priority fix. Please implement before the next deployment.\n\n- Security Team",
+    "expected_deliverable": "Express middleware for rate limiting",
+    "tags": ["security", "middleware", "backend", "Express"]
+  },
+  {
+    "task_id": "mern_010",
+    "title": "Design Sprint Retrospective Notes",
+    "description": "You just completed a 2-week sprint. Write a retrospective document covering what went well, what could be improved, and action items for the next sprint.",
+    "task_type": "meeting",
+    "difficulty": "easy",
+    "estimated_hours": 1,
+    "requirements": [
+      "Summary of sprint goals and outcomes",
+      "What went well (at least 3 points)",
+      "What could be improved (at least 3 points)",
+      "Action items for next sprint",
+      "Professional document format"
+    ],
+    "client_context": "Sprint retrospective is scheduled for 3 PM. Come prepared with your thoughts on the sprint.\n\n- Priya (Team Lead)",
+    "expected_deliverable": "Retrospective document in markdown format",
+    "tags": ["communication", "agile", "soft-skills", "meeting"]
+  }
+]

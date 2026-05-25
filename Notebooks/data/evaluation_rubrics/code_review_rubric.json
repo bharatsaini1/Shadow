@@ -1,0 +1,134 @@
+{
+  "rubric_name": "Code Review Rubric",
+  "applicable_to": ["coding", "bug_fix"],
+  "categories": [
+    {
+      "name": "code_quality",
+      "weight": 25,
+      "max_score": 100,
+      "criteria": [
+        {
+          "level": "excellent",
+          "score_range": [90, 100],
+          "description": "Code is clean, well-structured, follows best practices. Proper error handling, no code smells, good naming conventions."
+        },
+        {
+          "level": "good",
+          "score_range": [75, 89],
+          "description": "Code works correctly with minor style or structure issues. Follows most conventions."
+        },
+        {
+          "level": "average",
+          "score_range": [50, 74],
+          "description": "Code works but has noticeable issues: poor naming, inconsistent patterns, missing edge cases."
+        },
+        {
+          "level": "poor",
+          "score_range": [25, 49],
+          "description": "Code has significant quality issues, hard to read, minimal error handling."
+        },
+        {
+          "level": "very_poor",
+          "score_range": [0, 24],
+          "description": "Code barely works or doesn't work. No structure, no error handling, security concerns."
+        }
+      ]
+    },
+    {
+      "name": "problem_solving",
+      "weight": 25,
+      "max_score": 100,
+      "criteria": [
+        {
+          "level": "excellent",
+          "score_range": [90, 100],
+          "description": "Optimal solution with consideration of edge cases, performance, and scalability."
+        },
+        {
+          "level": "good",
+          "score_range": [75, 89],
+          "description": "Good solution that solves the main problem. Misses some edge cases."
+        },
+        {
+          "level": "average",
+          "score_range": [50, 74],
+          "description": "Solution works for the happy path but has logical gaps or inefficiencies."
+        },
+        {
+          "level": "poor",
+          "score_range": [25, 49],
+          "description": "Solution is flawed or incomplete. Major logical gaps."
+        },
+        {
+          "level": "very_poor",
+          "score_range": [0, 24],
+          "description": "Solution doesn't address the problem or introduces new issues."
+        }
+      ]
+    },
+    {
+      "name": "communication",
+      "weight": 25,
+      "max_score": 100,
+      "criteria": [
+        {
+          "level": "excellent",
+          "score_range": [90, 100],
+          "description": "Clear code comments, meaningful variable names, excellent documentation of approach."
+        },
+        {
+          "level": "good",
+          "score_range": [75, 89],
+          "description": "Mostly clear with minor documentation gaps."
+        },
+        {
+          "level": "average",
+          "score_range": [50, 74],
+          "description": "Some documentation but unclear in places. Hard to follow the reasoning."
+        },
+        {
+          "level": "poor",
+          "score_range": [25, 49],
+          "description": "Minimal documentation. Code is hard to follow."
+        },
+        {
+          "level": "very_poor",
+          "score_range": [0, 24],
+          "description": "No documentation, misleading comments, very hard to understand."
+        }
+      ]
+    },
+    {
+      "name": "completeness",
+      "weight": 25,
+      "max_score": 100,
+      "criteria": [
+        {
+          "level": "excellent",
+          "score_range": [90, 100],
+          "description": "All requirements met. Handles all states: loading, empty, error, success, edge cases."
+        },
+        {
+          "level": "good",
+          "score_range": [75, 89],
+          "description": "Most requirements met. Minor edge cases not handled."
+        },
+        {
+          "level": "average",
+          "score_range": [50, 74],
+          "description": "Core requirements met but several missing pieces."
+        },
+        {
+          "level": "poor",
+          "score_range": [25, 49],
+          "description": "Significant requirements not addressed."
+        },
+        {
+          "level": "very_poor",
+          "score_range": [0, 24],
+          "description": "Most requirements not met. Incomplete submission."
+        }
+      ]
+    }
+  ]
+}

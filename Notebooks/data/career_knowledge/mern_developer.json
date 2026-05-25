@@ -1,0 +1,85 @@
+{
+  "role": "MERN Stack Developer",
+  "description": "Full-stack developer working with MongoDB, Express.js, React, and Node.js. Responsible for building and maintaining web applications across the entire stack.",
+  "day_to_day": [
+    "Morning standup with the team to discuss progress and blockers",
+    "Working on feature development across the stack (React frontend, Node.js/Express backend)",
+    "Code reviews for team members' pull requests",
+    "Debugging production issues reported by the QA team",
+    "Collaborating with designers on UI/UX implementations",
+    "Writing and maintaining API documentation",
+    "Participating in sprint planning and retrospectives"
+  ],
+  "tech_stack": {
+    "frontend": ["React", "Redux", "Tailwind CSS", "Material-UI", "React Query", "Vite"],
+    "backend": ["Node.js", "Express.js", "Socket.io", "JWT", "Passport.js"],
+    "database": ["MongoDB", "Mongoose", "Redis"],
+    "testing": ["Jest", "React Testing Library", "Cypress", "Supertest"],
+    "devops": ["Docker", "AWS (EC2, S3)", "GitHub Actions", "Nginx"],
+    "tools": ["Git", "Postman", "VS Code", "MongoDB Compass"]
+  },
+  "common_issues": [
+    "JWT token expiration and refresh flow",
+    "MongoDB connection pooling",
+    "React state management with complex forms",
+    "CORS configuration in development vs production",
+    "Environment variable management across stages",
+    "API rate limiting and security",
+    "File upload size limits and storage optimization",
+    "Real-time updates with WebSocket connections"
+  ],
+  "industry_standards": [
+    "RESTful API design principles",
+    "JWT-based authentication",
+    "MVC architecture pattern",
+    "Git feature branch workflow",
+    "CI/CD pipeline with automated testing",
+    "Code review process with at least one approval",
+    "Semantic versioning",
+    "OpenAPI/Swagger documentation"
+  ],
+  "skill_areas": [
+    {
+      "name": "Frontend Development",
+      "weight": 30,
+      "skills": ["React", "State Management", "Responsive Design", "Component Architecture"]
+    },
+    {
+      "name": "Backend Development",
+      "weight": 30,
+      "skills": ["Node.js", "Express", "API Design", "Authentication", "Authorization"]
+    },
+    {
+      "name": "Database",
+      "weight": 15,
+      "skills": ["MongoDB Schema Design", "Query Optimization", "Aggregation Pipeline"]
+    },
+    {
+      "name": "DevOps & Deployment",
+      "weight": 10,
+      "skills": ["Docker", "CI/CD", "Cloud Services", "Monitoring"]
+    },
+    {
+      "name": "Soft Skills",
+      "weight": 15,
+      "skills": ["Communication", "Code Review", "Agile/Scrum", "Problem Solving"]
+    }
+  ],
+  "company_types": [
+    {
+      "type": "Startup",
+      "team_size": "5-20 engineers",
+      "expectations": "Full-stack generalist, fast-paced, own features end-to-end"
+    },
+    {
+      "type": "Mid-size",
+      "team_size": "20-100 engineers",
+      "expectations": "Specialized in frontend or backend, cross-team collaboration"
+    },
+    {
+      "type": "Enterprise",
+      "team_size": "100+ engineers",
+      "expectations": "Deep specialization, documentation, process adherence"
+    }
+  ]
+}

@@ -1,0 +1,134 @@
+{
+  "rubric_name": "Design Review Rubric",
+  "applicable_to": ["design"],
+  "categories": [
+    {
+      "name": "visual_design",
+      "weight": 30,
+      "max_score": 100,
+      "criteria": [
+        {
+          "level": "excellent",
+          "score_range": [90, 100],
+          "description": "Exceptional visual design with perfect alignment, color harmony, typography, and spacing."
+        },
+        {
+          "level": "good",
+          "score_range": [75, 89],
+          "description": "Good visual design with minor issues in consistency or alignment."
+        },
+        {
+          "level": "average",
+          "score_range": [50, 74],
+          "description": "Acceptable design but lacks polish or consistency."
+        },
+        {
+          "level": "poor",
+          "score_range": [25, 49],
+          "description": "Poor visual design with noticeable issues in alignment, color, or spacing."
+        },
+        {
+          "level": "very_poor",
+          "score_range": [0, 24],
+          "description": "No visual design principles applied."
+        }
+      ]
+    },
+    {
+      "name": "ux_usability",
+      "weight": 30,
+      "max_score": 100,
+      "criteria": [
+        {
+          "level": "excellent",
+          "score_range": [90, 100],
+          "description": "Intuitive user flow, clear navigation, excellent accessibility considerations."
+        },
+        {
+          "level": "good",
+          "score_range": [75, 89],
+          "description": "Good UX with minor usability issues."
+        },
+        {
+          "level": "average",
+          "score_range": [50, 74],
+          "description": "Adequate UX but has some confusing elements or flows."
+        },
+        {
+          "level": "poor",
+          "score_range": [25, 49],
+          "description": "Poor UX. Users would struggle to complete tasks."
+        },
+        {
+          "level": "very_poor",
+          "score_range": [0, 24],
+          "description": "Unusable design."
+        }
+      ]
+    },
+    {
+      "name": "responsiveness",
+      "weight": 20,
+      "max_score": 100,
+      "criteria": [
+        {
+          "level": "excellent",
+          "score_range": [90, 100],
+          "description": "Perfectly responsive across all device sizes with thoughtful breakpoints."
+        },
+        {
+          "level": "good",
+          "score_range": [75, 89],
+          "description": "Good responsive design with minor issues on certain screen sizes."
+        },
+        {
+          "level": "average",
+          "score_range": [50, 74],
+          "description": "Works on desktop but has issues on mobile or tablet."
+        },
+        {
+          "level": "poor",
+          "score_range": [25, 49],
+          "description": "Significant responsive issues. Only works on one screen size."
+        },
+        {
+          "level": "very_poor",
+          "score_range": [0, 24],
+          "description": "Not responsive at all."
+        }
+      ]
+    },
+    {
+      "name": "completeness",
+      "weight": 20,
+      "max_score": 100,
+      "criteria": [
+        {
+          "level": "excellent",
+          "score_range": [90, 100],
+          "description": "All screens and states designed. Loading, empty, error states included."
+        },
+        {
+          "level": "good",
+          "score_range": [75, 89],
+          "description": "Most screens designed. Missing some states or edge cases."
+        },
+        {
+          "level": "average",
+          "score_range": [50, 74],
+          "description": "Core screens designed but missing several important views."
+        },
+        {
+          "level": "poor",
+          "score_range": [25, 49],
+          "description": "Only a few screens designed. Major gaps."
+        },
+        {
+          "level": "very_poor",
+          "score_range": [0, 24],
+          "description": "Minimal design work done."
+        }
+      ]
+    }
+  ]
+}

@@ -1,2 +1,17 @@
 /shadow
 \shadow
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Python generated
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Jupyter checkpoints
+.ipynb_checkpoints/

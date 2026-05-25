@@ -1,0 +1,134 @@
+{
+  "rubric_name": "Communication Review Rubric",
+  "applicable_to": ["report", "meeting"],
+  "categories": [
+    {
+      "name": "clarity",
+      "weight": 30,
+      "max_score": 100,
+      "criteria": [
+        {
+          "level": "excellent",
+          "score_range": [90, 100],
+          "description": "Exceptionally clear and concise. Perfect grammar and tone for the context."
+        },
+        {
+          "level": "good",
+          "score_range": [75, 89],
+          "description": "Clear and well-structured. Minor grammar or tone issues."
+        },
+        {
+          "level": "average",
+          "score_range": [50, 74],
+          "description": "Understandable but could be more clear or better structured."
+        },
+        {
+          "level": "poor",
+          "score_range": [25, 49],
+          "description": "Difficult to follow. Poor structure or inappropriate tone."
+        },
+        {
+          "level": "very_poor",
+          "score_range": [0, 24],
+          "description": "Incomprehensible or completely inappropriate for the context."
+        }
+      ]
+    },
+    {
+      "name": "professionalism",
+      "weight": 25,
+      "max_score": 100,
+      "criteria": [
+        {
+          "level": "excellent",
+          "score_range": [90, 100],
+          "description": "Highly professional tone, appropriate salutations, proper email/meeting etiquette."
+        },
+        {
+          "level": "good",
+          "score_range": [75, 89],
+          "description": "Professional with minor lapses in etiquette."
+        },
+        {
+          "level": "average",
+          "score_range": [50, 74],
+          "description": "Acceptable but informal or missing expected formalities."
+        },
+        {
+          "level": "poor",
+          "score_range": [25, 49],
+          "description": "Too casual or rude for the context."
+        },
+        {
+          "level": "very_poor",
+          "score_range": [0, 24],
+          "description": "Unprofessional, offensive, or inappropriate."
+        }
+      ]
+    },
+    {
+      "name": "completeness",
+      "weight": 25,
+      "max_score": 100,
+      "criteria": [
+        {
+          "level": "excellent",
+          "score_range": [90, 100],
+          "description": "Covers all required points with appropriate detail and context."
+        },
+        {
+          "level": "good",
+          "score_range": [75, 89],
+          "description": "Covers most points. Missing minor details."
+        },
+        {
+          "level": "average",
+          "score_range": [50, 74],
+          "description": "Covers main points but lacks sufficient detail or context."
+        },
+        {
+          "level": "poor",
+          "score_range": [25, 49],
+          "description": "Missing important information or context."
+        },
+        {
+          "level": "very_poor",
+          "score_range": [0, 24],
+          "description": "Barely addresses the requirements."
+        }
+      ]
+    },
+    {
+      "name": "formatting",
+      "weight": 20,
+      "max_score": 100,
+      "criteria": [
+        {
+          "level": "excellent",
+          "score_range": [90, 100],
+          "description": "Perfect formatting with proper structure, bullet points, sections as appropriate."
+        },
+        {
+          "level": "good",
+          "score_range": [75, 89],
+          "description": "Well-formatted with minor issues."
+        },
+        {
+          "level": "average",
+          "score_range": [50, 74],
+          "description": "Adequate formatting but could be better organized."
+        },
+        {
+          "level": "poor",
+          "score_range": [25, 49],
+          "description": "Poor formatting, hard to scan or navigate."
+        },
+        {
+          "level": "very_poor",
+          "score_range": [0, 24],
+          "description": "No structure or formatting. Block of text."
+        }
+      ]
+    }
+  ]
+}
