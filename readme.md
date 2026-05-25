@@ -214,7 +214,7 @@ mentriq-shadow/
 }
 ```
 
-**AI Model:** Grok (xAI) — `grok-3` (best for coherent narrative + structured output)
+**AI Model:** Groq — `llama-3.3-70b-versatile` (best for coherent narrative + structured output)
 
 **Key techniques used:**
 - System prompt with role persona and company context
@@ -275,11 +275,11 @@ mentriq-shadow/
 }
 ```
 
-**AI Model:** Grok (xAI) — `grok-3` for all task types (code review, communication, and written evaluation)
+**AI Model:** Groq — `llama-3.3-70b-versatile` for all task types (code review, communication, and written evaluation)
 
 **Key techniques used:**
 - Evaluation rubrics loaded from `data/evaluation_rubrics/` and passed as context
-- Single-model routing via Grok with task-type-aware system prompts
+- Single-model routing via Groq with task-type-aware system prompts
 - Chain of thought reasoning (ask the model to reason before scoring)
 - Structured output for consistent scoring format
 
@@ -350,7 +350,7 @@ AI: "Thank you, that concludes our interview. You'll receive your feedback short
 }
 ```
 
-**AI Model:** Grok (xAI) — `grok-3-mini` (fast, cost-efficient, conversational — perfect for back-and-forth chat)
+**AI Model:** Groq — `llama-3.1-8b-instant` (fast, cost-efficient, conversational — perfect for back-and-forth chat)
 
 **Key techniques used:**
 - `ConversationBufferWindowMemory` from LangChain — AI remembers what was said earlier in the interview
@@ -402,7 +402,7 @@ AI: "Thank you, that concludes our interview. You'll receive your feedback short
 }
 ```
 
-**AI Model:** Grok (xAI) — `grok-3` (excellent at persona consistency and natural, expressive conversation)
+**AI Model:** Groq — `llama-3.3-70b-versatile` (excellent at persona consistency and natural, expressive conversation)
 
 **Key techniques used:**
 - Strong persona definitions in the system prompt (name, age, years of experience, communication quirks)
@@ -457,7 +457,7 @@ pinecone index: "mentriq-knowledge"
 
 **Outputs:** Populated Pinecone index, tested with similarity queries
 
-**Embedding model:** `text-embedding-3-large` (OpenAI) — used for RAG embeddings only, as xAI does not currently provide a dedicated embedding API. All chat/generation calls use Grok.
+**Embedding model:** `text-embedding-3-large` (OpenAI) — used for RAG embeddings only, as Groq does not currently provide a dedicated embedding API. All chat/generation calls use Groq.
 
 **Tests to run in this notebook:**
 - [ ] Verify all documents are indexed: `index.describe_index_stats()`
@@ -514,9 +514,9 @@ Key screens:
 ### AI & ML
 | Tool | Purpose |
 |---|---|
-| Grok `grok-3` (xAI) | Simulation engine, team personas, code review, communication evaluation |
-| Grok `grok-3-mini` (xAI) | Interview agent (fast + cost-efficient for multi-turn chat) |
-| text-embedding-3-large (OpenAI) | Document embeddings for RAG (xAI has no embedding API yet) |
+| Groq `llama-3.3-70b-versatile` | Simulation engine, team personas, code review, communication evaluation |
+| Groq `llama-3.1-8b-instant` | Interview agent (fast + cost-efficient for multi-turn chat) |
+| text-embedding-3-large (OpenAI) | Document embeddings for RAG (Groq has no embedding API yet) |
 | LangChain | Chains, memory, RAG orchestration |
 | LangGraph | Agent loops for simulation engine |
 | Pinecone | Vector database for RAG knowledge base |
@@ -562,7 +562,7 @@ Create a `.env` file in the `backend/` folder for Phase 2.
 
 ```env
 # ── AI APIs ──────────────────────────────────────────
-XAI_API_KEY=xai-...
+GROQ_API_KEY=gsk_...
 
 # ── Pinecone (RAG) ───────────────────────────────────
 PINECONE_API_KEY=...
@@ -612,7 +612,7 @@ Student selects role
       ▼
 [Notebook 01] Simulation Engine
   → Retrieves role context from Pinecone (Notebook 05 data)
-  → Calls Grok grok-3
+  → Calls Groq llama-3.3-70b-versatile
   → Returns: manager message + task list
       │
       ▼
@@ -621,7 +621,7 @@ Student reads tasks and submits work
       ▼
 [Notebook 02] AI Reviewer
   → Retrieves evaluation rubric from Pinecone
-  → Calls Grok grok-3 (code + written tasks)
+  → Calls Groq llama-3.3-70b-versatile (code + written tasks)
   → Returns: scores + feedback + XP earned
       │
       ▼
@@ -644,7 +644,7 @@ Student starts interview
       ▼
 [Notebook 03] Interview Agent
   → Retrieves questions from Pinecone (Notebook 05 data)
-  → Multi-turn conversation loop (Grok grok-3-mini)
+  → Multi-turn conversation loop (Groq llama-3.1-8b-instant)
   → Each turn: student message → AI question/follow-up
       │
       ▼
@@ -800,7 +800,7 @@ pip install -r requirements.txt
 
 # 4. Create your .env file
 cp .env.example .env
-# Edit .env and add your API keys (XAI_API_KEY, PINECONE_API_KEY)
+# Edit .env and add your API keys (GROQ_API_KEY, PINECONE_API_KEY)
 
 # 5. Start with the RAG notebook first (it builds the knowledge base)
 jupyter notebook 05_rag_knowledge_base.ipynb
@@ -884,9 +884,9 @@ If you are using an AI coding assistant (Cursor, GitHub Copilot, Claude, etc.) t
 
 **Cost awareness.** Every AI call costs money. Log token usage in notebooks with:
 ```python
-print(f"Tokens used: {response.usage.input_tokens} in / {response.usage.output_tokens} out")
-print(f"Estimated cost: ${(response.usage.input_tokens * 0.000003 + response.usage.output_tokens * 0.000015):.4f}")
-# Note: update the per-token rates above when you check xAI's current pricing at x.ai/api
+print(f"Tokens used: {response.usage.prompt_tokens} in / {response.usage.completion_tokens} out")
+print(f"Estimated cost: ${(response.usage.prompt_tokens * 0.0000009 + response.usage.completion_tokens * 0.0000009):.6f}")
+# Note: update the per-token rates above when you check Groq's current pricing at console.groq.com
 ```
 
 **LangSmith is your debugger.** Set `LANGCHAIN_TRACING_V2=true` in your `.env` before writing a single line of LangChain code. Every AI call will be logged to LangSmith automatically. This saves hours of debugging.
