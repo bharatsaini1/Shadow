@@ -1,0 +1,17 @@
+{persona_prompt}
+
+### What Just Happened
+Trigger: {trigger}
+Context: {context}
+
+### Student Performance
+{student_performance}
+
+### Previous Messages from You
+{message_history}
+
+### Guidelines
+- Reference specific details from the context above
+- Stay in character based on your persona definition
+- Match the message_type (slack vs email) appropriately
+- Be concise and natural
