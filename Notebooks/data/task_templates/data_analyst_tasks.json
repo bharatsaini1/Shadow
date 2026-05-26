@@ -1,0 +1,119 @@
+[
+  {
+    "task_id": "da_001",
+    "title": "Analyze User Churn Patterns",
+    "description": "Analyze user churn data to identify patterns and root causes. Build a cohort analysis showing retention by signup month and identify key behaviors that correlate with churn.",
+    "task_type": "report",
+    "difficulty": "medium",
+    "estimated_hours": 6,
+    "requirements": [
+      "Clean and prepare the churn dataset (handle missing values, outliers)",
+      "Build a monthly cohort retention table showing Week 1, Week 4, Week 12 retention",
+      "Identify top 3 features that correlate with churn (support tickets, login frequency, feature usage)",
+      "Create a churn prediction model using logistic regression",
+      "Visualize churn trends using line charts and heatmaps",
+      "Write a summary with actionable recommendations"
+    ],
+    "client_context": "Subject: Churn Analysis for Q3\n\nMonthly churn has increased from 5% to 8% over the last quarter. We need to understand why users are leaving and what we can do about it. Data exported from Mixpanel.\n\n- Rohan (Client)",
+    "expected_deliverable": "Jupyter notebook with cohort analysis, churn model, visualizations, and recommendations",
+    "tags": ["churn", "analytics", "Python", "cohort analysis", "SQL"]
+  },
+  {
+    "task_id": "da_002",
+    "title": "Build Revenue Dashboard in Tableau",
+    "description": "Create a comprehensive revenue dashboard in Tableau that shows revenue by product line, customer segment, geography, and time period. Include forecasting for next quarter.",
+    "task_type": "report",
+    "difficulty": "medium",
+    "estimated_hours": 5,
+    "requirements": [
+      "Connect Tableau to the revenue database",
+      "Revenue by product line (bar chart) with drill-down capability",
+      "Revenue by customer segment (pie or treemap)",
+      "Revenue trend over time (line chart with 12-month view)",
+      "Geographic revenue distribution (filled map)",
+      "Time series forecast for next quarter using Tableau forecasting",
+      "Interactive filters for date range, product, and region"
+    ],
+    "client_context": "Subject: Executive Revenue Dashboard\n\nThe leadership team needs a real-time revenue dashboard for quarterly reviews. This will be used in board meetings. Make it professional and clear.\n\n- Sneha (HR)",
+    "expected_deliverable": "Tableau workbook with interactive revenue dashboard and forecast",
+    "tags": ["Tableau", "dashboard", "revenue", "visualization", "executive"]
+  },
+  {
+    "task_id": "da_003",
+    "title": "Design and Analyze an A/B Test",
+    "description": "The product team wants to test a new checkout flow. Design the A/B test, calculate required sample size, analyze results, and make a recommendation on whether to launch the new flow.",
+    "task_type": "report",
+    "difficulty": "hard",
+    "estimated_hours": 6,
+    "requirements": [
+      "Define null and alternative hypotheses for the test",
+      "Calculate required sample size (power=0.8, alpha=0.05) for minimum detectable effect of 5%",
+      "Analyze test results using appropriate statistical test (t-test or chi-square)",
+      "Check for Simpson's paradox across user segments",
+      "Visualize results with confidence intervals and effect size",
+      "Make a go/no-go recommendation with statistical justification"
+    ],
+    "client_context": "Subject: A/B Test for New Checkout Flow\n\nWe redesigned the checkout flow to reduce cart abandonment. We need a properly designed A/B test to validate the new design before full rollout.\n\n- Sarah (Product Manager)",
+    "expected_deliverable": "A/B test analysis report with hypothesis, sample size calculation, statistical results, and recommendation",
+    "tags": ["A/B testing", "statistics", "experiment design", "Python", "analysis"]
+  },
+  {
+    "task_id": "da_004",
+    "title": "Create Marketing Campaign Performance Analysis",
+    "description": "Analyze the performance of the last quarter's marketing campaigns across channels (Google Ads, Facebook, LinkedIn, Email). Calculate ROI, CAC, and attribution for each channel.",
+    "task_type": "report",
+    "difficulty": "medium",
+    "estimated_hours": 5,
+    "requirements": [
+      "Clean and merge data from multiple ad platforms into a single dataset",
+      "Calculate cost per acquisition (CAC) for each channel",
+      "Calculate return on ad spend (ROAS) for each channel",
+      "Build a multi-touch attribution model (linear attribution)",
+      "Identify the most cost-effective channel combination",
+      "Create a dashboard showing campaign performance metrics",
+      "Recommend budget reallocation based on analysis"
+    ],
+    "client_context": "Subject: Q3 Marketing Performance\n\nWe spent ₹50L on marketing last quarter. We need to understand which channels delivered the best ROI so we can optimize the Q4 budget.\n\n- Rohan (Client)",
+    "expected_deliverable": "Marketing analysis report with CAC, ROAS, attribution model, and budget recommendations",
+    "tags": ["marketing", "analytics", "attribution", "ROI", "Python"]
+  },
+  {
+    "task_id": "da_005",
+    "title": "Build Data Pipeline with Python and SQL",
+    "description": "Design and build an automated ETL pipeline that extracts data from the production database, transforms it for analytics, and loads it into a reporting database. Use Python and scheduled SQL scripts.",
+    "task_type": "coding",
+    "difficulty": "hard",
+    "estimated_hours": 8,
+    "requirements": [
+      "Write SQL extraction queries for orders, users, and payments tables",
+      "Build Python transformation scripts (data cleaning, aggregation, joining)",
+      "Set up incremental loading strategy (only new/changed records)",
+      "Implement data validation checks at each pipeline stage",
+      "Schedule the pipeline to run daily at 2 AM",
+      "Add error handling and notification on failure",
+      "Document the pipeline architecture and data flow"
+    ],
+    "client_context": "Subject: Analytics Data Pipeline\n\nOur current reporting requires manual SQL queries, which is error-prone and time-consuming. We need an automated pipeline that refreshes our analytics tables daily.\n\n- DevOps Team",
+    "expected_deliverable": "Python ETL pipeline with SQL scripts, scheduling config, and documentation",
+    "tags": ["ETL", "pipeline", "Python", "SQL", "automation"]
+  },
+  {
+    "task_id": "da_006",
+    "title": "Product Feature Adoption Analysis",
+    "description": "Analyze which product features users are adopting and which are being ignored. Identify user segments that have high engagement with specific features and recommend improvements for underperforming features.",
+    "task_type": "report",
+    "difficulty": "medium",
+    "estimated_hours": 4,
+    "requirements": [
+      "Query event tracking data to get feature usage counts per user",
+      "Build feature adoption funnel (viewed → tried → used regularly)",
+      "Segment users by adoption pattern (power users, casual, dormant)",
+      "Identify top 3 most adopted and bottom 3 least adopted features",
+      "Correlate feature adoption with user retention",
+      "Provide recommendations for improving adoption of bottom features"
+    ],
+    "client_context": "Subject: Feature Adoption Analysis\n\nWe launched 5 new features last quarter but don't know which ones are actually being used. Let's analyze adoption data and decide which features to invest in further.\n\n- Sarah (Product Manager)",
+    "expected_deliverable": "Feature adoption analysis report with funnel, user segments, and recommendations",
+    "tags": ["product analytics", "feature adoption", "Python", "SQL", "segmentation"]
+  }
+]

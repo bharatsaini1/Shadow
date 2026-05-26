@@ -1,85 +1,377 @@
 {
   "role": "MERN Stack Developer",
-  "description": "Full-stack developer working with MongoDB, Express.js, React, and Node.js. Responsible for building and maintaining web applications across the entire stack.",
+  "description": "Full-stack developer working with MongoDB, Express.js, React, and Node.js. Responsible for building and maintaining web applications across the entire stack — from database schemas and RESTful APIs to responsive React UIs and cloud deployment.",
+
+  "job_descriptions": [
+    {
+      "level": "Junior MERN Developer (0-1 yr)",
+      "responsibilities": [
+        "Build UI components in React under guidance of senior developers",
+        "Write basic API endpoints in Express.js",
+        "Fix bugs reported by QA team in assigned modules",
+        "Write unit tests for new code",
+        "Attend daily standups and sprint planning",
+        "Document code and API changes"
+      ],
+      "requirements": ["React fundamentals (components, hooks, state)", "Basic Express.js route handling", "MongoDB CRUD operations", "Git workflow basics", "REST API concepts"],
+      "salary_range": "₹3L–₹6L/yr (India) | $55K–$75K/yr (US)"
+    },
+    {
+      "level": "Mid-Level MERN Developer (1-3 yrs)",
+      "responsibilities": [
+        "Own feature development from backend to frontend end-to-end",
+        "Design MongoDB schemas and optimize queries",
+        "Implement authentication and authorization flows",
+        "Review pull requests of junior developers",
+        "Refactor legacy code and improve test coverage",
+        "Collaborate with designers on UI/UX implementation",
+        "Write technical specifications for features",
+        "Mentor junior developers on best practices"
+      ],
+      "requirements": ["Advanced React patterns (context, reducers, custom hooks)", "Express middleware and error handling", "MongoDB aggregation pipeline", "JWT/OAuth authentication", "CI/CD pipeline setup", "Docker containerization basics"],
+      "salary_range": "₹6L–₹15L/yr (India) | $80K–$110K/yr (US)"
+    },
+    {
+      "level": "Senior MERN Developer (3-6 yrs)",
+      "responsibilities": [
+        "Architect full-stack solutions for complex business requirements",
+        "Lead technical decision-making for the team",
+        "Design database schemas with performance and scale in mind",
+        "Set up monitoring, logging, and alerting infrastructure",
+        "Conduct system design reviews and architecture discussions",
+        "Drive test automation strategy and code quality standards",
+        "Lead incident response and postmortem analysis",
+        "Interview candidates and evaluate technical skills"
+      ],
+      "requirements": ["System design and architecture patterns", "Cloud infrastructure (AWS/GCP)", "Performance optimization and profiling", "Redis caching strategies", "Message queues (Bull, RabbitMQ)", "WebSocket and real-time architectures", "Microservices design patterns"],
+      "salary_range": "₹15L–₹30L/yr (India) | $120K–$160K/yr (US)"
+    },
+    {
+      "level": "Lead / Principal MERN Developer (6+ yrs)",
+      "responsibilities": [
+        "Define technical roadmap and architecture vision",
+        "Drive cross-team technical initiatives",
+        "Establish engineering standards and best practices organization-wide",
+        "Design system for high availability and disaster recovery",
+        "Evaluate and select third-party services and infrastructure",
+        "Guide career growth of engineering team members",
+        "Present technical strategy to C-suite stakeholders",
+        "Contribute to open-source and engineering blog"
+      ],
+      "requirements": ["Distributed systems design", "Multi-cloud architecture", "Engineering management and mentoring", "Budget and resource planning", "Security compliance (SOC2, GDPR)", "Technical writing and documentation"],
+      "salary_range": "₹30L–₹60L/yr (India) | $160K–$220K/yr (US)"
+    }
+  ],
+
   "day_to_day": [
-    "Morning standup with the team to discuss progress and blockers",
-    "Working on feature development across the stack (React frontend, Node.js/Express backend)",
-    "Code reviews for team members' pull requests",
-    "Debugging production issues reported by the QA team",
-    "Collaborating with designers on UI/UX implementations",
-    "Writing and maintaining API documentation",
-    "Participating in sprint planning and retrospectives"
+    "Morning standup (15 min): Share yesterday's progress, today's plan, and any blockers",
+    "Code review session: Review 2-3 pull requests from teammates before lunch",
+    "Feature development: Work on assigned user stories — write backend logic, then frontend UI, then integration tests",
+    "Debugging session: Investigate production issue reported via Sentry — reproduce locally, identify root cause, deploy fix",
+    "Technical discussion with team: Whiteboard architecture decisions for upcoming feature",
+    "Client call (weekly): Demo new features, gather feedback, clarify requirements",
+    "Write documentation: API docs (Swagger), README updates, architecture decision records (ADRs)",
+    "Sprint ceremonies: Planning (week start), retro (week end), backlog grooming (mid-week)",
+    "Self-learning: 1 hour blocked for reading tech blogs, trying new tools, or contributing to internal tooling"
   ],
+
+  "detailed_workflows": [
+    {
+      "scenario": "Feature Request: Add Payment Integration",
+      "steps": [
+        "Receive requirement document from PM via Jira ticket",
+        "Review acceptance criteria and ask clarifying questions",
+        "Design database schema for orders, payments, invoices in MongoDB",
+        "Create Express.js routes for payment initiation, webhook handling, refunds",
+        "Integrate with payment gateway SDK (Razorpay/Stripe)",
+        "Build React checkout form with validation, loading states, error handling",
+        "Write unit tests for payment calculation logic",
+        "Write integration tests for payment webhook end-to-end flow",
+        "Create API documentation for the payment endpoints",
+        "Submit PR, get reviewed, address feedback, merge to staging",
+        "Deploy to staging, test with test mode payment gateway",
+        "After QA sign-off, deploy to production with feature flag",
+        "Monitor Sentry for errors in the first 24 hours post-launch"
+      ]
+    },
+    {
+      "scenario": "Production Bug: High Memory Usage",
+      "steps": [
+        "PagerDuty alert fires at 2 AM — Node.js process memory > 90%",
+        "Check Grafana dashboard — see memory leak pattern over last 4 hours",
+        "SSH into production instance, take heap snapshot using `node --heapsnapshot`",
+        "Load heap snapshot in Chrome DevTools Memory tab",
+        "Identify that event listeners on WebSocket connections are not being cleaned up",
+        "Reproduce locally with load testing script using k6",
+        "Fix: Remove event listener leak in socket handler, add memory monitoring log",
+        "Write regression test that simulates 1000 concurrent connections",
+        "Create PR, get emergency review approval, deploy hotfix to production",
+        "Monitor memory metrics — confirm stabilization",
+        "Write incident postmortem: root cause, impact, fix, prevention measures"
+      ]
+    },
+    {
+      "scenario": "Performance Optimization: Slow Dashboard Load",
+      "steps": [
+        "Product team reports analytics dashboard takes 8+ seconds to load",
+        "Profile frontend with React DevTools — identify unnecessary re-renders",
+        "Profile backend with clinic.js — identify slow MongoDB aggregation query",
+        "Run `explain()` on the aggregation — see full collection scan (no index)",
+        "Create compound indexes on frequently filtered/grouped fields",
+        "Restructure aggregation pipeline — filter early, project only needed fields",
+        "Add caching layer with Redis for dashboard data (TTL: 5 minutes)",
+        "Implement React lazy loading and code splitting for dashboard components",
+        "Use React.memo and useMemo to prevent re-renders on data transitions",
+        "Load test with k6 — verify dashboard loads under 800ms with 100 concurrent users"
+      ]
+    }
+  ],
+
   "tech_stack": {
-    "frontend": ["React", "Redux", "Tailwind CSS", "Material-UI", "React Query", "Vite"],
-    "backend": ["Node.js", "Express.js", "Socket.io", "JWT", "Passport.js"],
-    "database": ["MongoDB", "Mongoose", "Redis"],
-    "testing": ["Jest", "React Testing Library", "Cypress", "Supertest"],
-    "devops": ["Docker", "AWS (EC2, S3)", "GitHub Actions", "Nginx"],
-    "tools": ["Git", "Postman", "VS Code", "MongoDB Compass"]
+    "frontend": ["React 18+", "Redux Toolkit / Zustand", "React Query / TanStack Query", "Tailwind CSS", "Material-UI / Ant Design", "Vite / Next.js", "TypeScript", "React Router v6", "React Hook Form", "Zod / Yup validation"],
+    "backend": ["Node.js 20+ (LTS)", "Express.js / Fastify", "Passport.js / JWT", "Socket.io", "Bull (queue)", "Morgan / Winston (logging)", "Helmet / CORS", "express-validator / Joi"],
+    "database": ["MongoDB 7+", "Mongoose ODM", "Redis (caching + pub/sub)", "PostgreSQL (for relational data)"],
+    "testing": ["Jest + Supertest", "React Testing Library", "Cypress / Playwright", "k6 (load testing)", "Storybook (UI component testing)"],
+    "devops": ["Docker + Docker Compose", "AWS (EC2, S3, Lambda, CloudFront)", "GitHub Actions / Jenkins", "Nginx / Caddy", "PM2 (process manager)", "Sentry (error monitoring)", "Grafana + Prometheus"],
+    "tools": ["Git + GitHub/GitLab", "Postman / Insomnia", "MongoDB Compass / Studio 3T", "VS Code + extensions", "Figma (design handoff)", "Linear / Jira (project management)", "Notion / Confluence (docs)"]
   },
+
   "common_issues": [
-    "JWT token expiration and refresh flow",
-    "MongoDB connection pooling",
-    "React state management with complex forms",
-    "CORS configuration in development vs production",
-    "Environment variable management across stages",
-    "API rate limiting and security",
-    "File upload size limits and storage optimization",
-    "Real-time updates with WebSocket connections"
+    {
+      "issue": "JWT Token Expiry & Refresh Flow",
+      "symptom": "Users get logged out randomly mid-session. API returns 401 intermittently.",
+      "root_cause": "Access token expiry not handled gracefully on frontend. Refresh token endpoint fails silently.",
+      "fix": "Implement axios interceptor that catches 401, calls /refresh-token, retries original request with new token. Queue pending requests during refresh to prevent race conditions.",
+      "prevention": "Set access token TTL to 15 min, refresh token TTL to 7 days. Store refresh token in httpOnly cookie, access token in memory."
+    },
+    {
+      "issue": "MongoDB Connection Pool Exhaustion",
+      "symptom": "API becomes unresponsive, MongoDB logs show 'too many connections'. Requests hang until timeout.",
+      "root_cause": "Default Mongoose connection pool size (100) may be too low for high concurrency, or connections are not being released due to long queries.",
+      "fix": "Increase pool size to match workload (`mongoose.connect(uri, { maxPoolSize: 200 })`). Add connection timeout and retry logic. Profile slow queries causing connection hold.",
+      "prevention": "Monitor connection pool utilization, set up alerts at 80% usage. Implement request timeouts at the Express level."
+    },
+    {
+      "issue": "React State Management with Complex Forms",
+      "symptom": "Form inputs lag, state updates are lost, or form re-renders cause performance issues.",
+      "root_cause": "Using useState for every field causes full form re-render on every keystroke. Object spread in setState creates stale closures.",
+      "fix": "Use React Hook Form with field-level subscriptions. Use useReducer for complex state. Debounce validation. Use form libraries with built-in performance optimizations.",
+      "prevention": "Design forms with isolated field components. Use controlled inputs with care. Memoize expensive computations with useMemo."
+    },
+    {
+      "issue": "CORS Configuration Mismatch",
+      "symptom": "Frontend can't make API calls — browser shows CORS error in console. Works in dev but breaks in production.",
+      "root_cause": "CORS configuration in Express doesn't match the actual frontend origin. Differences between localhost + port in dev vs custom domain in production.",
+      "fix": "Set CORS dynamically based on NODE_ENV. Use whitelist pattern. Add explicit allowed headers and methods. Handle preflight OPTIONS requests correctly.",
+      "prevention": "Use environment variable for allowed origins. Test CORS in CI with actual production domain. Add proper error responses for CORS failures."
+    },
+    {
+      "issue": "File Upload Size Limits & Storage",
+      "symptom": "File uploads fail silently, or server crashes when large files are uploaded. Upload progress not visible to user.",
+      "root_cause": "Express body-parser default limit (1MB) or nginx client_max_body_size not configured. No file size validation on frontend.",
+      "fix": "Configure multer with size limits, file type validation, and disk/cloud storage. Implement presigned URL uploads directly to S3 to offload server. Show upload progress with axios onUploadProgress.",
+      "prevention": "Set global upload size limit in nginx (client_max_body_size). Validate file type and size on client before upload. Use chunked upload for large files."
+    },
+    {
+      "issue": "API Rate Limiting Absence",
+      "symptom": "Server becomes slow or unresponsive under sudden traffic spikes. Automated scripts are scraping data without restriction.",
+      "root_cause": "No rate limiting middleware implemented. All endpoints are equally accessible without throttling.",
+      "fix": "Implement express-rate-limit with tiered limits: 100 req/min for auth, 1000 req/min for general API, 10/min for login attempts. Use RedisStore for distributed rate limiting across multiple instances.",
+      "prevention": "Set rate limits from day one. Use different limits for authenticated vs unauthenticated users. Return proper 429 responses with Retry-After headers."
+    },
+    {
+      "issue": "Real-Time WebSocket Connection Drops",
+      "symptom": "Socket.io connections drop randomly. Users miss live updates. Reconnection causes duplicate messages.",
+      "root_cause": "No heartbeat mechanism. Reconnection logic missing or incorrect. Behind load balancer without sticky sessions.",
+      "fix": "Implement ping/pong heartbeat every 25 seconds. Enable Socket.io reconnection with exponential backoff. Configure load balancer for sticky sessions or use Redis adapter.",
+      "prevention": "Test WebSocket stability under network disruptions. Use Socket.io built-in reconnection. Monitor connection state transitions."
+    },
+    {
+      "issue": "Docker Container Memory Leak",
+      "symptom": "Container restarts randomly. 'OOMKilled' in docker logs. Application becomes progressively slower over time.",
+      "root_cause": "Node.js process has memory leak — global variables, growing cache, unclosed connections, or event emitter listeners accumulating.",
+      "fix": "Take heap dump before restart. Use Chrome DevTools Memory tab to analyze. Fix identified leak sources. Add --max-old-space-size flag to Node.js. Set Docker memory limits.",
+      "prevention": "Add memory usage monitoring to Grafana. Set up alerts for memory growth patterns. Run load tests weekly to catch regressions. Use tools like clinic.js for automatic leak detection."
+    }
   ],
+
   "industry_standards": [
-    "RESTful API design principles",
-    "JWT-based authentication",
-    "MVC architecture pattern",
-    "Git feature branch workflow",
-    "CI/CD pipeline with automated testing",
-    "Code review process with at least one approval",
-    "Semantic versioning",
-    "OpenAPI/Swagger documentation"
+    "RESTful API design principles — consistent resource naming, proper HTTP methods, status codes, HATEOAS",
+    "JWT-based authentication with access/refresh token pattern and httpOnly cookies",
+    "MVC architecture pattern — models handle data, controllers handle logic, views handle presentation",
+    "Git feature branch workflow with conventional commits (feat:, fix:, chore:, docs:)",
+    "CI/CD pipeline with automated linting, testing, and deployment using GitHub Actions",
+    "Code review process requiring at least one approval before merge to main branch",
+    "Semantic versioning (semver) — major.minor.patch for breaking, feature, and fix releases",
+    "OpenAPI/Swagger documentation for all API endpoints — auto-generated from JSDoc comments",
+    "Error handling with centralized error middleware — consistent error response format across all endpoints",
+    "Logging with structured JSON format — log level, timestamp, request ID, user context, stack trace",
+    "Environment-based configuration — .env files with different configs for dev, staging, production",
+    "Twelve-factor app methodology — declarative setup, disposability, dev/prod parity, concurrency",
+    "Database schema versioning with migration scripts — avoid manual schema changes on production",
+    "Accessibility (a11y) standards — WCAG 2.1 AA compliance for all UI components",
+    "Performance budgets — lighthouse scores, bundle size limits, API response time SLAs"
   ],
+
+  "tech_stack_expectations": [
+    {
+      "company_size": "Startup (1-20 employees)",
+      "expectations": "Full-stack generalist who handles everything from UI to deployment. Fast iteration, minimal process. Ownership of entire features. Comfortable with ambiguity — requirements change weekly. Must ship fast and fix fast. Often expected to do DevOps, QA, and customer support too.",
+      "tech_preferences": "Vite + React, Tailwind CSS, MongoDB Atlas, Vercel/Railway, simple CI/CD",
+      "team_dynamics": "Flat hierarchy, direct communication with founders, quick decision-making"
+    },
+    {
+      "company_size": "Mid-Size Startup (20-100 engineers)",
+      "expectations": "Specialized in frontend or backend with ability to work across the stack. Defined processes (sprints, standups, retros). Cross-team collaboration. Code reviews and technical specs required. Mentorship of juniors expected for senior roles.",
+      "tech_preferences": "TypeScript, Next.js, AWS/GCP, microservices emerging, Docker, PostgreSQL + MongoDB",
+      "team_dynamics": "Engineering manager + tech lead structure, quarterly planning, cross-functional squads"
+    },
+    {
+      "company_size": "Enterprise (100+ engineers)",
+      "expectations": "Deep specialization in one area (frontend, backend, or infrastructure). Heavy process — documentation, compliance, security reviews. Multiple approval gates for deployments. Working with legacy code and migration strategies. Stakeholder management and cross-department communication.",
+      "tech_preferences": "TypeScript, GraphQL, Kubernetes, internal tooling, monorepo (Nx/Turborepo), feature flags",
+      "team_dynamics": "Multiple layers of management, annual planning cycles, matrix organization structure"
+    },
+    {
+      "company_size": "FAANG / Big Tech",
+      "expectations": "Strong CS fundamentals — algorithms, data structures, system design. Multiple rounds of technical interviews. Code quality and testing are non-negotiable. Scale mindset — code serves millions of users. Data-driven decision making. Technical document writing is a core skill.",
+      "tech_preferences": "Custom internal frameworks and tools, monorepos, strict coding standards, formal design reviews",
+      "team_dynamics": "Staff+ engineering track, performance reviews with defined levels (L3-L8), OKR-driven"
+    }
+  ],
+
+  "project_types": [
+    {
+      "name": "E-Commerce Platform",
+      "description": "Full-featured online store with product catalog, cart, checkout, payment, order tracking, and admin panel",
+      "key_components": ["Product listing with faceted search", "Shopping cart with persistent state", "Payment gateway integration (Razorpay/Stripe)", "Order management system", "Inventory tracking with real-time updates", "Admin dashboard with analytics"],
+      "challenges": ["Handling high traffic during sales events", "Payment race conditions", "Inventory consistency across distributed systems", "SEO for product pages"]
+    },
+    {
+      "name": "SaaS Dashboard & Analytics",
+      "description": "Multi-tenant web application with user management, role-based access, dashboards, and data visualization",
+      "key_components": ["Multi-tenant data isolation", "Role-based access control (RBAC)", "Interactive charts and data tables", "Report generation and export (PDF/CSV)", "Webhook integrations with external services", "Billing and subscription management"],
+      "challenges": ["Tenant isolation without performance cost", "Complex query performance at scale", "Real-time data updates via WebSockets", "Customizable dashboards per tenant"]
+    },
+    {
+      "name": "Social / Community Platform",
+      "description": "User-generated content platform with profiles, feeds, messaging, notifications, and moderation tools",
+      "key_components": ["User profiles with custom avatars", "Activity feed with infinite scroll", "Real-time messaging (Socket.io)", "Push notification system", "Content moderation pipeline", "Search with Elasticsearch"],
+      "challenges": ["Feed ranking and personalization algorithms", "Real-time message delivery at scale", "Content moderation at scale (AI-assisted)", "Media storage optimization"]
+    },
+    {
+      "name": "Enterprise Resource Planning (ERP)",
+      "description": "Internal business management tool covering HR, finance, inventory, CRM, and project management modules",
+      "key_components": ["Employee management and payroll", "Invoice and expense tracking", "Inventory and supply chain management", "Customer relationship management (CRM)", "Project and task management", "Role-based module access"],
+      "challenges": ["Complex relational data modeling", "Advanced reporting and reconciliation", "Data migration from legacy systems", "Regulatory compliance (tax, accounting standards)"]
+    }
+  ],
+
+  "development_process": {
+    "agile_practices": [
+      "Two-week sprints with planning on Day 1 and retro on Day 10",
+      "Daily 15-minute standups — what I did, what I'll do, blockers",
+      "Story pointing using Fibonacci sequence (1, 2, 3, 5, 8, 13)",
+      "Backlog refinement session every Wednesday to groom upcoming stories",
+      "Sprint demo on last day of sprint to showcase completed work"
+    ],
+    "code_review_process": {
+      "before_submitting": "Self-review diff, run linter + tests locally, write PR description with context and screenshots",
+      "review_criteria": ["Correctness — does it solve the problem?", "Code quality — clean, modular, well-named?", "Testing — are there tests covering the change?", "Performance — any obvious perf concerns?", "Security — any exposed data or injection risks?"],
+      "after_review": "Address all comments, re-request review, squash commits, merge with merge commit (not rebase)"
+    },
+    "deployment_workflow": {
+      "dev": "Auto-deploy on PR creation to preview environment (Vercel/Railway)",
+      "staging": "Auto-deploy on merge to staging branch — run full test suite + smoke tests",
+      "production": "Manual approval required. Feature flags control rollout. Canary deploy to 10% of users, monitor 30 min, then full rollout."
+    }
+  },
+
+  "architecture_patterns": [
+    {
+      "pattern": "Monolithic with Separation of Concerns",
+      "pros": "Simple to develop and deploy, single codebase, easy debugging",
+      "cons": "Scaling requires scaling entire app, deployment affects all features",
+      "best_for": "MVP, startups with small teams, internal tools"
+    },
+    {
+      "pattern": "Microservices (Domain-Based)",
+      "pros": "Independent scaling, team autonomy, technology diversity",
+      "cons": "Complex deployment, network latency, data consistency challenges",
+      "best_for": "Large teams, complex domains, high-scale applications"
+    },
+    {
+      "pattern": "Serverless (AWS Lambda + API Gateway)",
+      "pros": "No server management, auto-scaling, pay-per-use pricing",
+      "cons": "Cold starts, execution time limits, vendor lock-in",
+      "best_for": "Event-driven workloads, irregular traffic patterns, startups"
+    },
+    {
+      "pattern": "BFF (Backend for Frontend)",
+      "pros": "Optimized API per client type, reduces over-fetching, simpler frontend code",
+      "cons": "Duplication across BFFs, additional service to maintain",
+      "best_for": "Multi-client applications (web + mobile + third-party API)"
+    }
+  ],
+
   "skill_areas": [
     {
       "name": "Frontend Development",
       "weight": 30,
-      "skills": ["React", "State Management", "Responsive Design", "Component Architecture"]
+      "skills": ["React with Hooks", "State Management (Redux/Zustand)", "Responsive Design", "Component Architecture & Reusability", "TypeScript", "CSS-in-JS / Tailwind CSS", "Accessibility (a11y)", "Performance Optimization (Code Splitting, Lazy Loading)"]
     },
     {
       "name": "Backend Development",
       "weight": 30,
-      "skills": ["Node.js", "Express", "API Design", "Authentication", "Authorization"]
+      "skills": ["Node.js + Express.js", "RESTful API Design", "Authentication & Authorization (JWT, OAuth)", "File Upload & Storage", "WebSocket / Real-time Communication", "API Security (Helmet, CORS, Rate Limiting)", "Background Jobs & Queues"]
     },
     {
       "name": "Database",
       "weight": 15,
-      "skills": ["MongoDB Schema Design", "Query Optimization", "Aggregation Pipeline"]
+      "skills": ["MongoDB Schema Design & Relationships", "Query Optimization & Indexing", "Aggregation Pipeline", "Data Validation & Sanitization", "Redis Caching Strategies", "Database Migrations & Seeding"]
     },
     {
       "name": "DevOps & Deployment",
       "weight": 10,
-      "skills": ["Docker", "CI/CD", "Cloud Services", "Monitoring"]
+      "skills": ["Docker & Docker Compose", "CI/CD Pipeline Setup", "Cloud Services (AWS/GCP)", "Monitoring & Error Tracking (Sentry, Grafana)", "Performance Profiling & Optimization"]
+    },
+    {
+      "name": "Testing & Quality",
+      "weight": 10,
+      "skills": ["Unit Testing (Jest)", "Integration Testing (Supertest)", "E2E Testing (Cypress/Playwright)", "Test-Driven Development (TDD)", "Code Review Best Practices"]
     },
     {
       "name": "Soft Skills",
-      "weight": 15,
-      "skills": ["Communication", "Code Review", "Agile/Scrum", "Problem Solving"]
+      "weight": 5,
+      "skills": ["Communication & Technical Writing", "Code Review & Mentoring", "Agile/Scrum Methodologies", "Problem Solving & Debugging", "Cross-team Collaboration"]
     }
   ],
+
   "company_types": [
     {
       "type": "Startup",
       "team_size": "5-20 engineers",
-      "expectations": "Full-stack generalist, fast-paced, own features end-to-end"
+      "expectations": "Full-stack generalist, fast-paced, own features end-to-end, wear multiple hats (dev + ops + support)"
     },
     {
-      "type": "Mid-size",
+      "type": "Agency",
+      "team_size": "10-50 engineers",
+      "expectations": "Client-facing communication, multiple projects simultaneously, quick delivery, adherence to client tech preferences"
+    },
+    {
+      "type": "Mid-size Product",
       "team_size": "20-100 engineers",
-      "expectations": "Specialized in frontend or backend, cross-team collaboration"
+      "expectations": "Specialized in frontend or backend, cross-team collaboration, documentation and process adherence"
     },
     {
       "type": "Enterprise",
       "team_size": "100+ engineers",
-      "expectations": "Deep specialization, documentation, process adherence"
+      "expectations": "Deep specialization, architectural documentation, compliance and security awareness, mentoring juniors"
+    },
+    {
+      "type": "FAANG / Big Tech",
+      "team_size": "1000+ engineers",
+      "expectations": "CS fundamentals, system design skills, data-driven culture, performance review cycles, formal career levels"
     }
   ]
 }

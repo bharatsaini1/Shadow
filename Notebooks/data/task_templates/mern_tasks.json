@@ -8,13 +8,14 @@
     "estimated_hours": 4,
     "requirements": [
       "Identify the root cause of premature logout",
-      "Implement token refresh mechanism",
-      "Add proper error handling for expired tokens",
-      "Write a brief summary of the fix"
+      "Implement token refresh mechanism with axios interceptor",
+      "Queue pending API calls during token refresh to prevent race conditions",
+      "Add proper error handling for expired refresh tokens",
+      "Write a brief summary of the fix with before/after behavior"
     ],
     "client_context": "Subject: Urgent - Users getting logged out\n\nHi Team,\n\nWe've had 15+ support tickets in the last 2 days about users being randomly logged out of the dashboard. This is affecting our retention metrics. Can you please look into this ASAP?\n\n- Rohan (Client)",
-    "expected_deliverable": "Code fix with token refresh logic + summary of changes",
-    "tags": ["authentication", "JWT", "security", "frontend"]
+    "expected_deliverable": "Code fix with token refresh interceptor + summary of changes",
+    "tags": ["authentication", "JWT", "security", "frontend", "bug"]
   },
   {
     "task_id": "mern_002",
@@ -24,109 +25,109 @@
     "difficulty": "easy",
     "estimated_hours": 3,
     "requirements": [
-      "GET /api/users/profile endpoint",
-      "PUT /api/users/profile endpoint",
-      "Input validation for all fields",
-      "Authorization check (user can only edit own profile)",
-      "Return appropriate error messages"
+      "GET /api/users/profile endpoint returning user data",
+      "PUT /api/users/profile endpoint for updates",
+      "Input validation for all editable fields (name, email, bio)",
+      "Authorization check — user can only edit own profile",
+      "Return appropriate error messages for invalid requests"
     ],
     "client_context": "Subject: Profile Management Feature\n\nWe need the profile management feature for the upcoming release. Users should be able to view and edit their name, email, and profile picture. Nothing too complex, but it should be secure.\n\n- Sarah (Product Manager)",
     "expected_deliverable": "Node.js/Express route handlers with validation middleware",
-    "tags": ["API", "REST", "backend", "Express"]
+    "tags": ["API", "REST", "backend", "Express", "CRUD"]
   },
   {
     "task_id": "mern_003",
     "title": "Implement Data Table with Sorting & Filtering",
-    "description": "Build a reusable React data table component that supports sorting by columns, filtering by text input, and pagination. The data should be fetched from an API endpoint.",
+    "description": "Build a reusable React data table component that supports sorting by columns, filtering by text input, and pagination. The data should be fetched from an API endpoint with server-side pagination.",
     "task_type": "coding",
     "difficulty": "hard",
     "estimated_hours": 6,
     "requirements": [
-      "Reusable React component",
-      "Column sorting (ascending/descending)",
-      "Text search/filter across all columns",
-      "Client-side pagination (10 items per page)",
-      "Loading and empty states",
-      "Responsive design"
+      "Reusable React component accepting configurable columns",
+      "Column sorting (ascending/descending) with sort indicator",
+      "Text search/filter across all columns with debounced input",
+      "Server-side pagination (10 items per page)",
+      "Loading skeleton state and empty state",
+      "Responsive design — horizontal scroll on mobile"
     ],
-    "client_context": "Subject: Dashboard Data Table\n\nHey, the admin dashboard needs a proper data table to display user analytics. We need sorting, searching, and pagination. Check out the figma mockup attached.\n\n- Priya (Team Lead)",
-    "expected_deliverable": "React component with sorting, filtering, and pagination",
-    "tags": ["React", "frontend", "UI", "table"]
+    "client_context": "Subject: Dashboard Data Table\n\nHey, the admin dashboard needs a proper data table to display user analytics. We need sorting, searching, and pagination. Check out the Figma mockup attached. Make sure it handles 10K+ rows without lag.\n\n- Priya (Team Lead)",
+    "expected_deliverable": "React component with sorting, filtering, and server-side pagination",
+    "tags": ["React", "frontend", "UI", "table", "pagination"]
   },
   {
     "task_id": "mern_004",
-    "title": "Write API Integration Tests",
+    "title": "Write API Integration Tests for Auth Module",
     "description": "Write comprehensive integration tests for the user authentication endpoints (login, register, logout, refresh token). Use Jest and Supertest.",
     "task_type": "coding",
     "difficulty": "medium",
     "estimated_hours": 4,
     "requirements": [
-      "Test successful registration",
-      "Test registration with duplicate email",
-      "Test successful login",
-      "Test login with wrong credentials",
-      "Test token refresh flow",
-      "Test protected route access"
+      "Test successful user registration returns 201 and JWT token",
+      "Test registration with duplicate email returns 409 conflict",
+      "Test successful login returns user data and token",
+      "Test login with wrong credentials returns 401",
+      "Test token refresh flow with valid and expired tokens",
+      "Test protected routes reject unauthenticated requests"
     ],
     "client_context": "Subject: Test Coverage Requirements\n\nOur CI pipeline now requires minimum 80% test coverage. The auth module is currently at 30%. Please bring it up to spec.\n\n- DevOps Team",
-    "expected_deliverable": "Integration test file with Jest + Supertest",
-    "tags": ["testing", "Jest", "backend", "CI/CD"]
+    "expected_deliverable": "Integration test file with Jest + Supertest covering auth flows",
+    "tags": ["testing", "Jest", "backend", "CI/CD", "authentication"]
   },
   {
     "task_id": "mern_005",
     "title": "Create Email Notification Service",
-    "description": "Build a microservice that sends transactional emails (welcome email, password reset, notification). Use a queue system to handle async email sending.",
+    "description": "Build a microservice that sends transactional emails (welcome email, password reset, notification). Use a queue system (Bull) to handle async email sending with retry logic.",
     "task_type": "coding",
     "difficulty": "hard",
     "estimated_hours": 5,
     "requirements": [
-      "Email template rendering engine",
-      "Queue-based async sending",
-      "Welcome email template",
-      "Password reset email template",
-      "Notification email template",
-      "Retry logic for failed sends"
+      "Email template rendering engine with variable substitution",
+      "Bull queue-based async email sending",
+      "Welcome email template with user name and getting-started links",
+      "Password reset email template with expiring reset link",
+      "Notification email template for task updates",
+      "Retry logic for failed sends (3 retries with backoff)"
     ],
-    "client_context": "Subject: Email Service Integration\n\nWe're launching next month and still don't have automated emails. New users aren't getting welcome emails. This is a blocker for launch.\n\n- Sneha (HR)",
-    "expected_deliverable": "Email service module with queue processing",
-    "tags": ["microservice", "email", "queue", "backend"]
+    "client_context": "Subject: Email Service Integration\n\nWe're launching next month and still don't have automated emails. New users aren't getting welcome emails. This is a blocker for launch. Check SendGrid docs for API integration.\n\n- Sneha (HR)",
+    "expected_deliverable": "Email service module with Bull queue processing + email templates",
+    "tags": ["microservice", "email", "queue", "backend", "Bull"]
   },
   {
     "task_id": "mern_006",
-    "title": "Optimize MongoDB Query Performance",
+    "title": "Optimize MongoDB Query Performance for Analytics Dashboard",
     "description": "The analytics dashboard is loading slowly (>5 seconds). Analyze the existing MongoDB queries, identify bottlenecks, and optimize them with proper indexing and query restructuring.",
     "task_type": "bug_fix",
     "difficulty": "hard",
     "estimated_hours": 4,
     "requirements": [
-      "Profile slow queries using MongoDB explain()",
-      "Create appropriate indexes",
-      "Restructure poorly performing queries",
-      "Measure before/after performance",
-      "Document the optimizations made"
+      "Profile slow queries using MongoDB explain() method",
+      "Create appropriate compound indexes for frequent query patterns",
+      "Restructure aggregation pipeline — $match early, $project only needed fields",
+      "Measure before/after performance with query timing",
+      "Document the optimizations made with performance comparison"
     ],
     "client_context": "Subject: Dashboard Performance Issues\n\nThe analytics page is taking forever to load. Clients are complaining. We need this fixed before the demo on Friday.\n\n- Rohan (Client)",
-    "expected_deliverable": "Optimized queries + index definitions + performance report",
-    "tags": ["MongoDB", "performance", "database", "backend"]
+    "expected_deliverable": "Optimized queries + index definitions + before/after performance report",
+    "tags": ["MongoDB", "performance", "database", "backend", "optimization"]
   },
   {
     "task_id": "mern_007",
-    "title": "Build File Upload Component",
-    "description": "Create a drag-and-drop file upload component in React with preview support for images, progress bar, and error handling. Files should be uploaded to cloud storage via a presigned URL flow.",
+    "title": "Build Drag-and-Drop File Upload Component",
+    "description": "Create a drag-and-drop file upload component in React with preview support for images, upload progress bar, file type validation, and error handling. Files should be uploaded to S3 via a presigned URL flow.",
     "task_type": "coding",
     "difficulty": "medium",
     "estimated_hours": 4,
     "requirements": [
-      "Drag and drop zone",
-      "File type validation",
-      "Image preview before upload",
-      "Upload progress bar",
-      "Error handling (file too large, wrong type)",
-      "Presigned URL upload flow"
+      "Drag and drop zone with click-to-browse fallback",
+      "File type validation (images: jpg, png, gif; documents: pdf)",
+      "Image preview before upload with remove option",
+      "Upload progress bar using axios onUploadProgress",
+      "Error handling (file too large >5MB, wrong type, upload failure)",
+      "Presigned URL flow — request URL from backend, upload directly to S3"
     ],
-    "client_context": "Subject: File Upload Feature\n\nUsers need to be able to upload their profile pictures and documents. Make sure it supports images (jpg, png) and PDFs. Max file size: 5MB.\n\n- Sarah (Product Manager)",
-    "expected_deliverable": "React upload component + backend upload handler",
-    "tags": ["React", "file upload", "frontend", "S3"]
+    "client_context": "Subject: File Upload Feature\n\nUsers need to be able to upload their profile pictures and documents. Make sure it supports images and PDFs. Max file size: 5MB. Should work on mobile too.\n\n- Sarah (Product Manager)",
+    "expected_deliverable": "React upload component + presigned URL endpoint on backend",
+    "tags": ["React", "file upload", "frontend", "S3", "presigned URL"]
   },
   {
     "task_id": "mern_008",
@@ -136,32 +137,32 @@
     "difficulty": "easy",
     "estimated_hours": 1,
     "requirements": [
-      "List completed tasks with brief descriptions",
-      "Mention any blockers or issues",
-      "Outline next week's plan",
-      "Professional email format"
+      "List completed tasks with brief one-line descriptions",
+      "Mention any blockers or issues with impact assessment",
+      "Outline next week's planned work with priorities",
+      "Professional email format with proper salutation and sign-off"
     ],
     "client_context": "Team standup reminder: Weekly progress report due every Friday EOD.\n\n- Priya (Team Lead)",
-    "expected_deliverable": "Professional email report",
-    "tags": ["communication", "report", "soft-skills"]
+    "expected_deliverable": "Professional email report in markdown",
+    "tags": ["communication", "report", "soft-skills", "email"]
   },
   {
     "task_id": "mern_009",
     "title": "Implement Rate Limiting Middleware",
-    "description": "Add rate limiting to the API to prevent abuse. Different rate limits should apply to different endpoints (stricter for auth endpoints, more lenient for read-only endpoints).",
+    "description": "Add rate limiting to the API to prevent abuse. Different rate limits should apply to different endpoints — stricter for auth endpoints, more lenient for read-only endpoints.",
     "task_type": "coding",
     "difficulty": "medium",
     "estimated_hours": 3,
     "requirements": [
       "Rate limiting by IP address",
-      "Different limits per endpoint category",
+      "Tiered limits: 10/min for login, 100/min for auth routes, 1000/min for general API",
       "Proper HTTP 429 responses with Retry-After header",
       "Configurable limits via environment variables",
-      "Optional: use Redis for distributed rate limiting"
+      "Redis-backed store for distributed rate limiting across instances"
     ],
-    "client_context": "Subject: Security Audit Findings\n\nThe security audit flagged that our API has no rate limiting. This is a high-priority fix. Please implement before the next deployment.\n\n- Security Team",
-    "expected_deliverable": "Express middleware for rate limiting",
-    "tags": ["security", "middleware", "backend", "Express"]
+    "client_context": "Subject: Security Audit Findings\n\nThe security audit flagged that our API has no rate limiting. This is a high-priority fix. Please implement before the next deployment. We use Redis in production.\n\n- Security Team",
+    "expected_deliverable": "Express middleware for rate limiting with Redis store",
+    "tags": ["security", "middleware", "backend", "Express", "Redis"]
   },
   {
     "task_id": "mern_010",
@@ -171,14 +172,392 @@
     "difficulty": "easy",
     "estimated_hours": 1,
     "requirements": [
-      "Summary of sprint goals and outcomes",
-      "What went well (at least 3 points)",
-      "What could be improved (at least 3 points)",
-      "Action items for next sprint",
-      "Professional document format"
+      "Summary of sprint goals and overall outcomes",
+      "What went well (at least 3 specific points)",
+      "What could be improved (at least 3 specific points)",
+      "Action items for next sprint with owners assigned",
+      "Professional document format with clear sections"
     ],
     "client_context": "Sprint retrospective is scheduled for 3 PM. Come prepared with your thoughts on the sprint.\n\n- Priya (Team Lead)",
     "expected_deliverable": "Retrospective document in markdown format",
-    "tags": ["communication", "agile", "soft-skills", "meeting"]
+    "tags": ["communication", "agile", "soft-skills", "meeting", "retro"]
+  },
+  {
+    "task_id": "mern_011",
+    "title": "Implement Real-Time Chat with Socket.io",
+    "description": "Add a real-time chat feature to the application. Users should be able to send and receive messages instantly. Include typing indicators, message read status, and chat history persistence.",
+    "task_type": "coding",
+    "difficulty": "hard",
+    "estimated_hours": 8,
+    "requirements": [
+      "Socket.io integration with Express backend and React frontend",
+      "Real-time message delivery with room-based channels",
+      "Typing indicator (show when user is typing)",
+      "Message read receipts (single tick, double tick)",
+      "Chat history loading with pagination from MongoDB",
+      "Online/offline user status indicators"
+    ],
+    "client_context": "Subject: In-App Chat Feature\n\nUsers are requesting an in-app chat feature for team collaboration. We need something like Slack but lightweight. Start with 1-on-1 messaging; group chats can come later.\n\n- Sarah (Product Manager)",
+    "expected_deliverable": "Real-time chat module with Socket.io, React components, and MongoDB persistence",
+    "tags": ["Socket.io", "real-time", "chat", "WebSocket", "frontend", "backend"]
+  },
+  {
+    "task_id": "mern_012",
+    "title": "Build Role-Based Access Control (RBAC) System",
+    "description": "Design and implement a role-based access control system. Support three roles: admin, manager, and user. Admins have full access, managers can manage content, users can only view/update their own data.",
+    "task_type": "coding",
+    "difficulty": "hard",
+    "estimated_hours": 6,
+    "requirements": [
+      "Mongoose schema for roles and permissions",
+      "Express middleware that checks user role before allowing access",
+      "Admin routes: all CRUD operations on any resource",
+      "Manager routes: create/edit but not delete content",
+      "User routes: access only own resources",
+      "Seed script with default admin account"
+    ],
+    "client_context": "Subject: Access Control Requirements\n\nEnterprise clients are demanding role-based access. We need this before the next quarter. Admin, Manager, and User levels. Each role has different permissions. Document the permission matrix.\n\n- Priya (Team Lead)",
+    "expected_deliverable": "RBAC middleware + permission matrix documentation + seed script",
+    "tags": ["security", "authorization", "middleware", "backend", "RBAC"]
+  },
+  {
+    "task_id": "mern_013",
+    "title": "Create API Documentation with Swagger",
+    "description": "Set up Swagger/OpenAPI documentation for all existing API endpoints. Each endpoint should have proper request/response schemas, authentication requirements, and example payloads.",
+    "task_type": "documentation",
+    "difficulty": "easy",
+    "estimated_hours": 3,
+    "requirements": [
+      "Install and configure swagger-jsdoc and swagger-ui-express",
+      "Document all existing endpoints with @openapi JSDoc comments",
+      "Define request body schemas using JSDoc @typedef",
+      "Define response schemas for 200, 201, 400, 401, 404, 500 status codes",
+      "Add authentication scheme documentation (Bearer JWT)"
+    ],
+    "client_context": "Subject: API Documentation for Developers\n\nWe're onboarding a new mobile team that needs to consume our API. We need Swagger docs ASAP. They need to understand all endpoints, payloads, and auth requirements.\n\n- Sneha (HR)",
+    "expected_deliverable": "Swagger UI endpoint with documented API and example payloads",
+    "tags": ["documentation", "Swagger", "OpenAPI", "API", "backend"]
+  },
+  {
+    "task_id": "mern_014",
+    "title": "Debug Memory Leak in Node.js Process",
+    "description": "The production Node.js server's memory usage increases steadily over 24-48 hours until it crashes with OOMKilled. Analyze heap dumps, identify the leak source, and fix it.",
+    "task_type": "bug_fix",
+    "difficulty": "hard",
+    "estimated_hours": 5,
+    "requirements": [
+      "Take and analyze heap snapshots at different time intervals",
+      "Identify objects that accumulate over time and are not garbage collected",
+      "Find the source (global variable, closed-over reference, event listener leak, cache without eviction)",
+      "Implement the fix with proper cleanup/disposal",
+      "Add memory monitoring with Grafana alert at 70% usage",
+      "Write a postmortem document explaining root cause and fix"
+    ],
+    "client_context": "Subject: Server Crashing Every 36 Hours\n\nThe API server has been restarting every day or two. Users experience 30 seconds of downtime during restarts. Ops team suspects memory leak. Please investigate urgently.\n\n- Rohan (Client)",
+    "expected_deliverable": "Fix for memory leak + monitoring setup + postmortem document",
+    "tags": ["memory leak", "performance", "Node.js", "backend", "debugging"]
+  },
+  {
+    "task_id": "mern_015",
+    "title": "Implement Search Functionality with Elasticsearch",
+    "description": "Add search functionality to the product catalog. Use Elasticsearch for full-text search with fuzzy matching, faceted filtering, and autocomplete suggestions.",
+    "task_type": "coding",
+    "difficulty": "hard",
+    "estimated_hours": 8,
+    "requirements": [
+      "Set up Elasticsearch instance and index products with mappings",
+      "Backfill existing products from MongoDB to Elasticsearch",
+      "Implement search API with full-text search, fuzzy matching (fuzziness: AUTO)",
+      "Faceted filters by category, price range, rating, brand",
+      "Autocomplete suggestions API with completion suggester",
+      "Highlight matching text in search results"
+    ],
+    "client_context": "Subject: Product Search Upgrade\n\nOur current search returns irrelevant results and doesn't handle typos. Users are complaining. We need proper search with filters, autocomplete, and spelling correction. Budget approved for Elasticsearch cloud.\n\n- Sarah (Product Manager)",
+    "expected_deliverable": "Elasticsearch integration + search API + autocomplete endpoint",
+    "tags": ["Elasticsearch", "search", "backend", "full-text search", "filters"]
+  },
+  {
+    "task_id": "mern_016",
+    "title": "Code Review: Performance Bottlenecks in React Components",
+    "description": "Review the attached React component code for performance issues. Identify unnecessary re-renders, missing keys, expensive computations, and suggest improvements with before/after examples.",
+    "task_type": "code_review",
+    "difficulty": "medium",
+    "estimated_hours": 2,
+    "requirements": [
+      "Identify components that re-render unnecessarily",
+      "Find missing or incorrect key props in lists",
+      "Spot expensive computations running on every render",
+      "Detect missing useMemo/useCallback where appropriate",
+      "Provide optimized code snippets for each issue found"
+    ],
+    "client_context": "Subject: Code Review Request - Product Listing Page\n\nI've attached the ProductListing component. It's causing performance issues on the dashboard. Can you review and suggest optimizations? The page has 500+ products and scrolling is laggy.\n\n- Karan (Senior Dev)",
+    "expected_deliverable": "Code review document with identified issues + optimized code suggestions",
+    "tags": ["code review", "React", "performance", "optimization", "frontend"]
+  },
+  {
+    "task_id": "mern_017",
+    "title": "Build PDF Report Generation System",
+    "description": "Create a system that generates PDF reports from user data. Users should be able to request a report and receive it via email when ready. Use Puppeteer for HTML-to-PDF conversion.",
+    "task_type": "coding",
+    "difficulty": "medium",
+    "estimated_hours": 5,
+    "requirements": [
+      "HTML template for report with dynamic data injection",
+      "Puppeteer-based PDF generation from HTML template",
+      "Bull queue for async report generation",
+      "Email delivery of generated PDF using SendGrid",
+      "Report status endpoint so frontend can show generation progress"
+    ],
+    "client_context": "Subject: Monthly Report Feature\n\nEnterprise clients need PDF reports for their monthly analytics. The report should include charts, tables, and summary metrics. Reports can be requested from the dashboard.\n\n- Rohan (Client)",
+    "expected_deliverable": "PDF generation service with queue processing + email delivery",
+    "tags": ["PDF", "Puppeteer", "queue", "backend", "reporting"]
+  },
+  {
+    "task_id": "mern_018",
+    "title": "Implement Dark Mode Toggle",
+    "description": "Add dark mode support to the React application. Use Tailwind CSS dark mode with a toggle switch in the navbar. Persist the user's theme preference. Ensure all components respect the theme.",
+    "task_type": "coding",
+    "difficulty": "easy",
+    "estimated_hours": 3,
+    "requirements": [
+      "Dark mode toggle button in the top navigation bar",
+      "Tailwind CSS dark mode using class strategy",
+      "Persist theme preference in localStorage",
+      "Apply dark mode instantly without page refresh",
+      "All existing components properly styled for dark mode",
+      "Smooth transition between light and dark mode"
+    ],
+    "client_context": "Subject: Dark Mode Request\n\nUsers have been requesting dark mode for months. Let's implement it. Use Tailwind dark mode. Make sure it works across all pages and components.\n\n- Sarah (Product Manager)",
+    "expected_deliverable": "Dark mode toggle component with Tailwind CSS integration",
+    "tags": ["React", "dark mode", "Tailwind CSS", "frontend", "UI"]
+  },
+  {
+    "task_id": "mern_019",
+    "title": "Write E2E Tests for Checkout Flow",
+    "description": "Write end-to-end tests using Cypress for the e-commerce checkout flow. Cover the complete flow from cart to payment confirmation, including edge cases like empty cart and payment failure.",
+    "task_type": "testing",
+    "difficulty": "medium",
+    "estimated_hours": 5,
+    "requirements": [
+      "Test adding items to cart and viewing cart page",
+      "Test checkout form with valid data leads to payment page",
+      "Test empty cart redirects back to products page",
+      "Test payment success shows confirmation page",
+      "Test payment failure shows error message and retry option",
+      "Test coupon code application updates total price"
+    ],
+    "client_context": "Subject: E2E Tests for Checkout\n\nWe've had several bugs in checkout that reached production. We need Cypress E2E tests covering the full flow. This is critical for the upcoming sale event.\n\n- DevOps Team",
+    "expected_deliverable": "Cypress E2E test suite for checkout flow",
+    "tags": ["testing", "Cypress", "E2E", "e-commerce", "checkout"]
+  },
+  {
+    "task_id": "mern_020",
+    "title": "Architecture Decision: Migrate from REST to GraphQL",
+    "description": "The frontend team is experiencing over-fetching and under-fetching issues with the REST API. Evaluate whether GraphQL is the right solution. Write an Architecture Decision Record (ADR) comparing REST vs GraphQL for our use case.",
+    "task_type": "documentation",
+    "difficulty": "medium",
+    "estimated_hours": 3,
+    "requirements": [
+      "Document current REST API pain points with specific examples",
+      "Compare REST vs GraphQL for our data fetching patterns",
+      "Consider: learning curve, tooling, performance, caching, complexity",
+      "Make a clear recommendation with justification",
+      "Include migration strategy if GraphQL is recommended"
+    ],
+    "client_context": "Subject: GraphQL Evaluation\n\nI'd like you to evaluate whether we should migrate from REST to GraphQL. We're seeing performance issues with over-fetching on mobile clients. Write up an ADR with your recommendation.\n\n- Priya (Team Lead)",
+    "expected_deliverable": "Architecture Decision Record (ADR) in markdown with recommendation",
+    "tags": ["architecture", "GraphQL", "REST", "documentation", "decision"]
+  },
+  {
+    "task_id": "mern_021",
+    "title": "Set Up Docker Development Environment",
+    "description": "Create a Docker Compose setup for local development. Include services for the Node.js app, MongoDB, Redis, and Nginx reverse proxy. Ensure hot-reloading works with volume mounts.",
+    "task_type": "devops",
+    "difficulty": "medium",
+    "estimated_hours": 4,
+    "requirements": [
+      "Dockerfile for Node.js app with multi-stage build",
+      "Docker Compose with services: app, mongodb, redis, nginx",
+      "Volume mounts for hot-reloading in development",
+      "Environment variable passing with .env file",
+      "Nginx config as reverse proxy to Node.js app",
+      "Health check endpoints for each service"
+    ],
+    "client_context": "Subject: Local Dev Environment Standardization\n\nWe're getting inconsistent results between developer machines. Some are on Windows, some on Mac. We need Docker Compose so everyone runs the same environment.\n\n- DevOps Team",
+    "expected_deliverable": "Dockerfile + docker-compose.yml + nginx config + setup instructions",
+    "tags": ["Docker", "DevOps", "environment", "DevOps", "containerization"]
+  },
+  {
+    "task_id": "mern_022",
+    "title": "Build Webhook Handler for Payment Gateway",
+    "description": "Implement a webhook endpoint to handle payment gateway events (payment success, failure, refund). Ensure idempotency, signature verification, and proper database updates for each event type.",
+    "task_type": "coding",
+    "difficulty": "hard",
+    "estimated_hours": 5,
+    "requirements": [
+      "POST /api/webhooks/payment endpoint accepting JSON payloads",
+      "Signature verification using webhook secret to prevent forgery",
+      "Idempotency key handling — same event ID should not process twice",
+      "Handle events: payment_intent.succeeded, payment_intent.failed, charge.refunded",
+      "Update order status in database for each event type",
+      "Log all webhook events for audit trail"
+    ],
+    "client_context": "Subject: Payment Webhook Integration\n\nWe're integrating Razorpay for payments. The webhook endpoint is critical — without it, paid orders won't be marked as confirmed. Signature verification is mandatory for security.\n\n- Rohan (Client)",
+    "expected_deliverable": "Webhook endpoint with signature verification, idempotency, and event handling",
+    "tags": ["webhook", "payment", "security", "backend", "integration"]
+  },
+  {
+    "task_id": "mern_023",
+    "title": "Implement Notification System (In-App + Email)",
+    "description": "Build a notification system that sends in-app real-time notifications and email notifications when specific events occur (new message, task assigned, payment received, account update).",
+    "task_type": "coding",
+    "difficulty": "hard",
+    "estimated_hours": 6,
+    "requirements": [
+      "Notification schema in MongoDB with type, message, read status, link",
+      "Socket.io for real-time in-app notification delivery",
+      "Email notification for important events (async via queue)",
+      "Notification preferences per user (which events trigger email vs in-app)",
+      "Notification list endpoint with pagination",
+      "Mark-as-read and mark-all-as-read endpoints",
+      "Unread notification count badge in navbar"
+    ],
+    "client_context": "Subject: Notification System\n\nUsers miss important updates because we don't have notifications. We need both in-app notifications (bell icon) and email notifications for critical events. Start with the basic types: new message, task assigned, payment received.\n\n- Sarah (Product Manager)",
+    "expected_deliverable": "Notification system with Socket.io real-time delivery + email + preference management",
+    "tags": ["notifications", "Socket.io", "email", "real-time", "fullstack"]
+  },
+  {
+    "task_id": "mern_024",
+    "title": "Database Migration: Add Soft Delete to All Models",
+    "description": "Implement soft delete functionality across all Mongoose models. Instead of permanently deleting records, set a `deletedAt` field and filter out soft-deleted records in all queries.",
+    "task_type": "coding",
+    "difficulty": "easy",
+    "estimated_hours": 3,
+    "requirements": [
+      "Add deletedAt (Date, default: null) field to all models via base plugin",
+      "Create Mongoose plugin that automatically adds soft delete behavior",
+      "Modify all find/findOne queries to exclude deleted records",
+      "Add option to include deleted records (for admin restore)",
+      "Add restore endpoint to undo soft delete",
+      "Update existing controllers to use new query patterns"
+    ],
+    "client_context": "Subject: Soft Delete Requirement\n\nWe've had cases where users accidentally delete important data and we can't recover it. Implement soft delete so records are hidden but recoverable. This is a security/compliance requirement too.\n\n- Security Team",
+    "expected_deliverable": "Mongoose plugin for soft delete + updated controllers + restore endpoint",
+    "tags": ["Mongoose", "database", "backend", "plugin", "soft delete"]
+  },
+  {
+    "task_id": "mern_025",
+    "title": "Implement CSV Import/Export Feature",
+    "description": "Build a feature that allows users to import data from CSV files and export data to CSV. Import should include validation with detailed error reporting. Export should support filtered data export.",
+    "task_type": "coding",
+    "difficulty": "medium",
+    "estimated_hours": 4,
+    "requirements": [
+      "CSV upload endpoint with multer and file type validation",
+      "CSV parsing with column mapping and validation",
+      "Import results with success count and detailed error rows",
+      "CSV export endpoint accepting filter parameters",
+      "Stream large CSV exports to avoid memory issues",
+      "Download generated CSV file with proper Content-Disposition header"
+    ],
+    "client_context": "Subject: CSV Import/Export\n\nBusiness team needs to bulk import user data from spreadsheets and export analytics data for their reports. This is a weekly request from the operations team.\n\n- Priya (Team Lead)",
+    "expected_deliverable": "CSV import/export endpoints with validation and streaming",
+    "tags": ["CSV", "import", "export", "backend", "file processing"]
+  },
+  {
+    "task_id": "mern_026",
+    "title": "Set Up CI/CD Pipeline with GitHub Actions",
+    "description": "Create a GitHub Actions workflow that runs linting, tests, builds the application, and deploys to staging on every push. Production deployment should require manual approval.",
+    "task_type": "devops",
+    "difficulty": "medium",
+    "estimated_hours": 3,
+    "requirements": [
+      "Lint job: run ESLint on all changed files",
+      "Test job: run Jest unit and integration tests with coverage report",
+      "Build job: build frontend and verify Docker build succeeds",
+      "Deploy to staging: auto-deploy on push to staging branch",
+      "Deploy to production: manual approval gate, deployed on push to main",
+      "Slack notification on deploy success/failure"
+    ],
+    "client_context": "Subject: CI/CD Pipeline\n\nWe need automated testing and deployment. Manual deploys are error-prone and slow. Set up GitHub Actions with lint → test → build → deploy stages.\n\n- DevOps Team",
+    "expected_deliverable": "GitHub Actions workflow YAML with staging and production deployment",
+    "tags": ["CI/CD", "GitHub Actions", "DevOps", "automation", "deployment"]
+  },
+  {
+    "task_id": "mern_027",
+    "title": "Build Admin Dashboard for User Management",
+    "description": "Create an admin panel for managing users. Admins should be able to view all users, edit user details, deactivate accounts, assign roles, and see user activity logs.",
+    "task_type": "coding",
+    "difficulty": "medium",
+    "estimated_hours": 6,
+    "requirements": [
+      "Admin-only route with RBAC middleware protection",
+      "User list page with search, filter by role/status, pagination",
+      "User detail page showing profile, activity log, order history",
+      "Edit user modal for updating name, email, role",
+      "Deactivate/reactivate user toggle with confirmation dialog",
+      "Activity log showing user actions with timestamps"
+    ],
+    "client_context": "Subject: Admin Panel for User Management\n\nSupport team needs an admin panel to manage users. Currently they have to run database queries directly, which is risky. Build a proper admin interface.\n\n- Sneha (HR)",
+    "expected_deliverable": "Admin dashboard with user management, activity logs, and role assignment",
+    "tags": ["admin", "dashboard", "CRUD", "fullstack", "management"]
+  },
+  {
+    "task_id": "mern_028",
+    "title": "Incident Response: Handle Database Connection Outage",
+    "description": "MongoDB Atlas experienced a 5-minute outage. When it came back, the Node.js server didn't reconnect properly and required manual restart. Implement automatic reconnection with proper error handling.",
+    "task_type": "bug_fix",
+    "difficulty": "medium",
+    "estimated_hours": 3,
+    "requirements": [
+      "Configure Mongoose connection with auto-reconnect and retry logic",
+      "Add connection event handlers for connected, disconnected, reconnected, error",
+      "Implement health check endpoint that verifies DB connectivity",
+      "Gracefully handle requests during DB outage (return 503 with retry-after header)",
+      "Add logging for all connection state changes",
+      "Set up alert for prolonged disconnection (>1 min)"
+    ],
+    "client_context": "Subject: Database Outage Postmortem\n\nDuring last week's MongoDB Atlas outage, our API was down for 30 minutes even though the DB was only down for 5 minutes. The server didn't reconnect. We need automatic reconnection.\n\n- Priya (Team Lead)",
+    "expected_deliverable": "Robust DB connection handler with auto-reconnect, health checks, and graceful degradation",
+    "tags": ["MongoDB", "resilience", "backend", "bug", "error handling"]
+  },
+  {
+    "task_id": "mern_029",
+    "title": "Create Interactive Charts Dashboard Component",
+    "description": "Build a reusable dashboard chart component using Recharts. Support line charts, bar charts, pie charts, and area charts with interactive tooltips, legends, and responsive sizing.",
+    "task_type": "coding",
+    "difficulty": "medium",
+    "estimated_hours": 5,
+    "requirements": [
+      "Reusable chart wrapper component accepting type, data, and config props",
+      "Support line, bar, pie, and area chart types",
+      "Interactive tooltips showing data point details on hover",
+      "Responsive container that resizes with viewport",
+      "Legend toggle to show/hide data series",
+      "Download chart as PNG button",
+      "Loading skeleton and empty data states"
+    ],
+    "client_context": "Subject: Analytics Dashboard Charts\n\nWe need interactive charts for the analytics dashboard. Support for line, bar, and pie charts with tooltips. The charts should be reusable across different dashboard pages.\n\n- Sarah (Product Manager)",
+    "expected_deliverable": "Reusable chart component library with Recharts + interactive features",
+    "tags": ["React", "charts", "visualization", "frontend", "Recharts"]
+  },
+  {
+    "task_id": "mern_030",
+    "title": "Implement Two-Factor Authentication (2FA)",
+    "description": "Add two-factor authentication support using Time-based One-Time Passwords (TOTP). Users can enable 2FA in their security settings. Generate QR code for authenticator app setup.",
+    "task_type": "coding",
+    "difficulty": "hard",
+    "estimated_hours": 6,
+    "requirements": [
+      "Generate TOTP secret and QR code (speakeasy + qrcode libraries)",
+      "Enable/disable 2FA toggle in user security settings",
+      "QR code display for Google Authenticator / Authy setup",
+      "Verify TOTP code during enable and during login",
+      "Backup codes (10 codes) for account recovery",
+      "Modified login flow: password → OTP verification page if 2FA enabled"
+    ],
+    "client_context": "Subject: 2FA Implementation\n\nSecurity audit requires two-factor authentication for all user accounts. This is a compliance requirement for our enterprise clients. Priority: High.\n\n- Security Team",
+    "expected_deliverable": "2FA module with TOTP generation, QR code, verification, and backup codes",
+    "tags": ["security", "2FA", "TOTP", "authentication", "backend"]
   }
 ]

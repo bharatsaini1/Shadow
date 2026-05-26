@@ -1,0 +1,134 @@
+{
+  "rubric_name": "Problem Solving Rubric",
+  "applicable_to": ["coding", "bug_fix", "design", "report"],
+  "categories": [
+    {
+      "name": "approach",
+      "weight": 30,
+      "max_score": 100,
+      "criteria": [
+        {
+          "level": "excellent",
+          "score_range": [90, 100],
+          "description": "Systematic approach: identified constraints, explored multiple solutions, considered trade-offs before choosing an approach. Clear reasoning for decisions."
+        },
+        {
+          "level": "good",
+          "score_range": [75, 89],
+          "description": "Logical approach with some consideration of alternatives. Most constraints identified. Reasoning is mostly clear."
+        },
+        {
+          "level": "average",
+          "score_range": [50, 74],
+          "description": "Single approach pursued without exploring alternatives. Some constraints missed. Reasoning is present but incomplete."
+        },
+        {
+          "level": "poor",
+          "score_range": [25, 49],
+          "description": "Jumped into solution without clear plan. Key constraints missed. No evidence of considering alternatives."
+        },
+        {
+          "level": "very_poor",
+          "score_range": [0, 24],
+          "description": "No discernible problem-solving approach. Random or no solution attempted."
+        }
+      ]
+    },
+    {
+      "name": "analysis_depth",
+      "weight": 25,
+      "max_score": 100,
+      "criteria": [
+        {
+          "level": "excellent",
+          "score_range": [90, 100],
+          "description": "Deep analysis: broke down complex problem into manageable components. Identified root causes, not just symptoms. Considered edge cases and failure modes."
+        },
+        {
+          "level": "good",
+          "score_range": [75, 89],
+          "description": "Good analysis with most components identified. Some edge cases considered. Root cause mostly identified."
+        },
+        {
+          "level": "average",
+          "score_range": [50, 74],
+          "description": "Surface-level analysis. Broke down problem partially. Few edge cases considered. Addressed symptoms more than root causes."
+        },
+        {
+          "level": "poor",
+          "score_range": [25, 49],
+          "description": "Minimal analysis. Problem not broken down. No edge cases considered. Missing key components of the problem."
+        },
+        {
+          "level": "very_poor",
+          "score_range": [0, 24],
+          "description": "No meaningful analysis. Failed to understand the problem."
+        }
+      ]
+    },
+    {
+      "name": "solution_quality",
+      "weight": 30,
+      "max_score": 100,
+      "criteria": [
+        {
+          "level": "excellent",
+          "score_range": [90, 100],
+          "description": "Solution is correct, efficient, and well-structured. Handles all edge cases gracefully. Follows best practices. Production-ready quality."
+        },
+        {
+          "level": "good",
+          "score_range": [75, 89],
+          "description": "Solution is correct for main cases. Minor inefficiencies or edge cases missed. Generally well-structured."
+        },
+        {
+          "level": "average",
+          "score_range": [50, 74],
+          "description": "Solution works for basic cases but has gaps. Efficiency or correctness issues present. Structure could be improved."
+        },
+        {
+          "level": "poor",
+          "score_range": [25, 49],
+          "description": "Solution is incorrect or incomplete. Significant gaps in logic or implementation. Not production-ready."
+        },
+        {
+          "level": "very_poor",
+          "score_range": [0, 24],
+          "description": "Solution does not address the problem or introduces new issues."
+        }
+      ]
+    },
+    {
+      "name": "creativity",
+      "weight": 15,
+      "max_score": 100,
+      "criteria": [
+        {
+          "level": "excellent",
+          "score_range": [90, 100],
+          "description": "Novel approach that improves on conventional solutions. Creative use of tools or patterns. Elegant simplicity."
+        },
+        {
+          "level": "good",
+          "score_range": [75, 89],
+          "description": "Some creative elements in the solution. Good balance of convention and innovation."
+        },
+        {
+          "level": "average",
+          "score_range": [50, 74],
+          "description": "Standard solution without creative flair. Works but doesn't leverage opportunities for elegance."
+        },
+        {
+          "level": "poor",
+          "score_range": [25, 49],
+          "description": "Rigid thinking. Applied inappropriate patterns or over-engineered a simple problem."
+        },
+        {
+          "level": "very_poor",
+          "score_range": [0, 24],
+          "description": "No evidence of creative thinking. Copy-paste solution without adaptation."
+        }
+      ]
+    }
+  ]
+}

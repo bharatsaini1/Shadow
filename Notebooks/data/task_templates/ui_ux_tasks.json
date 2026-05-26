@@ -1,0 +1,116 @@
+[
+  {
+    "task_id": "uiux_001",
+    "title": "Redesign User Profile Page",
+    "description": "The current user profile page has poor information hierarchy and looks dated. Redesign it with a clean layout, proper spacing, and intuitive edit flows. Consider mobile responsiveness and accessibility.",
+    "task_type": "design",
+    "difficulty": "medium",
+    "estimated_hours": 6,
+    "requirements": [
+      "Audit current profile page UX issues with screenshots",
+      "Create user flow diagram for profile viewing and editing",
+      "Design low-fidelity wireframes for 3 layout options",
+      "Design high-fidelity mockup in Figma with auto-layout",
+      "Include responsive states: mobile, tablet, desktop",
+      "Use design system components and tokens"
+    ],
+    "client_context": "Subject: Profile Page Redesign\n\nOur user profile page hasn't been updated in 2 years. Users find it hard to edit their information and the layout feels cluttered. Let's redesign it with a modern, clean look.\n\n- Sarah (Product Manager)",
+    "expected_deliverable": "Figma file with wireframes, high-fidelity mockups, and responsive variants",
+    "tags": ["UI design", "redesign", "Figma", "responsive", "profile"]
+  },
+  {
+    "task_id": "uiux_002",
+    "title": "Create Onboarding Flow for New Users",
+    "description": "Design a 3-step onboarding flow for new users. The flow should introduce key features, collect user preferences, and guide them to their first action. Keep it engaging but not overwhelming.",
+    "task_type": "design",
+    "difficulty": "hard",
+    "estimated_hours": 8,
+    "requirements": [
+      "User research: identify what new users need to know most",
+      "Create user journey map for the onboarding experience",
+      "Design interactive prototype in Figma with transitions",
+      "State management: skipped, completed, in-progress, error",
+      "Progress indicator showing step position",
+      "A/B test two different onboarding approaches"
+    ],
+    "client_context": "Subject: User Onboarding Flow\n\nNew user activation rate is only 40%. Users sign up but don't complete their first action. We need an engaging onboarding flow that helps users get started quickly.\n\n- Rohan (Client)",
+    "expected_deliverable": "Figma prototype with onboarding flow + user journey map + research findings",
+    "tags": ["onboarding", "UX", "prototype", "user research", "Figma"]
+  },
+  {
+    "task_id": "uiux_003",
+    "title": "Design Component Library: Button System",
+    "description": "Design a comprehensive button component system with all variants — primary, secondary, outline, ghost, danger, icon-only. Include all states: default, hover, active, disabled, loading, focused.",
+    "task_type": "design",
+    "difficulty": "easy",
+    "estimated_hours": 4,
+    "requirements": [
+      "All button variants with consistent spacing and sizing",
+      "All interactive states: default, hover, active, disabled, focused, loading",
+      "Icon + text and icon-only variants",
+      "Sizes: small, medium, large with proportional padding",
+      "Design tokens for colors, spacing, typography, border-radius",
+      "Usage guidelines documentation"
+    ],
+    "client_context": "Subject: Design System — Button Component\n\nWe need a consistent button system across all products. Currently every page has different button styles. Follow the atomic design methodology.\n\n- Priya (Team Lead)",
+    "expected_deliverable": "Figma component set with all button variants + usage documentation",
+    "tags": ["design system", "UI components", "Figma", "button", "atomic design"]
+  },
+  {
+    "task_id": "uiux_004",
+    "title": "Conduct Usability Test on Checkout Flow",
+    "description": "Plan and conduct usability testing on the current checkout flow with 5 users. Identify pain points, measure task completion time, and provide actionable recommendations.",
+    "task_type": "report",
+    "difficulty": "medium",
+    "estimated_hours": 6,
+    "requirements": [
+      "Define test objectives and create test script with 5-7 tasks",
+      "Recruit 5 participants matching target user profile",
+      "Conduct moderated usability testing sessions (recorded)",
+      "Document findings with severity ratings",
+      "Create priority matrix of issues found",
+      "Provide redesign recommendations with mockups"
+    ],
+    "client_context": "Subject: Checkout Flow Usability Test\n\nCart abandonment rate is 70%. We suspect the checkout flow has usability issues. Let's test with real users and identify problems.\n\n- Sarah (Product Manager)",
+    "expected_deliverable": "Usability test report with findings, severity matrix, and redesign recommendations",
+    "tags": ["usability testing", "user research", "checkout", "UX research"]
+  },
+  {
+    "task_id": "uiux_005",
+    "title": "Design Mobile App Dashboard",
+    "description": "Design a mobile-first dashboard for the analytics app. The dashboard should display key metrics, charts, and recent activity in a layout optimized for mobile screens (375px width).",
+    "task_type": "design",
+    "difficulty": "medium",
+    "estimated_hours": 6,
+    "requirements": [
+      "Mobile-first design starting at 375px width",
+      "Dashboard with 4-6 key metric cards in 2-column grid",
+      "At least one interactive chart (line or bar) optimized for touch",
+      "Recent activity list with infinite scroll",
+      "Bottom navigation bar with 5 tabs",
+      "Figma prototype with interactive transitions"
+    ],
+    "client_context": "Subject: Mobile Dashboard Design\n\n60% of our users access the platform from mobile. The current desktop dashboard doesn't work well on phones. We need a dedicated mobile dashboard experience.\n\n- Rohan (Client)",
+    "expected_deliverable": "Figma mobile-first dashboard design with interactive prototype",
+    "tags": ["mobile design", "dashboard", "Figma", "responsive", "mobile-first"]
+  },
+  {
+    "task_id": "uiux_006",
+    "title": "Create Accessibility Audit Report",
+    "description": "Conduct an accessibility audit of the current web application against WCAG 2.1 AA standards. Identify violations, document them with severity, and provide fix recommendations.",
+    "task_type": "report",
+    "difficulty": "easy",
+    "estimated_hours": 3,
+    "requirements": [
+      "Run automated accessibility scan using axe DevTools or WAVE",
+      "Manual keyboard navigation test for all interactive elements",
+      "Color contrast check for all text and background combinations",
+      "Screen reader test with NVDA or VoiceOver",
+      "Document findings with severity, location, and fix recommendations",
+      "Create accessible component checklist for future development"
+    ],
+    "client_context": "Subject: Accessibility Compliance\n\nWe need WCAG 2.1 AA compliance for an enterprise client deal. Please audit the current application and create a fix plan.\n\n- Security Team",
+    "expected_deliverable": "Accessibility audit report with severity ratings + fix recommendations + checklist",
+    "tags": ["accessibility", "WCAG", "audit", "a11y", "compliance"]
+  }
+]

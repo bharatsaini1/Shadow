@@ -1,0 +1,206 @@
+{
+  "role": "Data Analyst",
+  "description": "Data analyst who collects, processes, and analyzes data to help organizations make informed business decisions. Transforms raw data into actionable insights through statistical analysis, data visualization, and reporting. Works with cross-functional teams to identify trends, measure performance, and drive data-driven strategy.",
+
+  "job_descriptions": [
+    {
+      "level": "Junior Data Analyst (0-1 yr)",
+      "responsibilities": [
+        "Clean and preprocess raw data from various sources",
+        "Create basic dashboards and reports in BI tools",
+        "Write SQL queries to extract and aggregate data",
+        "Perform exploratory data analysis to identify trends",
+        "Document data sources, methodologies, and definitions",
+        "Support senior analysts with ad-hoc data requests"
+      ],
+      "requirements": ["SQL proficiency", "Excel/Google Sheets expertise", "Basic statistics knowledge", "Data visualization basics (Tableau/Power BI)", "Python or R fundamentals"],
+      "salary_range": "₹3L–₹7L/yr (India) | $55K–$75K/yr (US)"
+    },
+    {
+      "level": "Mid-Level Data Analyst (1-3 yrs)",
+      "responsibilities": [
+        "Own end-to-end analysis for assigned business verticals",
+        "Design and maintain automated reporting pipelines",
+        "Conduct A/B test analysis and statistical significance testing",
+        "Present insights and recommendations to stakeholders",
+        "Build predictive models using regression and classification",
+        "Collaborate with data engineering on data quality improvements",
+        "Mentor junior analysts on analysis techniques"
+      ],
+      "requirements": ["Advanced SQL (window functions, CTEs, query optimization)", "Python (pandas, numpy, matplotlib)", "Statistical analysis (hypothesis testing, regression)", "BI tool expertise (Tableau/Power BI/Looker)", "A/B testing methodology", "Data storytelling and presentation skills"],
+      "salary_range": "₹7L–₹16L/yr (India) | $75K–$100K/yr (US)"
+    },
+    {
+      "level": "Senior Data Analyst (3-6 yrs)",
+      "responsibilities": [
+        "Define analytics strategy and KPIs for business units",
+        "Lead data-driven product decisions with actionable recommendations",
+        "Design complex experiments and causal inference studies",
+        "Build dashboards used by executive leadership for decision making",
+        "Establish data quality standards and governance practices",
+        "Drive adoption of data literacy across the organization",
+        "Manage stakeholder relationships and prioritize analytics roadmap"
+      ],
+      "requirements": ["Advanced statistics and experimental design", "Python/R for advanced analytics", "SQL at expert level", "Data pipeline and ETL understanding", "Domain expertise in specific industry", "Team leadership and project management"],
+      "salary_range": "₹16L–₹30L/yr (India) | $110K–$140K/yr (US)"
+    }
+  ],
+
+  "day_to_day": [
+    "Morning standup with data team — discuss ongoing analysis, blockers, new requests",
+    "Write and optimize SQL queries for data extraction from data warehouse (BigQuery/Snowflake/Redshift)",
+    "Build and update Tableau/Looker dashboards for business stakeholders",
+    "Conduct ad-hoc analysis — investigate metric anomalies, answer business questions",
+    "Present findings to stakeholders with clear data storytelling and actionable recommendations",
+    "Clean incoming data — handle missing values, outliers, data type inconsistencies",
+    "Automate recurring reports using Python scripts or scheduled SQL queries",
+    "Collaborate with data engineers on data pipeline requirements and quality checks",
+    "Document analysis methodologies, metric definitions, and data sources in knowledge base",
+    "Self-learning — study new analysis techniques, tools, or domain-specific knowledge"
+  ],
+
+  "analysis_methodologies": [
+    {
+      "method": "Descriptive Analytics",
+      "description": "What happened? Summarize historical data to understand past performance.",
+      "techniques": ["Aggregation and summarization", "Time series analysis", "Cohort analysis", "Funnel analysis", "Segmentation"],
+      "tools": ["SQL aggregate functions", "Excel pivot tables", "Python pandas groupby"]
+    },
+    {
+      "method": "Diagnostic Analytics",
+      "description": "Why did it happen? Drill down to understand root causes of outcomes.",
+      "techniques": ["Root cause analysis", "Correlation analysis", "Drill-down queries", "Anomaly detection", "Hypothesis testing"],
+      "tools": ["Python statistical libraries", "SQL window functions", "BI tool drill-down features"]
+    },
+    {
+      "method": "Predictive Analytics",
+      "description": "What will happen? Use historical data to forecast future outcomes.",
+      "techniques": ["Linear and logistic regression", "Time series forecasting (ARIMA, Prophet)", "Classification models", "Clustering (K-means)", "Random Forest"],
+      "tools": ["Python scikit-learn", "statsmodels", "Prophet", "R caret"]
+    },
+    {
+      "method": "Prescriptive Analytics",
+      "description": "What should we do? Recommend actions based on data insights.",
+      "techniques": ["Optimization models", "Simulation", "Decision trees", "What-if analysis", "Recommendation systems"],
+      "tools": ["Python pulp/cvxpy", "Excel Solver", "Custom simulation scripts"]
+    }
+  ],
+
+  "tech_stack": {
+    "querying": ["SQL (PostgreSQL, BigQuery, Snowflake, Redshift)", "Python pandas", "dbt (data transformation)"],
+    "analysis": ["Python (pandas, numpy, scipy, statsmodels)", "R (tidyverse, dplyr, ggplot2)", "Excel / Google Sheets", "Jupyter Notebooks"],
+    "visualization": ["Tableau", "Power BI", "Looker / Looker Studio", "Python (matplotlib, seaborn, plotly)", "Metabase / Superset"],
+    "statistics": ["Hypothesis testing", "Regression analysis", "Bayesian statistics", "Time series analysis", "A/B testing frameworks"],
+    "data_engineering": ["ETL/ELT pipelines", "dbt", "Airflow / Dagster", "Fivetran / Stitch", "Snowflake / BigQuery"],
+    "tools": ["Git", "Jupyter Notebook", "VS Code", "Notion / Confluence", "Slack", "Jira / Linear"]
+  },
+
+  "common_issues": [
+    {
+      "issue": "Data Quality and Inconsistency",
+      "symptom": "Reported metrics don't match across dashboards. Duplicate records. Missing values skew analysis.",
+      "root_cause": "No data validation in source systems. Multiple teams define same metric differently. ETL pipeline has gaps.",
+      "fix": "Implement data quality checks at pipeline level. Create single source of truth for metric definitions. Set up automated data validation alerts.",
+      "prevention": "Data governance framework. Metric dictionary maintained and versioned. Regular data audits."
+    },
+    {
+      "issue": "Stakeholders Don't Trust the Data",
+      "symptom": "Business teams question dashboard numbers. Decisions delayed due to data credibility concerns.",
+      "root_cause": "Inconsistent metrics, unexplained data anomalies, lack of transparency in methodology.",
+      "fix": "Add documentation to dashboards explaining data sources and methodology. Show data recency and completeness indicators. Set up stakeholder review process.",
+      "prevention": "Proactive data quality monitoring. Clear communication of data limitations. Build stakeholder relationships through regular check-ins."
+    },
+    {
+      "issue": "Analysis Paralysis — Too Many Metrics",
+      "symptom": "Dashboards have 50+ metrics. Stakeholders don't know what to focus on. No clear north star metric.",
+      "root_cause": "No prioritization of metrics. Every stakeholder request is added. No metric hierarchy.",
+      "fix": "Define 1-3 north star metrics per business unit. Create metric hierarchy (input vs output metrics). Archive unused dashboard widgets.",
+      "prevention": "Structured request intake process. Regular dashboard audit and cleanup. Educate stakeholders on metric prioritization."
+    }
+  ],
+
+  "industry_standards": [
+    "SQL as the lingua franca of data — every analyst must be proficient",
+    "Data-driven decision making framework — define metric, measure, analyze, recommend, implement, measure again",
+    "A/B testing best practices — randomized assignment, adequate sample size, statistical significance (p < 0.05)",
+    "Metric hierarchy — north star → key results → input metrics → diagnostic metrics",
+    "Dashboard design principles — most important metric first, consistent layout, clear context and period comparisons",
+    "Data documentation — every metric must have a definition, source, refresh cadence, and owner",
+    "Version control for analysis — notebooks and SQL queries in Git",
+    "Reproducible analysis — seed random states, document steps, share code not just screenshots"
+  ],
+
+  "skill_areas": [
+    {
+      "name": "SQL & Data Manipulation",
+      "weight": 30,
+      "skills": ["Complex SQL queries (CTEs, window functions, subqueries)", "Query optimization and performance tuning", "Data cleaning and transformation", "Database schema understanding", "dbt for data modeling"]
+    },
+    {
+      "name": "Statistical Analysis",
+      "weight": 20,
+      "skills": ["Descriptive statistics and distributions", "Hypothesis testing (t-test, chi-square, ANOVA)", "Regression analysis (linear, logistic)", "Time series analysis", "Bayesian thinking"]
+    },
+    {
+      "name": "Data Visualization & Communication",
+      "weight": 20,
+      "skills": ["Dashboard design and storytelling", "Chart selection principles", "BI tool expertise (Tableau/Power BI/Looker)", "Executive presentation skills", "Data narrative construction"]
+    },
+    {
+      "name": "Programming",
+      "weight": 15,
+      "skills": ["Python (pandas, numpy, matplotlib, seaborn)", "R (tidyverse)", "Jupyter Notebooks", "Automation scripting", "API integration"]
+    },
+    {
+      "name": "Business Acumen",
+      "weight": 15,
+      "skills": ["Domain knowledge (SaaS, e-commerce, fintech)", "KPI definition and tracking", "Product analytics", "Marketing analytics", "Financial analysis"]
+    }
+  ],
+
+  "project_types": [
+    {
+      "name": "User Retention Analysis",
+      "approach": "Cohort analysis of user retention by signup month, identify drop-off points in user journey, build churn prediction model, recommend interventions",
+      "deliverables": ["Retention dashboard with cohort view", "Churn prediction model with feature importance", "Actionable recommendations with projected impact"]
+    },
+    {
+      "name": "Revenue Growth Analysis",
+      "approach": "Analyze revenue trends by product line, customer segment, and geography. Identify highest LTV customer segments. Build revenue forecasting model.",
+      "deliverables": ["Revenue dashboard by multiple dimensions", "Customer lifetime value (LTV) model", "Revenue forecast with confidence intervals"]
+    },
+    {
+      "name": "Marketing Campaign Attribution",
+      "approach": "Build multi-touch attribution model, analyze ROI by marketing channel, optimize budget allocation based on conversion data",
+      "deliverables": ["Attribution dashboard (first-touch, last-touch, linear models)", "Channel ROI analysis", "Budget optimization recommendations"]
+    },
+    {
+      "name": "Product Feature Adoption Analysis",
+      "approach": "Track feature adoption metrics, identify sticky vs ignored features, analyze user segments that adopt specific features, recommend feature improvements",
+      "deliverables": ["Feature adoption funnel", "User segment analysis by feature usage", "Product improvement recommendations based on usage data"]
+    }
+  ],
+
+  "company_types": [
+    {
+      "type": "SaaS Startup",
+      "focus_areas": ["User acquisition and activation metrics", "Monthly recurring revenue (MRR) analysis", "Churn rate reduction", "Product engagement analytics"],
+      "tools": ["Mixpanel / Amplitude", "PostgreSQL", "Metabase", "Google Analytics"]
+    },
+    {
+      "type": "E-Commerce",
+      "focus_areas": ["Conversion funnel optimization", "Inventory demand forecasting", "Customer segmentation", "Pricing elasticity analysis"],
+      "tools": ["BigQuery", "Tableau", "Python", "Google Analytics 4"]
+    },
+    {
+      "type": "Fintech",
+      "focus_areas": ["Transaction pattern analysis", "Fraud detection analytics", "Customer LTV modeling", "Risk assessment"],
+      "tools": ["Snowflake", "Python (scikit-learn)", "Looker", "Airflow"]
+    },
+    {
+      "type": "Healthcare",
+      "focus_areas": ["Patient outcome analysis", "Operational efficiency metrics", "Population health analytics", "Regulatory compliance reporting"],
+      "tools": ["R (biostatistics)", "Tableau", "SQL", "HIPAA-compliant infrastructure"]
+    }
+  ]
+}

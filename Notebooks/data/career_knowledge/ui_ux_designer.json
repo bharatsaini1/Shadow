@@ -1,0 +1,157 @@
+{
+  "role": "UI/UX Designer",
+  "description": "User experience and interface designer responsible for creating intuitive, accessible, and visually appealing digital products. Bridges the gap between user needs, business goals, and technical feasibility through research, wireframing, prototyping, and visual design.",
+
+  "job_descriptions": [
+    {
+      "level": "Junior UI/UX Designer (0-1 yr)",
+      "responsibilities": [
+        "Create wireframes and low-fidelity mockups for new features",
+        "Assist in user research sessions and compile findings",
+        "Design UI components in Figma following design system guidelines",
+        "Prepare assets for developer handoff",
+        "Conduct basic usability testing and document feedback",
+        "Iterate on designs based on feedback from senior designers"
+      ],
+      "requirements": ["Figma proficiency", "Understanding of UX principles", "Basic visual design skills", "Portfolio showing 2-3 projects"],
+      "salary_range": "₹3L–₹6L/yr (India) | $55K–$75K/yr (US)"
+    },
+    {
+      "level": "Mid-Level UI/UX Designer (1-3 yrs)",
+      "responsibilities": [
+        "Own end-to-end design for assigned features or products",
+        "Conduct user interviews and usability testing independently",
+        "Create and contribute to design system components",
+        "Develop user flows, journey maps, and information architecture",
+        "Present design rationale to stakeholders and defend decisions",
+        "Collaborate closely with developers during implementation",
+        "Mentor junior designers on process and tools"
+      ],
+      "requirements": ["Advanced Figma (auto-layout, variants, components)", "User research methodology knowledge", "Interaction design and micro-animations", "Design system experience", "Basic HTML/CSS understanding"],
+      "salary_range": "₹6L–₹14L/yr (India) | $75K–$100K/yr (US)"
+    },
+    {
+      "level": "Senior UI/UX Designer (3-6 yrs)",
+      "responsibilities": [
+        "Lead design strategy for multiple product areas",
+        "Drive user research initiatives and translate insights into design decisions",
+        "Establish and evolve design systems and pattern libraries",
+        "Mentor design team members and conduct design reviews",
+        "Partner with product management on roadmap and feature definition",
+        "Advocate for user-centered design processes across the organization",
+        "Run design sprints and workshops with cross-functional teams"
+      ],
+      "requirements": ["Strategic design thinking", "Advanced research methods", "Design ops and system architecture", "Cross-functional leadership", "Data-informed design decision making"],
+      "salary_range": "₹14L–₹25L/yr (India) | $110K–$140K/yr (US)"
+    }
+  ],
+
+  "day_to_day": [
+    "Morning standup with product team — align on priorities and blockers",
+    "Review design QA tickets — check implemented designs match specs pixel-perfect",
+    "Design sprint work — create wireframes, prototypes, or high-fidelity mockups for upcoming features",
+    "User research session — conduct interviews or usability tests with 3-5 participants",
+    "Design review with stakeholders — present work, gather feedback, iterate",
+    "Developer collaboration — sit with frontend team to review implementation, answer questions about design intent",
+    "Contribute to design system — create new components, update documentation, ensure consistency",
+    "Competitive analysis — review competitor products to identify UX gaps and opportunities",
+    "Self-learning — follow design blogs (Dribbble, Behance, UX Collective), experiment with new tools"
+  ],
+
+  "design_process": {
+    "discover": ["Stakeholder interviews to understand business goals", "Competitive analysis of 3-5 competing products", "User interviews with target audience (6-8 participants)", "Analytics review — identify drop-off points and user behavior patterns"],
+    "define": ["Synthesize research findings into affinity maps", "Create user personas (primary + secondary)", "Map user journeys and identify pain points", "Define problem statements and design hypotheses"],
+    "ideate": ["Brainstorming sessions with cross-functional team", "Sketching and crazy-eights exercises", "User flows and site maps", "Low-fidelity wireframes for rapid iteration"],
+    "prototype": ["Clickable mid-fidelity prototypes in Figma", "Interactive prototypes for user testing (Prototype mode)", "High-fidelity mockups with final visual design", "Design system component usage"],
+    "test": ["Usability testing with 5 users per iteration", "A/B testing of key flows", "Accessibility audit (WCAG 2.1 AA)", "Heatmap analysis for existing designs"],
+    "deliver": ["Design specification with measurements and states", "Asset export and developer handoff", "Design QA during implementation", "Iterate based on development feedback"]
+  },
+
+  "tech_stack": {
+    "design_tools": ["Figma", "Sketch", "Adobe XD", "Framer", "Principle (micro-interactions)", "LottieFiles (animations)"],
+    "research_tools": ["Maze (usability testing)", "Hotjar / FullStory (heatmaps)", "UserTesting", "Dovetail (research repository)", "Notion / Miro (collaboration)"],
+    "handoff_tools": ["Zeplin", "Figma Dev Mode", "Storybook (design system docs)", "Zeroheight (design system documentation)"],
+    "visual_design": ["Adobe Photoshop", "Adobe Illustrator", "Adobe After Effects", "Midjourney / DALL-E (AI-assisted design)"],
+    "prototyping": ["Figma Prototype", "ProtoPie", "Framer Web", "Webflow (no-code websites)"]
+  },
+
+  "common_issues": [
+    {
+      "issue": "Design Handoff Gaps",
+      "symptom": "Developers implement designs incorrectly. Missing states, spacing off, colors don't match.",
+      "root_cause": "Design specs lack edge cases (loading, empty, error states). No annotation for interactions. Measurements not clearly defined.",
+      "fix": "Create comprehensive handoff specs with all component states. Include redlines for spacing. Annotate interactions with triggers, conditions, and feedback.",
+      "prevention": "Use design system components consistently. QA every implementation before release. Hold regular design-developer syncs."
+    },
+    {
+      "issue": "Design Not Feasible for Development",
+      "symptom": "Developers push back during sprint planning saying design cannot be implemented within timeline.",
+      "root_cause": "Design created without understanding technical constraints. Complex animations. Custom components when library components would work.",
+      "fix": "Involve developers early in design process. Understand framework capabilities. Use existing component library when possible.",
+      "prevention": "Regular design-developer pairing sessions. Stay updated on frontend capabilities. Create feasibility checklist before finalizing designs."
+    },
+    {
+      "issue": "Inconsistent User Experience Across Pages",
+      "symptom": "Navigation patterns differ between pages. Some use modals, some use full pages for similar actions.",
+      "root_cause": "No design system or pattern library. Multiple designers working without shared guidelines.",
+      "fix": "Audit existing UI for inconsistencies. Create unified design system with reusable components. Document interaction patterns.",
+      "prevention": "Maintain and evolve design system. Regular design reviews for consistency. Component-first design approach."
+    }
+  ],
+
+  "industry_standards": [
+    "WCAG 2.1 AA accessibility compliance — color contrast, keyboard navigation, screen reader support",
+    "Material Design 3 / Human Interface Guidelines — platform-specific design conventions",
+    "Atomic Design methodology — atoms, molecules, organisms, templates, pages",
+    "8px grid system — consistent spacing and alignment using multiples of 8",
+    "Figma auto-layout for responsive design components",
+    "Design token architecture — colors, typography, spacing stored as centralized tokens",
+    "Usability testing with 5 users identifies 85% of usability issues (Nielsen Norman Group)",
+    "Mobile-first responsive design approach",
+    "Design sprint framework (5-day process by Google Ventures)",
+    "Double Diamond design process — discover, define, develop, deliver"
+  ],
+
+  "skill_areas": [
+    {
+      "name": "User Research",
+      "weight": 20,
+      "skills": ["User Interviews", "Surveys & Questionnaires", "Usability Testing", "A/B Testing", "Analytics & Heatmap Analysis", "Competitive Analysis", "Persona Development"]
+    },
+    {
+      "name": "Interaction Design",
+      "weight": 25,
+      "skills": ["User Flows & Journey Mapping", "Wireframing (Low to High Fidelity)", "Interactive Prototyping", "Micro-interactions & Animations", "Information Architecture", "Responsive Design Patterns"]
+    },
+    {
+      "name": "Visual Design",
+      "weight": 25,
+      "skills": ["Typography & Layout", "Color Theory & Application", "Iconography & Illustration", "Design Systems & Component Libraries", "Grid Systems & Spacing", "Accessibility (WCAG)"]
+    },
+    {
+      "name": "Tools & Technology",
+      "weight": 15,
+      "skills": ["Figma (Expert)", "Prototyping Tools (ProtoPie, Framer)", "Handoff & Collaboration (Zeplin, Storybook)", "Basic HTML/CSS", "Design QA & Inspection"]
+    },
+    {
+      "name": "Soft Skills",
+      "weight": 15,
+      "skills": ["Stakeholder Management", "Presentation & Communication", "Cross-functional Collaboration", "Design Critique & Feedback", "User Advocacy"]
+    }
+  ],
+
+  "project_types": [
+    {
+      "name": "Mobile App Redesign",
+      "approach": "Start with audit of existing UX issues, create user journey maps, design improved navigation, prototype key flows, test with users, iterate based on feedback"
+    },
+    {
+      "name": "SaaS Dashboard",
+      "approach": "Focus on information hierarchy, data visualization clarity, customizable layouts, dark mode support, accessibility for all data types"
+    },
+    {
+      "name": "E-Commerce Experience",
+      "approach": "Optimize conversion funnel, design clear product discovery, simplify checkout flow, mobile-first approach, trust signals and social proof"
+    }
+  ]
+}
