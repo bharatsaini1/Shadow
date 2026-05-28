@@ -1,0 +1,66 @@
+
+services:
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: mentriq
+      MYSQL_USER: mentriq
+      MYSQL_PASSWORD: mentriq
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysqldata:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  ai-service:
+    build: ./ai-service
+    env_file: ./ai-service/.env
+    ports:
+      - "8001:8000"
+    restart: unless-stopped
+
+  backend:
+    build: ./backend
+    env_file: ./backend/.env
+    environment:
+      - DB_HOST=db
+      - REDIS_URL=redis://redis:6379
+      - AI_SERVICE_URL=http://ai-service:8000
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+      - ai-service
+    restart: unless-stopped
+
+  celery-worker:
+    build: ./backend
+    command: celery -A mentriq worker --loglevel=info
+    env_file: ./backend/.env
+    environment:
+      - DB_HOST=db
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - db
+      - redis
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "8080:3000"
+    environment:
+      - NEXT_PUBLIC_API_BASE_URL=http://localhost:8000/api/v1
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  mysqldata:
