@@ -20,8 +20,16 @@ class Task(models.Model):
         ("medium", "Medium"),
         ("hard", "Hard"),
     ]
+    PRIORITY = [
+        ("low", "Low"),
+        ("medium", "Medium"),
+        ("high", "High"),
+        ("urgent", "Urgent"),
+    ]
     STATUS = [
         ("pending", "Pending"),
+        ("in_progress", "In Progress"),
+        ("blocked", "Blocked"),
         ("submitted", "Submitted"),
         ("evaluated", "Evaluated"),
     ]
@@ -36,8 +44,12 @@ class Task(models.Model):
     description = models.TextField(blank=True)
     task_type = models.CharField(max_length=50, choices=TASK_TYPES)
     difficulty = models.CharField(max_length=20, choices=DIFFICULTY, default="medium")
+    priority = models.CharField(max_length=20, choices=PRIORITY, default="medium")
     deadline_hours = models.IntegerField(default=4)
     status = models.CharField(max_length=20, choices=STATUS, default="pending")
+    revision_requested = models.BooleanField(default=False)
+    revision_feedback = models.TextField(blank=True, default="")
+    revision_count = models.IntegerField(default=0)
     ai_generated_context = models.JSONField(null=True, blank=True)
     client_context = models.TextField(blank=True)
     expected_deliverable = models.TextField(blank=True)

@@ -1,4 +1,6 @@
 import json
+import re
+from pathlib import Path
 from langchain_groq import ChatGroq
 from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 from app.config import get_settings
@@ -8,7 +10,8 @@ TURN_MODEL = "llama-3.1-8b-instant"
 SCORE_MODEL = "llama-3.3-70b-versatile"
 CONCLUDE_PHRASE = "That concludes our interview."
 
-SYSTEM_TEMPLATE = open("app/prompts/interview_system.txt", encoding="utf-8").read()
+PROMPTS_DIR = Path(__file__).resolve().parent.parent / "prompts"
+SYSTEM_TEMPLATE = (PROMPTS_DIR / "interview_system.txt").read_text(encoding="utf-8")
 
 
 def _build_messages(
@@ -55,7 +58,7 @@ async def run_turn(
             api_key=get_settings().groq_api_key,
         )
 
-        response = model.invoke(messages)
+        response = await model.ainvoke(messages)
         ai_text = response.content.strip()
 
         is_complete = CONCLUDE_PHRASE in ai_text
@@ -74,6 +77,19 @@ async def run_turn(
             "next_action": "continue",
             "turn_count": turn_count,
         }
+
+
+JSON_RE = re.compile(r"\{.*\}", re.DOTALL)
+
+
+def _parse_json(text: str) -> dict:
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        match = JSON_RE.search(text)
+        if match:
+            return json.loads(match.group(0))
+        raise
 
 
 SCORE_SYSTEM_TEMPLATE = """You are an expert interview evaluator. Analyze the following interview transcript and provide scores.
@@ -127,12 +143,12 @@ async def generate_scores(
             api_key=get_settings().groq_api_key,
         )
 
-        response = model.bind(response_format={"type": "json_object"}).invoke([
+        response = await model.bind(response_format={"type": "json_object"}).ainvoke([
             SystemMessage(content=system_prompt),
             HumanMessage(content="Generate the interview evaluation scores in JSON format."),
         ])
 
-        result = json.loads(response.content)
+        result = _parse_json(response.content)
 
         return {
             "scores": result.get("scores", {
@@ -147,6 +163,7 @@ async def generate_scores(
             "interview_summary": result.get("interview_summary", ""),
             "strengths": result.get("strengths", []),
             "areas_for_improvement": result.get("areas_for_improvement", []),
+            "error": "",
         }
 
     except Exception as e:

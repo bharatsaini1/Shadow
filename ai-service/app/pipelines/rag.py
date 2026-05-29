@@ -1,3 +1,4 @@
+import asyncio
 import json
 import numpy as np
 from pinecone import Pinecone, ServerlessSpec
@@ -69,7 +70,7 @@ class _VectorStore:
         dots = np.dot(all_embeds[indices], qv)
         norms = np.linalg.norm(all_embeds[indices], axis=1) * np.linalg.norm(qv) + 1e-10
         sims = dots / norms
-        top = np.argsort(sims)[-top_k:][::-n]
+        top = np.argsort(sims)[-top_k:][::-1]
 
         matches = []
         for pos in top:
@@ -112,16 +113,16 @@ def retrieve(namespace: str, query: str, top_k: int = 3) -> str:
 
 
 async def get_career_context(role: str, query: str) -> str:
-    return retrieve("career_knowledge", f"{role} {query}")
+    return await asyncio.to_thread(retrieve, "career_knowledge", f"{role} {query}")
 
 
 async def get_task_templates(role: str, task_type: str) -> str:
-    return retrieve("task_templates", f"{role} {task_type}")
+    return await asyncio.to_thread(retrieve, "task_templates", f"{role} {task_type}")
 
 
 async def get_evaluation_rubric(task_type: str) -> str:
-    return retrieve("evaluation_rubrics", task_type)
+    return await asyncio.to_thread(retrieve, "evaluation_rubrics", task_type)
 
 
 async def get_interview_questions(role: str, interview_type: str) -> str:
-    return retrieve("interview_questions", f"{role} {interview_type}")
+    return await asyncio.to_thread(retrieve, "interview_questions", f"{role} {interview_type}")

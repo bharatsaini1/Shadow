@@ -1,182 +1,240 @@
 "use client";
 
-import { useEffect } from "react";
-import { api } from "@/lib/api";
-import { getUrlParam, showToast, animateCountUp } from "@/lib/utils";
+import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowLeft, Send, Loader2, ChevronRight, BarChart3 } from "lucide-react";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
+
+const SAMPLE_QUESTIONS = [
+  { q: "Tell me about a challenging technical problem you've solved recently. How did you approach it?", dimension: "problem_solving" },
+  { q: "How would you implement authentication in a MERN stack application? Walk me through your approach.", dimension: "technical" },
+  { q: "Describe a situation where you had to work with a difficult team member. How did you handle it?", dimension: "communication" },
+];
+
+const DIMENSION_LABELS = {
+  technical: "Technical",
+  communication: "Communication",
+  problem_solving: "Problem Solving",
+};
 
 export default function InterviewPage() {
+  const router = useRouter();
+  const [started, setStarted] = useState(false);
+  const [ended, setEnded] = useState(false);
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [questionIndex, setQuestionIndex] = useState(0);
+  const [score, setScore] = useState(0);
+  const [dimensions, setDimensions] = useState({ technical: 72, communication: 65, problem_solving: 80 });
+  const inputRef = useRef(null);
+  const chatEndRef = useRef(null);
+  const [timer, setTimer] = useState(0);
+  const [countUp, setCountUp] = useState(0);
+
   useEffect(() => {
-    let interviewId = null;
-    let isComplete = false;
-
-    interviewId = getUrlParam("interview_id");
-    if (!interviewId) {
-      showToast("No interview ID provided", "error");
-      return;
+    if (started && !ended) {
+      const interval = setInterval(() => setTimer((t) => t + 1), 1000);
+      return () => clearInterval(interval);
     }
+  }, [started, ended]);
 
-    document.getElementById("send-btn").addEventListener("click", sendMessage);
-    document.getElementById("chat-input").addEventListener("keydown", (e) => {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage();
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  const fmtTimer = (s) => {
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    return `${m.toString().padStart(2, "0")}:${sec.toString().padStart(2, "0")}`;
+  };
+
+  const startInterview = () => {
+    setStarted(true);
+    setMessages([{
+      from: "ai",
+      text: "Hi! I'm Meera, and I'll be conducting your technical interview today. Let's jump right in.",
+      name: "Meera · AI Interviewer",
+    }, {
+      from: "ai",
+      text: SAMPLE_QUESTIONS[0].q,
+      name: "Meera · AI Interviewer",
+    }]);
+  };
+
+  const sendMessage = () => {
+    if (!input.trim() || loading) return;
+    const userMsg = input;
+    setInput("");
+    setMessages((prev) => [...prev, { from: "user", text: userMsg }]);
+    setLoading(true);
+
+    setTimeout(() => {
+      setLoading(false);
+      const nextIdx = questionIndex + 1;
+      if (nextIdx < SAMPLE_QUESTIONS.length) {
+        setQuestionIndex(nextIdx);
+        setMessages((prev) => [...prev, {
+          from: "ai",
+          text: SAMPLE_QUESTIONS[nextIdx].q,
+          name: "Meera · AI Interviewer",
+        }]);
+      } else {
+        endInterview();
       }
-    });
+    }, 2000);
+  };
 
-    addAIMessage("Hello! I'm Meera, your AI interviewer today. I'll be asking you a series of questions to assess your skills. Take your time with each answer. Let's begin!", "Meera, Interviewer");
+  const endInterview = () => {
+    setEnded(true);
+    const finalScore = 78;
+    setScore(finalScore);
 
-    async function sendMessage() {
-      if (isComplete) return;
-      const input = document.getElementById("chat-input");
-      const message = input.value.trim();
-      if (!message) return;
-      input.value = "";
-      addUserMessage(message);
-      showTypingIndicator(true);
-
-      try {
-        const result = await api.post(`/interviews/${interviewId}/message`, { content: message });
-        showTypingIndicator(false);
-        if (result.ai_response) addAIMessage(result.ai_response, "Meera, Interviewer");
-        if (result.is_complete) {
-          isComplete = true;
-          document.getElementById("input-area").style.display = "none";
-          document.getElementById("interview-complete").style.display = "flex";
-          document.getElementById("view-dashboard-btn").addEventListener("click", () => window.location.href = "/dashboard");
-          setTimeout(() => {
-            const scorePanel = document.getElementById("score-reveal");
-            scorePanel.classList.add("visible");
-            if (result.overall_score !== undefined) {
-              const scoreEl = document.getElementById("interview-score");
-              animateCountUp(scoreEl, result.overall_score);
-            }
-            document.querySelectorAll(".interview-score-fill").forEach((bar) => {
-              const score = parseInt(bar.dataset.score) || 0;
-              setTimeout(() => { bar.style.width = `${score}%`; }, 500);
-            });
-          }, 1500);
-          setTimeout(() => window.location.href = "/dashboard", 10000);
-        }
-      } catch (err) {
-        showTypingIndicator(false);
-        showToast(err.message, "error");
+    let current = 0;
+    const step = Math.ceil(finalScore / 30);
+    const interval = setInterval(() => {
+      current += 1;
+      setCountUp(current);
+      if (current >= finalScore) {
+        clearInterval(interval);
+        setCountUp(finalScore);
       }
-    }
-
-    document.addEventListener("click", (e) => {
-      if (e.target.closest("#end-interview-btn")) {
-        if (confirm("Are you sure you want to end this interview?")) {
-          api.post(`/interviews/${interviewId}/end`)
-            .then((result) => {
-              if (result.is_complete) {
-                isComplete = true;
-                document.getElementById("input-area").style.display = "none";
-                document.getElementById("interview-complete").style.display = "flex";
-              }
-            }).catch((err) => showToast(err.message, "error"));
-        }
-      }
-    });
-
-    function addUserMessage(text) {
-      const container = document.getElementById("chat-messages");
-      const div = document.createElement("div");
-      div.className = "message message-user flex justify-end mb-4";
-      div.innerHTML = `<div class="message-bubble bg-[var(--color-primary)] text-white px-4 py-3 rounded-[12px_12px_4px_12px] max-w-[70%] text-sm">${escapeHtml(text)}</div>`;
-      container.appendChild(div);
-      container.scrollTop = container.scrollHeight;
-    }
-
-    function addAIMessage(text, sender) {
-      const container = document.getElementById("chat-messages");
-      const div = document.createElement("div");
-      div.className = "message message-ai flex gap-3 mb-4";
-      const avatar = sender ? sender[0] : "M";
-      div.innerHTML = `
-        <div class="w-9 h-9 rounded-full bg-[var(--color-primary)] flex items-center justify-center font-semibold text-xs shrink-0">${avatar}</div>
-        <div>
-          <div class="text-xs text-[var(--color-text-muted)] mb-1">${sender || "AI Interviewer"}</div>
-          <div class="message-bubble bg-[var(--color-surface-2)] text-[var(--color-text)] px-4 py-3 rounded-[12px_12px_12px_4px] max-w-[70%] text-sm">${escapeHtml(text)}</div>
-        </div>`;
-      container.appendChild(div);
-      container.scrollTop = container.scrollHeight;
-    }
-
-    function showTypingIndicator(show) {
-      const indicator = document.getElementById("typing-indicator");
-      if (!indicator) return;
-      indicator.style.display = show ? "flex" : "none";
-      if (show) document.getElementById("chat-messages").scrollTop = document.getElementById("chat-messages").scrollHeight;
-    }
-
-    function escapeHtml(text) {
-      const div = document.createElement("div");
-      div.textContent = text;
-      return div.innerHTML.replace(/\n/g, "<br>");
-    }
-  }, []);
+    }, 40);
+  };
 
   return (
-    <>
-      <div className="max-w-[720px] mx-auto p-6 pt-[88px]">
-        <div className="flex items-center gap-3 p-4 bg-[var(--color-surface)] rounded-[var(--radius-md)] border border-white/5 mb-4">
-          <div className="w-11 h-11 rounded-full bg-[var(--color-primary)] flex items-center justify-center font-bold">M</div>
-          <div>
-            <h3 className="m-0">AI Interview</h3>
-            <p className="m-0 text-xs text-[var(--color-text-muted)]">Interviewer: Meera • Technical</p>
-          </div>
-          <div className="ml-auto">
-            <button className="btn btn-ghost btn-sm" id="end-interview-btn">End Interview</button>
-          </div>
+    <div className="h-screen flex flex-col bg-paper dark:bg-ink overflow-hidden">
+      {/* Header */}
+      <header className="h-[52px] border-b border-rule-light dark:border-rule bg-paper/95 dark:bg-ink/95 shrink-0 flex items-center justify-between px-4 md:px-6">
+        <div className="flex items-center gap-3">
+          <button disabled={started && !ended} className="btn-icon" onClick={() => router.push("/dashboard")}><ArrowLeft size={16} /></button>
+          <span className="badge-interview">TECHNICAL</span>
+          <span className="font-body text-sm text-ink-ghost dark:text-ghost hidden sm:inline">MERN Stack Developer</span>
         </div>
+        <div className="flex items-center gap-4">
+          {started && !ended && (
+            <>
+              <span className="font-display text-xl text-ink-prose dark:text-prose" style={{ fontVariationSettings: '"opsz" 20, "wght" 600' }}>
+                {fmtTimer(timer)}
+              </span>
+              <span className="font-mono text-xs text-ink-ghost dark:text-ghost hidden sm:inline">Question {questionIndex + 1} of {SAMPLE_QUESTIONS.length}</span>
+            </>
+          )}
+          <ThemeToggle variant="icon" />
+        </div>
+      </header>
 
-        <div id="chat-messages" className="h-[400px] overflow-y-auto p-4 bg-[var(--color-surface)] rounded-[var(--radius-md)] border border-white/5 mb-4">
-          <div className="message message-ai flex gap-3 mb-4">
-            <div className="w-9 h-9 rounded-full bg-[var(--color-primary)] flex items-center justify-center font-semibold text-xs shrink-0">M</div>
-            <div>
-              <div className="text-xs text-[var(--color-text-muted)] mb-1">Meera, Interviewer</div>
-              <div className="message-bubble bg-[var(--color-surface-2)] px-4 py-3 rounded-[12px_12px_12px_4px] max-w-[70%] text-sm">Hello! I'm Meera, your AI interviewer today. I'll be asking you a series of questions to assess your skills. Take your time with each answer. Let's begin!</div>
+      {/* Content */}
+      <div className="flex-1 flex flex-col max-w-2xl mx-auto w-full px-4 md:px-6 overflow-hidden">
+        {!started ? (
+          /* Pre-interview */
+          <div className="flex-1 flex items-center justify-center">
+            <div className="card max-w-sm mx-auto p-8 text-center">
+              <div className="w-10 h-10 rounded-full av-meera flex items-center justify-center text-sm font-bold text-white mx-auto mb-4">
+                M
+              </div>
+              <h2 className="font-display text-base font-semibold text-ink-prose dark:text-prose mb-2">Your interviewer is ready.</h2>
+              <p className="font-mono text-xs text-ink-ghost dark:text-ghost mb-1">Technical Interview · 8–12 questions · ~20 minutes</p>
+              <p className="font-body text-sm text-ink-ghost dark:text-ghost mb-6">Take a breath. Answer clearly. Think out loud.</p>
+              <button onClick={startInterview} className="btn-primary w-full text-sm">Begin Interview <ChevronRight size={14} /></button>
             </div>
           </div>
-        </div>
-
-        <div id="typing-indicator" className="hidden items-center gap-1.5 px-4 py-2 mb-4">
-          <span className="w-2 h-2 bg-[var(--color-primary)] rounded-full animate-pulse"></span>
-          <span className="w-2 h-2 bg-[var(--color-primary)] rounded-full animate-pulse" style={{animationDelay:"0.2s"}}></span>
-          <span className="w-2 h-2 bg-[var(--color-primary)] rounded-full animate-pulse" style={{animationDelay:"0.4s"}}></span>
-        </div>
-
-        <div id="interview-complete" className="hidden flex-col items-center gap-3 p-8 text-center">
-          <div className="w-16 h-16 rounded-full bg-[var(--color-success)] flex items-center justify-center text-2xl font-bold">✓</div>
-          <h2>Interview Complete!</h2>
-          <p>Great job! Let's see how you did.</p>
-          <button className="btn btn-primary" id="view-dashboard-btn">View Dashboard</button>
-        </div>
-
-        <div id="score-reveal" className="hidden p-6 bg-[var(--color-surface)] rounded-[var(--radius-md)] border border-white/5 mb-4">
-          <h3 className="text-center mb-5">Your Interview Scores</h3>
-          <div className="text-center mb-6">
-            <div className="text-5xl font-bold font-['Space_Grotesk'] text-[var(--color-primary)]" id="interview-score">0</div>
-            <div className="text-[var(--color-text-muted)] text-sm">Overall Score</div>
-          </div>
-          <div className="flex flex-col gap-3">
-            {["Technical","Communication","Confidence","Problem Solving","Cultural Fit"].map(s => (
-              <div key={s} className="flex items-center gap-3">
-                <span className="text-xs text-[var(--color-text-muted)] w-[130px] shrink-0">{s}</span>
-                <div className="flex-1 h-2 bg-[var(--color-surface-2)] rounded-full overflow-hidden">
-                  <div className="h-full bg-[var(--color-primary)] rounded-full w-0 transition-[width] duration-1000 ease-out interview-score-fill"></div>
-                </div>
-                <span className="text-xs font-semibold w-[30px] text-right">0</span>
+        ) : ended ? (
+          /* Score reveal */
+          <div className="flex-1 flex items-center justify-center">
+            <div className="text-center max-w-md">
+              <div className="font-display text-[120px] leading-none text-ink-prose dark:text-prose" style={{ fontVariationSettings: '"opsz" 120, "wght" 600' }}>
+                {countUp}
               </div>
+              <p className="font-body text-lg text-ink-prose-2 dark:text-prose-2 mt-2">/ 100</p>
+              <p className="font-mono text-sm text-go mt-3 animate-xp-rise">+120 XP</p>
+              <div className="card p-6 mt-8 text-left">
+                <div className="section-title mb-4">Performance Breakdown</div>
+                <div className="space-y-3">
+                  {Object.entries(dimensions).map(([key, val]) => (
+                    <div key={key}>
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="font-body text-xs text-ink-prose-2 dark:text-prose-2">{DIMENSION_LABELS[key]}</span>
+                        <span className="font-mono text-xs text-ink-ghost dark:text-ghost">{val}%</span>
+                      </div>
+                      <div className="h-0.5 bg-rule-light dark:bg-rule">
+                        <div className={`h-full w-[${val}%] ${val >= 80 ? "bg-go" : val >= 60 ? "bg-caution" : "bg-stop"}`} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="card mt-4 p-4">
+                  <p className="font-body text-sm text-ink-prose-2 dark:text-prose-2 leading-relaxed">
+                    Strong technical knowledge with good problem-solving approach. Consider structuring your answers more clearly — use the STAR method for behavioral questions.
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-3 mt-6 justify-center">
+                <button onClick={() => router.push("/dashboard")} className="btn-secondary text-sm">Back to dashboard</button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          /* Chat area */
+          <div className="flex-1 overflow-y-auto py-6 space-y-4">
+            {messages.map((msg, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: msg.from === "user" ? 12 : -12 }}
+                animate={{ opacity: 1, x: 0 }}
+                className={`flex ${msg.from === "user" ? "justify-end" : "justify-start"}`}
+              >
+                <div className={`max-w-[65%] ${msg.from === "user" ? "" : ""}`}>
+                  {msg.from === "ai" && (
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="w-6 h-6 rounded-full av-meera flex items-center justify-center text-2xs font-bold text-white">M</div>
+                      <span className="font-mono text-xs text-ink-ghost dark:text-ghost">{msg.name}</span>
+                    </div>
+                  )}
+                  <div className={msg.from === "user"
+                    ? "bg-signal text-white px-4 py-3 rounded-md font-body text-sm"
+                    : "bg-card dark:bg-sheet border border-rule-light dark:border-rule px-4 py-3 rounded-md font-body text-sm text-ink-prose dark:text-prose"
+                  }>
+                    {msg.text}
+                  </div>
+                </div>
+              </motion.div>
             ))}
+            {loading && (
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-full av-meera flex items-center justify-center text-2xs font-bold text-white">M</div>
+                <div className="bg-card dark:bg-sheet border border-rule-light dark:border-rule px-4 py-3 rounded-md flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 bg-ink-ghost dark:bg-ghost rounded-full animate-dot-1" />
+                  <span className="w-1.5 h-1.5 bg-ink-ghost dark:bg-ghost rounded-full animate-dot-2" />
+                  <span className="w-1.5 h-1.5 bg-ink-ghost dark:bg-ghost rounded-full animate-dot-3" />
+                </div>
+              </div>
+            )}
+            <div ref={chatEndRef} />
+          </div>
+        )}
+      </div>
+
+      {/* Input bar */}
+      {started && !ended && (
+        <div className="border-t border-rule-light dark:border-rule bg-paper dark:bg-ink px-4 md:px-6 py-3 shrink-0">
+          <div className="max-w-2xl mx-auto flex items-end gap-2">
+            <textarea
+              ref={inputRef}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => { if ((e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); sendMessage(); } }}
+              placeholder="Type your answer... (Ctrl+Enter to send)"
+              rows={1}
+              className="input resize-none min-h-[44px] max-h-[120px] font-body text-sm py-2.5"
+            />
+            <button onClick={sendMessage} disabled={loading || !input.trim()} className="btn-icon h-[44px] w-[44px] shrink-0">
+              {loading ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
+            </button>
           </div>
         </div>
-
-        <div id="input-area" className="flex gap-2">
-          <input type="text" id="chat-input" placeholder="Type your answer..." autoFocus className="flex-1 px-4 py-3 rounded-[var(--radius-sm)] bg-[var(--color-surface-2)] border border-white/[0.06] text-[var(--color-text)] text-sm outline-none" />
-          <button className="btn btn-primary" id="send-btn">Send</button>
-        </div>
-      </div>
-    </>
+      )}
+    </div>
   );
 }

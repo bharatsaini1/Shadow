@@ -1,0 +1,2680 @@
+# MentriQ Shadow 🧠
+
+> **"Experience the Job Before Getting the Job."**
+
+An AI-powered career simulation platform where students work in a virtual company environment — completing real tasks, getting AI-reviewed feedback, practicing interviews, and collaborating with AI teammates — before ever applying for a job.
+
+---
+
+## Table of Contents
+
+- [What We Are Building](#what-we-are-building)
+- [Project Status](#project-status)
+- [Repository Structure](#repository-structure)
+- [Phase 1 — AI Pipelines (Jupyter Notebooks)](#phase-1--ai-pipelines-jupyter-notebooks)
+- [Phase 2 — Backend (Django)](#phase-2--backend-django)
+- [Phase 3 — Frontend (Next.js + Tailwind CSS)](#phase-3--frontend-nextjs--tailwind-css)
+- [Tech Stack](#tech-stack)
+- [Environment Variables](#environment-variables)
+- [Data Flow](#data-flow)
+- [Database Schema Overview](#database-schema-overview)
+- [API Endpoints Overview](#api-endpoints-overview)
+- [Career Tracks](#career-tracks)
+- [Gamification System](#gamification-system)
+- [Monetization](#monetization)
+- [Running the Project Locally](#running-the-project-locally)
+
+---
+
+## What We Are Building
+
+MentriQ Shadow solves one critical problem: **students graduate with theory but zero real-world experience**. Companies want experienced freshers. Freshers can't get experience without a job. This is the chicken-and-egg trap.
+
+**MentriQ Shadow breaks this loop** by simulating a full work environment powered by AI:
+
+| Traditional EdTech | MentriQ Shadow |
+|---|---|
+| Watch video → take quiz | Work a real task → get AI reviewed |
+| Passive learning | Active simulation |
+| Certificate of completion | Verifiable performance report (Shadow Passport) |
+| Generic content | Role-specific AI simulation |
+| No team interaction | AI teammates, manager, client |
+
+The platform is built in **3 phases**:
+
+- **Phase 1** — Build and test all AI pipelines as Jupyter Notebooks
+- **Phase 2** — Convert notebooks into a Django + Django REST Framework backend
+- **Phase 3** — Build the frontend using **Next.js 14 (App Router) + Tailwind CSS**
+
+---
+
+## Project Status
+
+| Phase | Description | Status |
+|---|---|---|
+| Phase 1 | Jupyter Notebook AI Pipelines | 🔄 In Progress |
+| Phase 2 | Django Backend + SQLite (local) | ⏳ Not Started |
+| Phase 3 | Next.js + Tailwind CSS Frontend | ⏳ Not Started |
+
+---
+
+## Repository Structure
+
+```
+mentriq-shadow/
+│
+├── notebooks/                        ← PHASE 1: All AI pipelines (start here)
+│   ├── 01_simulation_engine.ipynb
+│   ├── 02_ai_reviewer.ipynb
+│   ├── 03_interview_agent.ipynb
+│   ├── 04_team_persona_engine.ipynb
+│   ├── 05_rag_knowledge_base.ipynb
+│   ├── requirements.txt
+│   └── data/
+│       ├── career_knowledge/
+│       │   ├── mern_developer.json
+│       │   ├── ui_ux_designer.json
+│       │   └── data_analyst.json
+│       ├── task_templates/
+│       │   ├── mern_tasks.json
+│       │   └── hr_tasks.json
+│       └── evaluation_rubrics/
+│           ├── code_review_rubric.json
+│           ├── communication_rubric.json
+│           └── design_rubric.json
+│
+├── backend/                          ← PHASE 2: Django application
+│   ├── mentriq/
+│   │   ├── __init__.py
+│   │   ├── settings.py
+│   │   ├── urls.py
+│   │   ├── celery.py
+│   │   ├── wsgi.py
+│   │   └── asgi.py
+│   ├── apps/
+│   │   ├── users/
+│   │   ├── simulations/
+│   │   ├── tasks/
+│   │   ├── interviews/
+│   │   └── payments/
+│   ├── services/
+│   │   ├── ai/
+│   │   │   ├── simulation_engine.py
+│   │   │   ├── reviewer.py
+│   │   │   ├── interview_agent.py
+│   │   │   ├── team_persona.py
+│   │   │   └── rag_service.py
+│   │   ├── storage.py
+│   │   └── email_service.py
+│   ├── celery_tasks/
+│   ├── prompts/
+│   ├── utils/
+│   ├── media/
+│   ├── db.sqlite3
+│   ├── manage.py
+│   ├── requirements.txt
+│   └── .env.example
+│
+├── frontend/                         ← PHASE 3: Next.js 14 + Tailwind CSS
+│   ├── app/
+│   │   ├── layout.tsx
+│   │   ├── page.tsx
+│   │   ├── (auth)/login/page.tsx
+│   │   ├── (auth)/register/page.tsx
+│   │   ├── dashboard/page.tsx
+│   │   ├── simulation/[sessionId]/page.tsx
+│   │   ├── interview/[interviewId]/page.tsx
+│   │   ├── evaluation/[taskId]/page.tsx
+│   │   └── passport/[userId]/page.tsx
+│   ├── components/
+│   │   ├── ui/
+│   │   ├── layout/
+│   │   ├── dashboard/
+│   │   ├── simulation/
+│   │   ├── interview/
+│   │   └── evaluation/
+│   ├── lib/
+│   │   ├── api.ts
+│   │   ├── auth.ts
+│   │   ├── hooks/
+│   │   └── utils.ts
+│   ├── styles/globals.css
+│   ├── tailwind.config.ts
+│   ├── next.config.ts
+│   └── package.json
+│
+├── docker-compose.yml
+├── .env.example
+└── README.md
+```
+
+---
+
+## Phase 1 — AI Pipelines (Jupyter Notebooks)
+
+### Notebook 01 — Simulation Engine
+**File:** `notebooks/01_simulation_engine.ipynb`
+**AI Model:** Groq — `llama-3.3-70b-versatile`
+**Key techniques:** RAG retrieval from Pinecone, JSON mode structured output, conversation memory for day continuity.
+
+### Notebook 02 — AI Reviewer
+**File:** `notebooks/02_ai_reviewer.ipynb`
+**AI Model:** Groq — `llama-3.3-70b-versatile`
+**Key techniques:** Evaluation rubrics injected from `data/evaluation_rubrics/`, chain-of-thought reasoning before scoring.
+
+### Notebook 03 — Interview Agent
+**File:** `notebooks/03_interview_agent.ipynb`
+**AI Model:** Groq — `llama-3.1-8b-instant`
+
+### Notebook 04 — Team Persona Engine
+**File:** `notebooks/04_team_persona_engine.ipynb`
+**AI Model:** Groq — `llama-3.3-70b-versatile`
+
+### Notebook 05 — RAG Knowledge Base
+**File:** `notebooks/05_rag_knowledge_base.ipynb`
+**Embedding model:** `text-embedding-3-large` (OpenAI)
+
+---
+
+## Phase 2 — Backend (Django)
+
+### Authentication: JWT via `djangorestframework-simplejwt`
+### Database: SQLite (dev) → PostgreSQL (prod)
+### Async Tasks: Celery with `CELERY_TASK_ALWAYS_EAGER=True` in dev
+### File Storage: Local `media/` directory
+
+---
+
+## Phase 3 — Frontend (Next.js + Tailwind CSS)
+
+---
+
+### 🎨 Design Direction — READ THIS BEFORE WRITING ANY CODE
+
+MentriQ Shadow is not an edtech app, not a quiz platform, not a dark-mode Coursera.
+
+**It is a company. Students are employees. The UI is their office.**
+
+Everything — every font choice, every hover state, every timing curve — must make the student feel like they are already at work. Not "learning how to work." Actually working.
+
+---
+
+### The Aesthetic Reference
+
+The design direction is **Editorial Brutalism meets Precision Tooling**.
+
+Think: The Economist's typographic discipline + Linear's density + a paper invoice that got digitized by a very good designer. Not a startup. Not a "product." A place where serious work happens.
+
+**The three principles:**
+
+1. **Type-forward** — Typography carries the hierarchy. Color does not. A page should read clearly in grayscale.
+
+2. **Controlled tension** — The layout is rigid and grid-based but with deliberate moments of asymmetry. One element breaks the grid per screen. That one thing is what the user remembers.
+
+3. **Signal over noise** — Every color usage means something. Red means overdue. Green means success. Amber means warning. Blue means active. Nothing is colored for decoration.
+
+**What this replaces from the old design:**
+- "Dense. Dark. Alive." was the right instinct but produced generic dark-SaaS. We are going further.
+- The old approach used blue everywhere (primary actions, active states, borders, badges). Now blue is reserved only for the single most important interactive element on a given screen.
+- Glassmorphism, glow effects, and gradient meshes are removed. Replaced with: paper-like surfaces, strong editorial typography, and precise micro-contrast.
+
+---
+
+### 🖌️ Design Tokens — Complete Production Config
+
+```typescript
+// tailwind.config.ts — COMPLETE PRODUCTION CONFIG
+import type { Config } from "tailwindcss";
+
+const config: Config = {
+  content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}"],
+  theme: {
+    extend: {
+      colors: {
+        // ─── BASE SURFACES ───────────────────────────────────
+        // These read like high-quality paper in dark mode
+        ink:          "#0A0A0B",   // true near-black, no blue undertone — base bg
+        "ink-2":      "#111113",   // page section bg
+        sheet:        "#18181C",   // card/panel bg — reads as slightly lifted paper
+        "sheet-2":    "#1E1E23",   // elevated card, hover state
+        "sheet-3":    "#24242B",   // modal, dropdown
+
+        // ─── BORDERS ─────────────────────────────────────────
+        // No glowing borders. Just precise hairlines.
+        rule:         "#2A2A32",   // default hairline rule
+        "rule-2":     "#35353F",   // stronger divider
+        "rule-focus": "#5A5A6E",   // focused input border — neutral, not blue
+
+        // ─── SEMANTIC COLORS ─────────────────────────────────
+        // Each color has ONE job. Never mix roles.
+        signal:       "#2563EB",   // blue — THE primary CTA. Used sparingly.
+        "signal-dim": "#1D4ED8",   // pressed/hover
+        "signal-ghost":"rgba(37,99,235,0.07)",
+
+        go:           "#16A34A",   // green — success, completed, live, approved
+        "go-dim":     "#15803D",
+        "go-glow":    "rgba(22,163,74,0.10)",
+
+        caution:      "#D97706",   // amber — deadline, medium difficulty, warning
+        "caution-dim":"#B45309",
+        "caution-glow":"rgba(217,119,6,0.10)",
+
+        stop:         "#DC2626",   // red — overdue, error, hard difficulty, danger
+        "stop-dim":   "#B91C1C",
+        "stop-glow":  "rgba(220,38,38,0.10)",
+
+        mark:         "#7C3AED",   // purple — interview, achievement, special
+        "mark-dim":   "#6D28D9",
+        "mark-glow":  "rgba(124,58,237,0.10)",
+
+        // ─── TYPOGRAPHY ──────────────────────────────────────
+        // A deliberate 4-level hierarchy. Nothing in between.
+        prose:        "#EDEDF0",   // primary text — cool white, almost paper
+        "prose-2":    "#9898A6",   // secondary — muted body copy
+        ghost:        "#4A4A58",   // ghost text — labels, captions, timestamps
+        dim:          "#28282E",   // almost invisible — decorative/background text
+        inverse:      "#0A0A0B",   // text on light/colored backgrounds
+
+        // ─── SPECIAL ─────────────────────────────────────────
+        scrim:        "rgba(10,10,11,0.88)",
+      },
+
+      fontFamily: {
+        // Carefully chosen for editorial gravitas, not startup-friendly roundness
+        display: ["'Instrument Serif'", "serif"],    // headlines, hero numbers — has optical weight
+        body:    ["'IBM Plex Sans'", "sans-serif"],  // all interface copy — technical, legible
+        label:   ["'IBM Plex Sans Condensed'", "sans-serif"], // badges, tags, tab labels
+        mono:    ["'IBM Plex Mono'", "monospace"],  // code, IDs, timestamps — monospaced sibling
+      },
+
+      fontSize: {
+        "2xs": ["10px", { lineHeight: "14px", letterSpacing: "0.08em" }],
+        xs:    ["11px", { lineHeight: "16px", letterSpacing: "0.04em" }],
+        sm:    ["13px", { lineHeight: "20px" }],
+        base:  ["14px", { lineHeight: "22px" }],
+        md:    ["15px", { lineHeight: "24px" }],
+        lg:    ["17px", { lineHeight: "26px" }],
+        xl:    ["20px", { lineHeight: "30px" }],
+        "2xl": ["24px", { lineHeight: "32px", letterSpacing: "-0.01em" }],
+        "3xl": ["30px", { lineHeight: "36px", letterSpacing: "-0.02em" }],
+        "4xl": ["38px", { lineHeight: "44px", letterSpacing: "-0.025em" }],
+        "5xl": ["50px", { lineHeight: "56px", letterSpacing: "-0.03em" }],
+        "6xl": ["64px", { lineHeight: "68px", letterSpacing: "-0.04em" }],
+        "7xl": ["82px", { lineHeight: "86px", letterSpacing: "-0.05em" }],
+      },
+
+      spacing: {
+        sidebar:            "256px",
+        "sidebar-collapsed": "52px",
+        topbar:             "52px",
+        panel:              "312px",
+        chat:               "272px",
+      },
+
+      borderRadius: {
+        none:  "0px",
+        sm:    "3px",
+        base:  "6px",
+        md:    "8px",
+        lg:    "12px",
+        pill:  "999px",
+        // Note: prefer base (6px) and md (8px). Nothing rounder.
+        // Rounded corners are earned, not default.
+      },
+
+      boxShadow: {
+        // Shadows are functional, not decorative
+        lift:  "0 1px 3px rgba(0,0,0,0.5), 0 0 0 0.5px rgba(255,255,255,0.04)",
+        float: "0 4px 16px rgba(0,0,0,0.6), 0 0 0 0.5px rgba(255,255,255,0.05)",
+        deep:  "0 8px 32px rgba(0,0,0,0.7), 0 0 0 0.5px rgba(255,255,255,0.04)",
+        // Semantic shadows — used ONLY for focus states
+        "focus-ring": "0 0 0 2px rgba(37,99,235,0.4)",
+      },
+
+      animation: {
+        // Entry — all motion uses the same easing curve for cohesion
+        "enter-up":    "enterUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) both",
+        "enter-down":  "enterDown 0.35s cubic-bezier(0.16, 1, 0.3, 1) both",
+        "enter-left":  "enterLeft 0.3s cubic-bezier(0.16, 1, 0.3, 1) both",
+        "enter-right": "enterRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) both",
+        "fade":        "fade 0.25s ease both",
+
+        // State
+        "pulse-slow":  "pulse 3s ease-in-out infinite",
+        "blink":       "blink 1.1s step-start infinite",
+
+        // Score / progress
+        "bar-fill":    "barFill 0.9s cubic-bezier(0.16, 1, 0.3, 1) both",
+        "ring-draw":   "ringDraw 1.2s cubic-bezier(0.16, 1, 0.3, 1) both",
+        "count-up":    "fade 0.08s ease both",
+        "xp-rise":     "xpRise 0.6s cubic-bezier(0.16, 1, 0.3, 1) both",
+
+        // Feedback
+        "shake":       "shake 0.3s ease both",
+        "shimmer":     "shimmer 1.6s linear infinite",
+
+        // Chat
+        "msg-in":      "msgIn 0.2s ease both",
+        "dot-1":       "dotPulse 1.2s 0ms ease-in-out infinite",
+        "dot-2":       "dotPulse 1.2s 180ms ease-in-out infinite",
+        "dot-3":       "dotPulse 1.2s 360ms ease-in-out infinite",
+      },
+
+      keyframes: {
+        enterUp:    { "0%": { opacity: "0", transform: "translateY(12px)" }, "100%": { opacity: "1", transform: "translateY(0)" } },
+        enterDown:  { "0%": { opacity: "0", transform: "translateY(-12px)" }, "100%": { opacity: "1", transform: "translateY(0)" } },
+        enterLeft:  { "0%": { opacity: "0", transform: "translateX(16px)" }, "100%": { opacity: "1", transform: "translateX(0)" } },
+        enterRight: { "0%": { opacity: "0", transform: "translateX(-16px)" }, "100%": { opacity: "1", transform: "translateX(0)" } },
+        fade:       { "0%": { opacity: "0" }, "100%": { opacity: "1" } },
+        blink:      { "0%, 100%": { opacity: "1" }, "50%": { opacity: "0" } },
+        barFill:    { "0%": { width: "0%" }, "100%": { width: "var(--bar-w)" } },
+        ringDraw:   { "0%": { strokeDashoffset: "var(--ring-full)" }, "100%": { strokeDashoffset: "var(--ring-offset)" } },
+        xpRise:     { "0%": { opacity: "0", transform: "translateY(8px) scale(0.8)" }, "60%": { transform: "translateY(-4px) scale(1.05)" }, "100%": { opacity: "1", transform: "translateY(0) scale(1)" } },
+        shake:      { "0%, 100%": { transform: "translateX(0)" }, "25%": { transform: "translateX(-5px)" }, "75%": { transform: "translateX(5px)" } },
+        shimmer:    { "0%": { backgroundPosition: "-600px 0" }, "100%": { backgroundPosition: "600px 0" } },
+        msgIn:      { "0%": { opacity: "0", transform: "translateY(6px)" }, "100%": { opacity: "1", transform: "translateY(0)" } },
+        dotPulse:   { "0%, 80%, 100%": { transform: "scale(0.6)", opacity: "0.4" }, "40%": { transform: "scale(1)", opacity: "1" } },
+      },
+    },
+  },
+  plugins: [],
+};
+export default config;
+```
+
+---
+
+### 📦 Dependencies
+
+```bash
+# Core
+npm install axios clsx tailwind-merge
+
+# Animation
+npm install framer-motion
+
+# Editor (ALWAYS use dynamic import — never static)
+npm install monaco-editor @monaco-editor/react
+
+# Confetti (score celebration)
+npm install canvas-confetti
+npm install -D @types/canvas-confetti
+
+# Icons — Lucide is clean and matches the editorial direction
+npm install lucide-react
+
+# Date
+npm install date-fns
+
+# Fonts — loaded via next/font, no npm install needed:
+# Instrument Serif, IBM Plex Sans, IBM Plex Sans Condensed, IBM Plex Mono
+```
+
+---
+
+### Font Setup — `app/layout.tsx`
+
+```typescript
+import {
+  IBM_Plex_Sans,
+  IBM_Plex_Sans_Condensed,
+  IBM_Plex_Mono,
+  Instrument_Serif,
+} from "next/font/google";
+
+const instrumentSerif = Instrument_Serif({
+  subsets: ["latin"],
+  weight: ["400"],
+  style: ["normal", "italic"],
+  variable: "--font-display",
+  display: "swap",
+});
+
+const ibmPlexSans = IBM_Plex_Sans({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600"],
+  variable: "--font-body",
+  display: "swap",
+});
+
+const ibmPlexSansCondensed = IBM_Plex_Sans_Condensed({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-label",
+  display: "swap",
+});
+
+const ibmPlexMono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-mono",
+  display: "swap",
+});
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html
+      lang="en"
+      className={`
+        ${instrumentSerif.variable}
+        ${ibmPlexSans.variable}
+        ${ibmPlexSansCondensed.variable}
+        ${ibmPlexMono.variable}
+      `}
+    >
+      <body className="bg-ink font-body text-prose antialiased">
+        {children}
+      </body>
+    </html>
+  );
+}
+```
+
+---
+
+### 🧩 Global CSS — `styles/globals.css`
+
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+
+  :root {
+    --sidebar-w:        256px;
+    --sidebar-w-sm:     52px;
+    --topbar-h:         52px;
+    --chat-w:           272px;
+    --panel-w:          312px;
+    --ease-out-expo:    cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-in-out:      cubic-bezier(0.4, 0, 0.2, 1);
+    --t-fast:           120ms;
+    --t-base:           220ms;
+    --t-slow:           350ms;
+  }
+
+  /* Scrollbar — barely visible, never intrudes */
+  ::-webkit-scrollbar { width: 3px; height: 3px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #2A2A32; border-radius: 999px; }
+  ::-webkit-scrollbar-thumb:hover { background: #35353F; }
+
+  /* Selection — neutral, not blue */
+  ::selection { background: rgba(255,255,255,0.12); color: #EDEDF0; }
+
+  /* Focus — only on keyboard nav */
+  :focus-visible { outline: 2px solid rgba(37,99,235,0.5); outline-offset: 2px; border-radius: 4px; }
+  :focus:not(:focus-visible) { outline: none; }
+}
+
+@layer components {
+
+  /* ── SKELETON LOADER ──────────────────────────────── */
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      #18181C 25%,
+      #1E1E23 50%,
+      #18181C 75%
+    );
+    background-size: 600px 100%;
+    animation: shimmer 1.6s linear infinite;
+    border-radius: 4px;
+  }
+
+  /* ── SURFACE PATTERN ──────────────────────────────── */
+  /* Very subtle grid — used on hero backgrounds only.
+     Makes the background feel like graph paper. */
+  .graph-bg {
+    background-image:
+      linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-color: #0A0A0B;
+  }
+
+  /* ── CARD SYSTEM ──────────────────────────────────── */
+  /* Base card — no hover behavior */
+  .card {
+    @apply bg-sheet border border-rule rounded-md shadow-lift;
+  }
+
+  /* Clickable card — has hover state */
+  .card-action {
+    @apply card transition-all duration-200 cursor-pointer;
+    @apply hover:border-rule-2 hover:bg-sheet-2 hover:-translate-y-px;
+    @apply active:translate-y-0 active:shadow-none;
+  }
+
+  /* ── BADGE SYSTEM ─────────────────────────────────── */
+  /* Base badge — always uppercase, condensed font */
+  .badge {
+    @apply inline-flex items-center gap-1 font-label text-2xs font-medium
+           uppercase tracking-widest px-1.5 py-0.5 rounded-sm;
+  }
+
+  /* Semantic badge variants */
+  .badge-live     { @apply badge bg-go/10 text-go border border-go/25; }
+  .badge-active   { @apply badge bg-signal/10 text-signal border border-signal/25; }
+  .badge-paused   { @apply badge bg-caution/10 text-caution border border-caution/25; }
+  .badge-done     { @apply badge bg-go/10 text-go border border-go/25; }
+  .badge-overdue  { @apply badge bg-stop/10 text-stop border border-stop/25; }
+  .badge-hard     { @apply badge bg-stop/10 text-stop border border-stop/25; }
+  .badge-medium   { @apply badge bg-caution/10 text-caution border border-caution/25; }
+  .badge-easy     { @apply badge bg-go/10 text-go border border-go/25; }
+  .badge-interview{ @apply badge bg-mark/10 text-mark border border-mark/25; }
+  .badge-neutral  { @apply badge bg-sheet-2 text-prose-2 border border-rule; }
+  .badge-plan     { @apply badge bg-signal/10 text-signal border border-signal/25; }
+
+  /* ── BUTTON SYSTEM ────────────────────────────────── */
+  /* All buttons use IBM Plex Sans, not condensed */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 font-body font-medium
+           text-sm transition-all duration-150 select-none cursor-pointer;
+    @apply active:scale-[0.97];
+  }
+
+  /* Primary — used for THE most important action per screen. Use rarely. */
+  .btn-primary {
+    @apply btn px-4 py-2 bg-signal hover:bg-signal-dim text-white rounded-md;
+    @apply shadow-[0_1px_2px_rgba(0,0,0,0.4)] hover:shadow-[0_2px_8px_rgba(37,99,235,0.3)];
+  }
+
+  /* Secondary — for supporting actions */
+  .btn-secondary {
+    @apply btn px-4 py-2 bg-sheet-2 hover:bg-sheet-3 text-prose
+           border border-rule hover:border-rule-2 rounded-md;
+  }
+
+  /* Ghost — for low-emphasis actions */
+  .btn-ghost {
+    @apply btn px-3 py-1.5 text-prose-2 hover:text-prose hover:bg-sheet-2 rounded-base;
+  }
+
+  /* Danger — for destructive actions */
+  .btn-danger {
+    @apply btn px-4 py-2 bg-stop/10 hover:bg-stop/20 text-stop
+           border border-stop/25 rounded-md;
+  }
+
+  /* Icon button — square, no text */
+  .btn-icon {
+    @apply btn p-1.5 text-ghost hover:text-prose-2 hover:bg-sheet-2 rounded-base;
+  }
+
+  /* ── INPUT SYSTEM ─────────────────────────────────── */
+  .input {
+    @apply w-full bg-sheet border border-rule rounded-md
+           text-sm text-prose placeholder:text-ghost
+           px-3 py-2 transition-all duration-150;
+    @apply hover:border-rule-2 focus:outline-none focus:border-rule-focus;
+  }
+
+  .input-error {
+    @apply input border-stop/50 focus:border-stop/70;
+  }
+
+  /* ── DIVIDERS ─────────────────────────────────────── */
+  .divider {
+    @apply border-t border-rule;
+  }
+
+  .divider-label {
+    @apply flex items-center gap-3 text-2xs text-ghost uppercase tracking-widest;
+  }
+  .divider-label::before,
+  .divider-label::after {
+    content: '';
+    @apply flex-1 border-t border-rule;
+  }
+
+  /* ── PERSONA AVATARS ──────────────────────────────── */
+  /* Each persona has a fixed identity color — never changes */
+  .avatar {
+    @apply flex items-center justify-center rounded-full
+           font-body font-medium text-sm select-none shrink-0;
+  }
+
+  /* Colors chosen for maximum distinctiveness at small sizes */
+  .av-priya  { background: #1D4ED8; color: #BFDBFE; }  /* blue */
+  .av-karan  { background: #15803D; color: #BBF7D0; }  /* green */
+  .av-sneha  { background: #B45309; color: #FDE68A; }  /* amber */
+  .av-mehta  { background: #6D28D9; color: #DDD6FE; }  /* purple */
+  .av-meera  { background: #0E7490; color: #A5F3FC; }  /* cyan */
+
+  /* ── DEADLINE TIMER ───────────────────────────────── */
+  .timer          { @apply font-mono text-sm tabular-nums; }
+  .timer-safe     { @apply timer text-prose-2; }
+  .timer-caution  { @apply timer text-caution; }
+  .timer-danger   { @apply timer text-stop animate-pulse; }
+  .timer-overdue  { @apply timer text-stop font-semibold; }
+
+  /* ── ONLINE INDICATOR ─────────────────────────────── */
+  .dot-online  { @apply w-1.5 h-1.5 rounded-full bg-go shrink-0; }
+  .dot-away    { @apply w-1.5 h-1.5 rounded-full bg-caution shrink-0; }
+  .dot-offline { @apply w-1.5 h-1.5 rounded-full bg-ghost shrink-0; }
+
+  /* ── STAT CARD ────────────────────────────────────── */
+  .stat-card {
+    @apply card p-4 flex flex-col gap-1;
+  }
+  .stat-label {
+    @apply font-label text-2xs text-ghost uppercase tracking-widest;
+  }
+  .stat-value {
+    @apply font-display text-3xl text-prose leading-none;
+    /* Instrument Serif gives numbers editorial gravitas */
+  }
+  .stat-sub {
+    @apply font-mono text-xs text-prose-2;
+  }
+
+  /* ── SECTION HEADER ───────────────────────────────── */
+  .section-header {
+    @apply flex items-center justify-between mb-3;
+  }
+  .section-title {
+    @apply font-body text-sm font-medium text-prose-2 uppercase tracking-wider;
+  }
+
+  /* ── CODE BLOCK ───────────────────────────────────── */
+  .code-block {
+    @apply bg-ink border border-rule rounded-md font-mono text-sm text-prose-2 p-4 overflow-x-auto;
+  }
+
+  /* ── TASK TYPE TAG ────────────────────────────────── */
+  /* Text-only, monospaced tag for task classification */
+  .task-type {
+    @apply font-mono text-2xs text-ghost border border-rule px-1.5 py-0.5 rounded-sm;
+  }
+}
+
+/* ── ANIMATION DELAY UTILITIES ────────────────────── */
+.delay-50  { animation-delay: 50ms; }
+.delay-100 { animation-delay: 100ms; }
+.delay-150 { animation-delay: 150ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+.delay-600 { animation-delay: 600ms; }
+.delay-700 { animation-delay: 700ms; }
+```
+
+---
+
+## 🤖 AI PROMPTS FOR EVERY SCREEN
+
+> **HOW TO USE THESE PROMPTS**
+>
+> Each prompt is a complete, copy-paste-ready instruction for OpenCode or any AI coding tool.
+>
+> **Critical rules before you start:**
+> 1. Set up `tailwind.config.ts` and `globals.css` from the Design Tokens section above first.
+> 2. Install all npm dependencies listed.
+> 3. Paste prompts exactly — don't paraphrase. The specificity is intentional.
+> 4. After generation, review for TypeScript errors and missing imports.
+> 5. Replace mock data with API hooks before production.
+> 6. The backend API routes and models must not change — only UI changes here.
+
+---
+
+### PROMPT 1 — Root Layout + Navigation Shell
+
+**Files:** `app/layout.tsx`, `components/layout/Sidebar.tsx`, `components/layout/Topbar.tsx`
+
+```
+You are building the navigation shell for MentriQ Shadow — an AI career simulation platform.
+
+CRITICAL DESIGN DIRECTION:
+The aesthetic is Editorial Brutalism — think The Economist crossed with Linear.app. NOT a typical dark SaaS. NOT rounded gradients. NOT glowing borders. The UI must feel like a serious professional tool: dense, typographically-driven, and restrained with color.
+
+TECH: Next.js 14 App Router, TypeScript, Tailwind CSS, Framer Motion, Lucide React.
+
+INSTALLED FONTS (via CSS variables from layout.tsx):
+- --font-display: Instrument Serif (for large numbers, editorial headings)
+- --font-body: IBM Plex Sans (all UI text, labels, buttons)
+- --font-label: IBM Plex Sans Condensed (badges, tags, uppercase labels)
+- --font-mono: IBM Plex Mono (code, IDs, timestamps, timers)
+Font usage: font-display, font-body, font-label, font-mono (Tailwind classes from config)
+
+DESIGN TOKENS (tailwind.config.ts — already configured):
+- bg: ink (#0A0A0B), sheets: sheet (#18181C) / sheet-2 / sheet-3
+- borders: rule (#2A2A32), rule-2, rule-focus
+- primary: signal (#2563EB — used VERY sparingly, only for THE primary CTA)
+- success: go (#16A34A), warn: caution (#D97706), error: stop (#DC2626), special: mark (#7C3AED)
+- text: prose (#EDEDF0), prose-2 (#9898A6), ghost (#4A4A58)
+- shadows: lift, float, deep
+
+CUSTOM CLASSES (from globals.css): card, card-action, badge-*, btn-primary, btn-secondary, btn-ghost, btn-danger, btn-icon, input, input-error, avatar, av-priya/karan/sneha/mehta/meera, dot-online/away/offline, stat-card, stat-label, stat-value, stat-sub, section-header, section-title, skeleton, graph-bg, divider, divider-label, timer, timer-safe/caution/danger/overdue, task-type
+
+BUILD `components/layout/Sidebar.tsx`:
+- "use client"
+- Fixed left side, full height, width: 256px (collapsed: 52px)
+- Background: #0A0A0B — same as page bg, separated only by a right border (1px solid #2A2A32)
+- This is intentional — sidebar should NOT feel like a separate panel. It's part of the page.
+
+LOGO AREA (top, 52px height, matching topbar):
+  - Collapsed: 24×24px square with letters "MS" in signal blue, centered
+  - Expanded: Same square + "MentriQ Shadow" text in font-body font-medium text-sm text-prose
+  - A right border separates logo area from nav (border-b border-rule)
+  - Collapse toggle: a ChevronLeft icon button at the far right of the logo area, btn-icon class
+    When collapsed: rotate 180deg (shows ChevronRight)
+
+NAV SECTION LABEL (12px, ghost, uppercase, tracking-widest, font-label, px-3 mb-1):
+  Show section labels only when expanded.
+
+NAV ITEMS:
+  Routes and icons (from lucide-react):
+  - "Workspace" → LayoutGrid → /dashboard
+  - "Simulations" → Play → /simulation (with active count: a ghost number badge)  
+  - "Interviews" → MessageSquare → /interview
+  - "My Passport" → FileText → /passport/me
+  - "Leaderboard" → BarChart2 → /leaderboard
+  
+  NAV ITEM STYLING (each item):
+  - Height: 36px, px-3, flex items-center gap-2.5, rounded-base, cursor-pointer
+  - Default: text-ghost hover:text-prose-2 hover:bg-sheet
+  - Active: text-prose bg-sheet-2 border-l-2 border-signal (left accent bar)
+  - Collapsed: icon only, centered, no text. Show Tooltip on hover.
+  - Icon size: 16px (w-4 h-4), never larger
+  - Font: font-body text-sm font-normal
+  
+  Section divider between "Leaderboard" and bottom section: a border-t border-rule mx-3 my-2
+
+BOTTOM SECTION (fixed to bottom, above border):
+  USER ROW (expanded):
+  - 28px avatar circle (initials, av-priya gradient for demo user)
+  - Name in text-sm text-prose truncated
+  - Below name: Plan badge (badge-plan class, text: "FREE" or "PRO")
+  - Settings icon (Cog, btn-icon) right-aligned
+  
+  USER ROW (collapsed):
+  - Just the 28px avatar circle, centered, with Tooltip showing name + plan
+
+FRAMER MOTION:
+  - Sidebar width animates spring({ stiffness: 300, damping: 30 })
+  - Nav labels/text: AnimatePresence with opacity 0→1, x -8→0 when expanding
+  - State persists in localStorage: key "ms_sidebar_open"
+
+MOBILE BEHAVIOR (< 768px):
+  - Sidebar renders as a Sheet (drawer) that slides in from left
+  - Triggered by a Menu icon button in Topbar
+  - Overlay: bg-scrim z-40 backdrop-blur-sm
+  - Sheet itself: z-50, same styling as desktop sidebar
+
+---
+
+BUILD `components/layout/Topbar.tsx`:
+- "use client"
+- Fixed top, full width, height: 52px
+- Background: rgba(10,10,11,0.92) + backdrop-blur-md
+- Border bottom: 1px solid #2A2A32
+- Left: 256px offset (sidebar width) — collapses to 52px on mobile
+
+LEFT:
+  - Mobile only: Menu icon (btn-icon)
+  - Current page title — derived from usePathname():
+    /dashboard → "Workspace"
+    /simulation/* → "Simulation"
+    /interview/* → "Interview Room"
+    /evaluation/* → "Evaluation"
+    /passport/* → "Shadow Passport"
+    /leaderboard → "Leaderboard"
+  - Title: font-body text-sm font-medium text-prose-2
+
+CENTER:
+  - Search input (hidden on mobile):
+    width: 240px, input class, placeholder "Jump to...", leadingIcon: Search (14px)
+    Cmd+K or Ctrl+K shortcut hint text at the right: font-mono text-xs text-ghost "⌘K"
+    Focus: expands to 320px (CSS width transition)
+    On focus or cmd+k: opens a command palette modal (build this as a simple overlay)
+
+RIGHT:
+  - ACTIVE SESSION CHIP (show if there's an active simulation):
+    A small chip: dot-online + font-mono text-xs text-prose-2 "Day 3 · MERN Dev"
+    Clicking navigates to the active simulation
+    Border: border border-rule, bg-sheet-2, rounded-md, px-2 py-1
+  
+  - NOTIFICATIONS: Bell icon (btn-icon) with a 6px red dot badge (top-right) showing unread count
+  
+  - USER AVATAR: 28px avatar circle, clicking opens a small dropdown:
+    "View Passport" / "Settings" / border-t / "Sign Out" in text-stop
+
+COMMAND PALETTE MODAL (within Topbar or its own component):
+  Triggered by focus on search or Cmd+K.
+  - Overlay: fixed inset-0, bg-scrim, z-50
+  - Panel: fixed top-16 left-1/2 -translate-x-1/2, w-[480px], bg-sheet-2 border border-rule-2 rounded-lg shadow-deep
+  - Search input at top (full width, no border, just padding)
+  - Sections: "Recent" / "Quick Actions" — each with a section-title label
+  - Items: 36px rows, icon + label + shortcut hint right
+  - Keyboard navigation: arrow keys, Enter to navigate, Esc to close
+
+IMPORTANT RULES:
+- Never use <form> tags — use onClick/onChange handlers
+- All conditional classes via cn() from clsx+tailwind-merge
+- No hardcoded hex — only Tailwind token classes
+- No border-glow, no box-shadow glow, no colored borders (except the active nav left accent)
+- Export: Sidebar as default, Topbar as default
+```
+
+---
+
+### PROMPT 2 — Landing Page
+
+**File:** `app/page.tsx`
+
+```
+Build the landing page for MentriQ Shadow. This is a marketing page targeting ambitious Indian college students who are stuck in the "experienced fresher" paradox.
+
+CRITICAL: This page must NOT look like it was built by AI. Every typical AI landing page pattern must be deliberately avoided:
+- No hero with a large gradient blob
+- No "Built for [persona]" section with three user type cards
+- No purple/teal gradient brand colors
+- No rounded-pill hero buttons next to each other
+- No "Join 10,000+ students" with floating avatar circles
+- No glassmorphism hero mockup card
+
+Instead: Think editorial magazine layout. Measured. Confident. Like a well-designed annual report, not a SaaS product page.
+
+TECH: Next.js 14, TypeScript, Tailwind CSS (no Framer Motion on non-hero sections — CSS only for scroll perf)
+
+DESIGN: ink bg, sheet surfaces, rule borders, signal/go/caution/stop/mark semantic colors.
+FONTS: font-display (Instrument Serif), font-body (IBM Plex Sans), font-label (IBM Plex Sans Condensed), font-mono (IBM Plex Mono)
+
+LAYOUT PRINCIPLES:
+- The page uses a strict 12-column CSS grid (not flexbox) for major sections
+- Asymmetric layouts — sections alternate between left-heavy and right-heavy
+- The hero occupies 100vh exactly
+- Each section has generous breathing room (py-24 to py-32)
+- The single recurring visual motif: a thin horizontal rule (#2A2A32) that runs full-width between sections
+
+────────────────────────────────────────
+SECTION 1: NAVIGATION BAR (public)
+────────────────────────────────────────
+- Fixed top, 52px, bg-ink/90 backdrop-blur-md, border-b border-rule
+- LEFT: "MS" square logo (20×20, signal blue bg, inverse text, rounded-sm) + "MentriQ Shadow" font-body font-medium text-sm text-prose
+- RIGHT: "Sign In" btn-ghost + "Start Free" btn-primary
+- Mobile: hamburger → full-screen nav overlay
+
+────────────────────────────────────────
+SECTION 2: HERO — Full viewport
+────────────────────────────────────────
+Background: graph-bg class (40px grid pattern, very subtle)
+Layout: asymmetric 7/5 column split (grid-cols-12, left: col-span-7, right: col-span-5)
+
+LEFT COLUMN (vertical center):
+- EYEBROW (top-left, before headline):
+  A single line — font-mono text-xs text-ghost — "v1.0 — MERN Stack Track Now Live"
+  Separated from headline by 20px gap, not an icon or badge.
+
+- HEADLINE — Instrument Serif, 76px, leading-none, letter-spacing -0.05em:
+  "Get the job.
+  Do it first."
+  
+  The word "first" is in italic Instrument Serif (font-style: italic) — this is the editorial flourish.
+  No gradient text, no highlighted text, no strikethrough animation. Just typography.
+
+- SUBHEADLINE — IBM Plex Sans, 17px, prose-2 color, max-width 420px, leading-relaxed:
+  "MentriQ Shadow puts you inside a real company. Complete AI-assigned tasks, get reviewed, practice interviews — before your first job."
+
+- CTA ROW (flex, gap-3, mt-10):
+  - btn-primary "Apply for free simulation →" (arrow is text, not icon)
+  - A plain text link (no button style) "Watch how it works" in text-sm text-signal underline-offset-4 hover:underline
+
+- PROOF LINE — below CTAs, mt-6:
+  font-mono text-xs text-ghost
+  "2,400 students · 14 career tracks · avg. score 71/100"
+  (Three data points, dot-separated — no icons, no badges)
+
+RIGHT COLUMN (full height, centered):
+- A simulated "work assignment card" that looks like a real internal tool — NOT a polished mockup card
+- Think: a paper memo, but digitized. Slightly rough edges.
+
+CARD STRUCTURE:
+  - bg-sheet, border border-rule, rounded-md, shadow-float
+  - TOP BAR (bg-sheet-2, border-b border-rule, px-4 py-2.5, flex justify-between):
+    - Left: font-mono text-xs text-ghost "task_019 · MERN-Stack-Dev · Day 3"
+    - Right: badge-hard "HARD"
+  - BODY (px-4 py-4):
+    - Task title: font-body text-base font-medium text-prose "Fix the JWT refresh token vulnerability"
+    - Deadline: timer-danger class "01:47:22 remaining" (with a small Clock icon 12px)
+    - Gap
+    - "Assigned by" row: 20px av-priya avatar + "Priya · Team Lead" font-body text-xs text-prose-2
+    - Manager note in a left-bordered blockquote (border-l-2 border-rule, pl-3, font-body text-sm text-ghost italic):
+      "The client flagged this in the standup. Priority alpha — fix before EOD."
+  - BOTTOM (bg-sheet-2, border-t border-rule, px-4 py-2.5, flex justify-between items-center):
+    - Left: "Code submitted · 40% reviewed" — font-mono text-xs text-ghost
+    - Right: A progress bar (inline, width 80px, h-1, bg-rule rounded-full, fill 40% go color)
+
+The card is slightly elevated with shadow-float. No rotation, no floating animation. It's a work card, not a decorative element.
+
+────────────────────────────────────────
+SECTION 3: THE PARADOX — editorial layout
+────────────────────────────────────────
+A full-width section with a centered max-width container (max-w-4xl).
+
+A LARGE DISPLAY NUMBER on the far left (col-span-3):
+  font-display text-7xl text-dim "95%" — this is a big background number, not the headline
+  
+NEXT TO IT (col-span-9):
+  Headline: font-display text-4xl text-prose "of freshers get rejected before they get a chance."
+  Sub: font-body text-base text-prose-2 mt-4 max-w-xl leading-relaxed
+  "Not because they aren't smart. Because they've never shipped real code, handled a real client, or worked with a real team. Every entry-level job asks for 1–2 years of experience. How do you start?"
+
+Horizontal rule below.
+
+────────────────────────────────────────
+SECTION 4: THE CONTRAST — two-column table
+────────────────────────────────────────
+A side-by-side comparison, NOT as a table, NOT as two feature cards.
+
+Instead: a single wide card (card class), split internally by a vertical rule.
+
+LEFT HALF (label: "The old way"):
+  Section label: font-label text-xs text-ghost uppercase tracking-widest "The old way"
+  4 items, each with a CheckCircle → X mark (stop color, 14px icon) + text-sm text-ghost strikethrough:
+  ✗ Watch lecture → take quiz
+  ✗ Get certificate of completion
+  ✗ Apply with 0 experience
+  ✗ Get auto-rejected
+
+RIGHT HALF (label: "MentriQ Shadow"):
+  Section label: font-label text-xs text-go uppercase tracking-widest "MentriQ Shadow"
+  4 items with CheckCircle (go color) + text-sm text-prose:
+  ✓ Work a real task → get AI-reviewed
+  ✓ Earn a verifiable Shadow Passport
+  ✓ Apply with documented performance data
+  ✓ Get noticed
+
+The vertical divider between halves: border-r border-rule inside the card.
+
+────────────────────────────────────────
+SECTION 5: HOW IT WORKS — three steps
+────────────────────────────────────────
+Section title: "Three steps. Real work."
+
+NOT numbered cards. Instead: a left timeline rail (border-l-2 border-rule) with three steps hanging off it.
+
+Each step:
+  - A small circle on the timeline (w-2 h-2 bg-signal rounded-full, positioned on the rail)
+  - Step content sitting to the right (pl-8):
+    - Step number: font-mono text-xs text-ghost "01 —"
+    - Step title: font-body text-base font-medium text-prose
+    - Step description: font-body text-sm text-prose-2 leading-relaxed max-w-md
+    - A quiet separator (border-b border-rule pb-8 mb-8) between steps except last
+
+Step 1: "Pick your career track"
+  "Choose from MERN Developer, Data Analyst, UI/UX Designer. Your AI manager, team, and tasks are configured for your track."
+
+Step 2: "Work real daily tasks"
+  "Every morning, your AI manager Priya assigns real tasks. Write code, analyze data, submit reports. Your AI teammates message you when you're stuck."
+
+Step 3: "Earn your Shadow Passport"
+  "AI reviews everything you submit. Your score, feedback, and improvement over time goes into a public URL — your Shadow Passport — that you put on your resume."
+
+────────────────────────────────────────
+SECTION 6: CAREER TRACKS
+────────────────────────────────────────
+Section title: "Available tracks"
+
+NOT a grid of feature cards with icons. Instead: a minimal list/table.
+
+A bordered container (border border-rule rounded-md overflow-hidden):
+Each row (border-b border-rule last:border-0, px-5 py-3.5, flex justify-between items-center):
+  - LEFT: Track name (font-body text-sm font-medium text-prose) + description (text-xs text-ghost ml-2)
+  - RIGHT: Status badge
+
+Rows:
+  MERN Stack Developer · "Node, Express, React, MongoDB" → badge-live "LIVE"
+  Data Analyst · "SQL, Python, Pandas, dashboards" → badge-live "LIVE"
+  UI/UX Designer · "Figma, prototyping, user research" → badge-neutral "V2"
+  Frontend Developer · "React, TypeScript, CSS" → badge-neutral "V2"
+  Backend Developer · "REST APIs, databases, auth" → badge-neutral "V3"
+  HR Executive · "Hiring, onboarding, policy writing" → badge-neutral "V3"
+
+────────────────────────────────────────
+SECTION 7: PRICING
+────────────────────────────────────────
+Section title: "Simple pricing"
+Monthly / Yearly toggle (a small segmented control, font-mono text-xs)
+
+NOT three equal-size cards. One card is the clear recommendation.
+
+Layout: three columns, middle is taller (padding-y 8px more) with a top accent.
+
+PLAN 1 — Free (₹0):
+  card class, p-6
+  Plan name: font-label text-xs text-ghost uppercase "Free"
+  Price: font-display text-4xl text-prose "₹0" + font-body text-sm text-ghost "/month"
+  Divider
+  Feature list (font-body text-sm text-prose-2, 4 items, Check icon in go color):
+  - 1 simulation (7 days only)
+  - 3 tasks per day
+  - Basic AI feedback
+  - Community access
+  CTA: btn-secondary "Get started"
+
+PLAN 2 — Student Pro (₹299/month):
+  card class + signal border (border-signal/40) + a top accent bar (h-0.5 w-full bg-signal at very top)
+  Plan name: font-label text-xs text-signal uppercase "Student Pro"
+  Price: font-display text-4xl text-prose "₹299" + font-body text-sm text-ghost "/month"
+  A small badge-active "Most Popular" absolute top-right
+  Divider
+  Feature list (8 items, all in text-prose):
+  - Unlimited simulations
+  - Full 10-day simulation cycles
+  - 5 AI interviews per month
+  - Shadow Passport (public URL)
+  - All career tracks
+  - Score analytics
+  - Priority AI feedback
+  - Community + Discord
+  CTA: btn-primary "Start free trial →"
+
+PLAN 3 — Student Elite (₹599/month):
+  card class, p-6
+  Plan name: font-label text-xs text-mark uppercase "Elite"
+  Price: font-display text-4xl text-prose "₹599"
+  Feature list:
+  - Everything in Pro
+  - Unlimited AI interviews
+  - In-browser code sandbox
+  - LinkedIn share integration
+  - Interview transcript export
+  - Placement analytics
+  CTA: btn-secondary "Get Elite"
+
+COLLEGE PLAN (below the three cards, full-width):
+  A border border-rule rounded-md, bg-sheet-2, px-6 py-5, flex justify-between items-center:
+  - Left: "College License" font-body font-medium text-prose + "Bulk accounts, placement dashboard, instructor analytics" text-sm text-ghost
+  - Right: "₹50,000–₹5,00,000 / year" font-mono text-sm text-prose + "Contact us →" link in signal color
+
+────────────────────────────────────────
+SECTION 8: FOOTER
+────────────────────────────────────────
+bg-sheet, border-t border-rule
+
+4-column grid (gap-8, py-12):
+  Col 1: Logo + tagline + "Made in India 🇮🇳 for India" in text-xs text-ghost
+  Col 2: Product links (Dashboard, Simulations, Interviews, Passport, Leaderboard)
+  Col 3: Company links (About, Blog, Careers, Contact)
+  Col 4: Social icons (Twitter/X, LinkedIn, GitHub) — icon-only, btn-icon
+
+Bottom bar (border-t border-rule, py-4, flex justify-between text-xs text-ghost font-mono):
+  Left: "© 2025 MentriQ Shadow"
+  Right: "Built for India's next generation of developers"
+
+SCROLL ANIMATIONS (CSS only, no Framer Motion):
+  Each section: opacity 0 → 1, translateY 16px → 0, using IntersectionObserver + CSS custom properties.
+  Add class "in-view" when element enters viewport.
+  CSS: .animate-section { opacity: 0; transform: translateY(16px); transition: opacity 0.4s ease, transform 0.4s ease; }
+       .animate-section.in-view { opacity: 1; transform: translateY(0); }
+
+No inline styles for anything achievable with Tailwind.
+All links via next/link.
+All images via next/image (no placeholder images — only SVG/CSS visuals).
+Single file: app/page.tsx.
+```
+
+---
+
+### PROMPT 3 — Login & Register
+
+**Files:** `app/(auth)/login/page.tsx`, `app/(auth)/register/page.tsx`
+
+```
+Build Login and Register pages for MentriQ Shadow.
+
+TECH: Next.js 14, TypeScript, Tailwind CSS, Framer Motion (entry animation only), Lucide React.
+DESIGN: ink bg, sheet surfaces, rule borders, signal blue (used ONCE — on the submit button only).
+FONTS: font-display (Instrument Serif), font-body (IBM Plex Sans), font-mono (IBM Plex Mono)
+
+LAYOUT: NOT split-screen. NOT a branded left panel with a form right panel.
+Instead: a single centered form on the page, with the page itself providing context above it.
+
+The page layout is a vertical stack, centered (max-w-sm, mx-auto), pt-24 pb-16.
+
+BUILD `app/(auth)/login/page.tsx`:
+
+PAGE TOP (above the form card, mb-8):
+  - "MS" logo (linked to /) — same as nav
+  - Below logo: A single line of context — NOT a tagline. Not marketing.
+    font-mono text-xs text-ghost "Step 1 of 1 — Sign in to your workspace"
+
+FORM CARD (card class, p-8):
+  - Heading: font-display text-3xl text-prose "Welcome back."
+    Note the period. This is intentional typographic voice.
+  - Subheading: font-body text-sm text-ghost "Your team is waiting."
+  
+  - Email field:
+    Label: font-label text-xs text-ghost uppercase tracking-widest "Email address"
+    Input: input class, type="email", placeholder="you@example.com"
+    
+  - Password field:
+    Label: font-label text-xs text-ghost uppercase tracking-widest "Password"
+    Input: input class, type="password", toggle show/hide (Eye/EyeOff icon, btn-icon positioned inside right)
+    Below input: "Forgot password?" — text-xs text-signal hover:underline, right-aligned
+    
+  - Submit: btn-primary full-width, "Sign in →"
+    Loading state: disabled + Spinner (16px, border-t-white border-white/30 border-2, animate-spin) instead of arrow
+    
+  - Error state (if login fails):
+    A small row above the button (not a toast, not a separate card):
+    AlertCircle icon (12px, text-stop) + font-mono text-xs text-stop "Invalid email or password"
+    The email and password inputs get input-error class (red border)
+    Inputs animate-shake once
+
+  - Divider: divider-label class with text "or"
+  
+  - Google OAuth: btn-secondary full-width
+    Left: Google SVG logo (22×22, hardcoded SVG inline — no external image)
+    Text: "Continue with Google"
+
+BELOW THE CARD:
+  font-body text-sm text-ghost text-center
+  "No account? " + link to /register in text-signal "Start your simulation →"
+
+MOTION:
+  The form card: enters with animation-enter-up, delay 100ms. Just this one animation.
+  Nothing else animates.
+
+---
+
+BUILD `app/(auth)/register/page.tsx`:
+
+Same layout (centered, max-w-sm).
+
+PAGE TOP:
+  font-mono text-xs text-ghost "Step 1 — Create your workspace account"
+
+FORM CARD:
+  Heading: font-display text-3xl text-prose "Join the simulation."
+  Sub: font-body text-sm text-ghost "Takes 60 seconds. Free to start."
+
+FIELDS (in order):
+  1. Full Name — label "Your name", input, placeholder "Arjun Sharma"
+  2. Email — label "Email address", input
+  3. Password — label "Choose password", input with show/hide toggle
+     PASSWORD STRENGTH INDICATOR:
+       A single line below the input (not a progress bar, not a label):
+       5 small squares (4×16px each, gap-0.5):
+       - Empty: bg-rule
+       - Filled 1/5: bg-stop
+       - Filled 2/5: bg-caution
+       - Filled 3/5: bg-caution
+       - Filled 4-5/5: bg-go
+       Logic: length >= 8 = 1 segment, uppercase = +1, number = +1, special char = +1, length >= 12 = +1
+       
+  4. Career Track — label "I want to simulate..."
+     NOT a styled dropdown. Just a native <select> styled with: input class, text-prose
+     Options (value: slug, display: track name):
+       - mern-developer / "MERN Stack Developer (Node, React, MongoDB)"
+       - data-analyst / "Data Analyst (Python, SQL, Pandas)"
+       - ux-designer / "UI/UX Designer (Figma, research)"
+       - frontend-dev / "Frontend Developer (React, TypeScript)"
+       - other / "Other — I'll explore"
+
+SUBMIT: btn-primary full-width "Create workspace →"
+  Loading: "Setting up your workspace..." + spinner
+  
+SUCCESS:
+  The form card content is replaced (Framer Motion AnimatePresence exit/enter):
+  - A checkmark (CheckCircle, 32px, go color)
+  - "Workspace created." in font-display text-2xl text-prose
+  - "Redirecting to your dashboard..." in font-mono text-xs text-ghost
+  Then router.push('/dashboard') after 1.5 seconds.
+
+TERMS LINE:
+  font-body text-xs text-ghost text-center mt-4
+  "By signing up you agree to our terms. Your data is only used for your simulation."
+
+BELOW CARD:
+  "Already have an account? " + link to /login "Sign in →"
+
+VALIDATION (all client-side, no libraries):
+  - Name: min 2 chars
+  - Email: must have @ and .
+  - Password: min 8 chars
+  - Track: must not be empty
+  Show error below each field in font-mono text-xs text-stop when invalid on blur.
+  Disable submit button if any field is invalid.
+
+IMPORTANT:
+  No <form> elements — use divs and onClick handlers.
+  All state: useState only, no external libraries.
+  Framer Motion: only for the success state swap and card entry.
+```
+
+---
+
+### PROMPT 4 — Student Dashboard
+
+**Files:** `app/dashboard/page.tsx`, `components/dashboard/*.tsx`
+
+```
+Build the Student Dashboard for MentriQ Shadow.
+
+CRITICAL DESIGN DIRECTION:
+This screen should make the student feel like they walked into their office and found work waiting for them. NOT a learning dashboard. NOT stats + badges + leaderboard in a grid.
+
+The hierarchy on this screen is: WORK FIRST. What do I need to do TODAY? Then context. Then performance. Decorative elements last (or never).
+
+TECH: Next.js 14, TypeScript, Tailwind CSS, Framer Motion, Lucide React.
+LAYOUT: The dashboard has a fixed sidebar (256px) from Sidebar.tsx and fixed topbar (52px) from Topbar.tsx. This file handles only the MAIN CONTENT AREA (ml-[256px], pt-[52px]).
+
+Content area: max-w-6xl, mx-auto, px-8, py-8.
+
+THE LAYOUT IS A 3-COLUMN CSS GRID (not flexbox, not bento):
+grid-cols-12, gap-6
+- Left column (col-span-8): main work content
+- Right column (col-span-4): context + stats
+
+BUILD `app/dashboard/page.tsx` (compose components):
+  Mock data object at top of file (replace with API later).
+  Stagger all top-level components with Framer Motion (each: animate-enter-up, delays 0/100/200/300ms).
+
+─────────────────────────────────────
+COMPONENT: DashboardGreeting
+─────────────────────────────────────
+File: `components/dashboard/DashboardGreeting.tsx`
+col-span-12, mb-2
+
+A single line — no card, no padding, just text:
+  Left: font-display text-2xl text-prose "[Good morning/afternoon/evening], [Name]."
+  Right: Current date — font-mono text-xs text-ghost "Thursday, 23 Jan 2025"
+
+Below: One sentence of context — font-body text-sm text-prose-2 mt-1:
+  "You have 3 tasks pending and 1 interview scheduled today."
+
+─────────────────────────────────────
+COMPONENT: ActiveSimulationCard (MAIN — left col)
+─────────────────────────────────────
+File: `components/dashboard/ActiveSimulationCard.tsx`
+col-span-8
+
+This is the biggest, most important card on the screen.
+
+card class, p-0 (no padding on the card itself — sections inside have their own padding)
+
+TOP BAR (bg-sheet-2, border-b border-rule, px-5 py-3, flex justify-between items-center):
+  Left:
+    - badge-active "ACTIVE" 
+    - "MERN Stack Developer" — font-body text-sm font-medium text-prose ml-2
+  Right:
+    - "Day 3 of 10" — font-mono text-xs text-ghost
+    - "Continue →" btn-primary text-sm ml-4
+
+PROGRESS RAIL (full width, h-1, bg-rule, no border-radius):
+  Fill: width 30%, bg-signal, no rounded corners on the fill either.
+  This is a RAW progress bar — not stylized, not rounded. It reads like a loading bar.
+
+TASKS SECTION (px-5 py-4):
+  Section header: section-header class
+    Left: section-title "Today's tasks"
+    Right: "3 tasks · 1 submitted" — font-mono text-xs text-ghost
+
+  3 TASK ROWS (NOT cards — rows, separated by border-rule):
+  Each row (py-3 border-b border-rule last:border-0, flex items-start gap-3):
+    - STATUS INDICATOR (left, shrink-0):
+      Pending: a hollow circle (w-4 h-4, border border-rule-2, rounded-full)
+      Submitted: a filled circle with Check icon inside (w-4 h-4, bg-go text-inverse, rounded-full)
+      Overdue: filled circle with X (w-4 h-4, bg-stop text-inverse)
+    - TASK CONTENT (flex-1):
+      Title: font-body text-sm font-medium text-prose
+      Meta row (flex gap-3, mt-0.5): task-type class "CODE" + badge-hard "HARD" + timer-danger "01:47:22"
+    - ACTION (right, shrink-0):
+      Pending: "Open" btn-ghost text-xs
+      Submitted: "Review" btn-ghost text-xs text-ghost
+      Overdue: badge-overdue "OVERDUE"
+
+TEAM MESSAGES PREVIEW (px-5 py-3, border-t border-rule, bg-sheet-2):
+  Section title: section-title "Recent team messages"
+  2 most recent messages, each on one row (py-2, flex gap-2.5 items-start):
+    - 20px avatar (av-priya or av-karan)
+    - font-mono text-xs text-ghost "[Name]  ·  2m ago" + font-body text-xs text-prose-2 message text truncated to 1 line
+  "View all messages →" — text-xs text-signal hover:underline, mt-1
+
+─────────────────────────────────────
+COMPONENT: StatsPanel (right col)
+─────────────────────────────────────
+File: `components/dashboard/StatsPanel.tsx`
+col-span-4, flex flex-col gap-4
+
+STAT CARD 1 — XP & Level:
+  card class, p-4
+  Top: font-label text-xs text-ghost uppercase "Career level"
+  Main: font-display text-4xl text-prose "4" (the level number — editorial, big)
+  Below: font-body text-sm text-prose-2 "Junior Developer"
+  XP Progress:
+    A simple two-line display:
+    font-mono text-xs text-ghost "4,820 / 5,000 XP"
+    A full-width progress bar (h-0.5, bg-rule, fill bg-signal at 96.4%)
+    font-mono text-xs text-ghost mt-1 "+180 XP to Level 5"
+
+STAT CARD 2 — Interview Score:
+  card class, p-4
+  Top: font-label text-xs text-ghost uppercase "Interview performance"
+  Main: font-display text-4xl text-prose "77%"
+  Below: font-body text-sm text-ghost "Last: Technical · 82%"
+  CTA: "Practice interview →" text-xs text-signal hover:underline mt-2
+
+STAT CARD 3 — Quick Actions:
+  card class, p-4
+  section-title "Quick actions" mb-3
+  
+  Stack of 3 action rows (each: btn-secondary w-full justify-start text-left px-3 py-2.5):
+    - Play icon (14px) + "Start new simulation"
+    - MessageSquare icon + "Begin interview"
+    - FileText icon + "View my passport"
+  
+  Each button is full-width, left-aligned, gap-2 between icon and text.
+
+STAT CARD 4 — Streak:
+  card class, p-4
+  font-label text-xs text-ghost uppercase mb-2 "Current streak"
+  font-display text-4xl text-prose "7" days
+  font-body text-xs text-ghost mt-1 "Keep going — 3 more days to unlock 'Streak Warrior'"
+
+─────────────────────────────────────
+COMPONENT: RecentBadges (below main grid, full width)
+─────────────────────────────────────
+File: `components/dashboard/RecentBadges.tsx`
+col-span-12, mt-2
+
+section-header class
+  section-title "Recent achievements"
+  "View all →" text-xs text-signal hover:underline
+
+BADGES ROW (horizontal scroll, gap-3, pb-1):
+NOT decorative icon circles.
+Each badge is a small horizontal pill/chip (NOT a square card):
+  card-action class, inline-flex items-center gap-2, px-3 py-2, text-nowrap
+  - A small colored icon (14px) — actual Lucide icon matching badge type
+  - Badge name: font-body text-sm text-prose
+  - Date earned: font-mono text-xs text-ghost
+
+Badge data:
+  Bug (14px, text-stop) "Bug Slayer" · "Jan 21"
+  Flame (14px, text-caution) "7-Day Streak" · "Jan 23"
+  UploadCloud (14px, text-signal) "First Submission" · "Jan 18"
+  Star (14px, text-mark) "Interview Ace" · "Jan 20"
+  Zap (14px, text-go) "Speed Demon" · "Jan 22"
+
+Locked badges: opacity-40, grayscale filter, a Lock icon replacing the badge icon.
+
+─────────────────────────────────────
+LEADERBOARD WIDGET (right column, below stats)
+─────────────────────────────────────
+File: `components/dashboard/Leaderboard.tsx`
+Inline in StatsPanel or separate — col-span-4
+
+card class, p-4
+section-title "MERN Weekly Rank" mb-3
+
+A simple ranked list — 5 entries:
+Each row (flex items-center gap-2, py-2, border-b border-rule last:border-0):
+  - Rank: font-mono text-xs text-ghost w-4 "#1" "#2" etc.
+    Top 3: text in caution color + slightly larger
+  - 20px avatar circle (no class, just bg-sheet-2 and initials)
+  - Name: font-body text-sm text-prose flex-1 (current user row: bold + "You" tag in badge-neutral)
+  - XP: font-mono text-xs text-ghost
+
+Current user row: bg-sheet-2 rounded-base px-1 (subtle highlight)
+Below list: font-mono text-xs text-ghost "You are #4 — 120 XP behind #3"
+
+─────────────────────────────────────
+LOADING STATES:
+─────────────────────────────────────
+Every component has a loading skeleton version.
+Use skeleton class on placeholder elements.
+Show when data === null, replaced by real content via conditional rendering.
+
+State: const [loading, setLoading] = useState(true) — simulated 1s delay for demo.
+
+IMPORTANT:
+"use client" on all interactive components.
+cn() from clsx+tailwind-merge for all conditional classes.
+No inline styles except CSS custom properties.
+Framer Motion: stagger each top-level section (delay 0/100/200/300ms), enter-up animation.
+```
+
+---
+
+### PROMPT 5 — Simulation Workspace
+
+**Files:** `app/simulation/[sessionId]/page.tsx`, sub-components
+
+```
+Build the Simulation Workspace — the core product screen of MentriQ Shadow.
+
+CRITICAL: This is NOT a learning interface. It is a work interface. A student who opens this page should feel like they just opened Slack + Jira + VS Code — all in one — and found tasks waiting.
+
+DESIGN DIRECTION FOR THIS SCREEN SPECIFICALLY:
+This is the ONE screen where density is maximized and every pixel is justified.
+No empty states. No hero sections. No marketing copy. Pure function.
+
+TECH: Next.js 14, TypeScript, Tailwind CSS, Framer Motion (minimal), Lucide React, @monaco-editor/react (dynamic import, ssr: false)
+
+LAYOUT: 100vh, no outer scroll. A 3-column fixed layout.
+
+┌─────────────┬─────────────────────────┬──────────────────┐
+│  TEAM CHAT  │      TASK BOARD         │   CODE EDITOR    │
+│    272px    │      flex-1             │     312px        │
+└─────────────┴─────────────────────────┴──────────────────┘
+
+Above all columns: a 44px session topbar.
+Left border from sidebar: this screen replaces the sidebar entirely (sidebar hides on this route).
+
+SESSION TOPBAR (44px, bg-ink, border-b border-rule, flex items-center gap-4, px-4):
+  LEFT: ArrowLeft btn-icon + "MERN Stack Developer" font-body text-sm font-medium text-prose-2
+  CENTER: Day progress — 10 small tick marks (not dots):
+    Past days: bg-rule-2 (gray fill, 16×3px each)
+    Current day: bg-signal (16×3px)
+    Future: bg-rule (16×3px)
+    The marks have a gap-1 between them — reads like a film strip progress indicator
+  RIGHT: font-mono text-xs text-go "+80 XP today" + Settings btn-icon
+
+─────────────────────────────────────
+LEFT: TEAM CHAT (272px, border-r border-rule, flex flex-col, h-full)
+─────────────────────────────────────
+File: `components/simulation/TeamChat.tsx`
+
+CHAT HEADER (40px, border-b border-rule, px-3, flex items-center justify-between, shrink-0):
+  Left: font-body text-xs font-medium text-prose-2 "Team"
+  Right: 4 avatar circles (20px each, overlap -ml-2):
+    av-priya, av-karan, av-sneha, av-mehta — each with a dot-online on bottom-right corner
+
+MESSAGES AREA (flex-1, overflow-y-auto, px-3, py-2, flex flex-col gap-1):
+  AUTO-SCROLL on new message (useRef on container + useEffect).
+  
+  MESSAGE STRUCTURE:
+  Grouped messages (same sender within 3 mins) — no repeated avatar, just the bubble:
+    - font-body text-sm text-prose leading-relaxed, max-w-[220px]
+    - bg-sheet-2, rounded-md rounded-tl-none (first in group) or rounded-md (rest)
+    - px-3 py-2
+
+  First message from sender:
+    - Row: 28px avatar (left) + message bubble (right)
+    - Avatar class av-{name}
+    - Above bubble: font-mono text-xs text-ghost "[Name] · Team Lead · 9:12 AM"
+
+  System message (day start, task assignment):
+    - Centered text: font-mono text-xs text-ghost, py-2 "— Day 3 started —"
+
+  PERSONA SAMPLE MESSAGES:
+  Priya (Team Lead): "Morning. Three tasks waiting. Client wants the auth fix ASAP."
+  Karan (Senior Dev): "Heads up — the token refresh issue is in middleware/auth.js line 47. Easy to miss."
+  Sneha (HR): "Weekly review tomorrow 5 PM. Get all tasks submitted by EOD."
+  Mr. Mehta (Client, different bubble style — bg-sheet, border border-rule, slightly different look):
+    "Please ensure the security patch is complete before EOD. This is blocking our release."
+
+  TYPING INDICATOR (when AI is generating):
+    A row with the persona's avatar + a bubble containing:
+    3 dots (each: w-1.5 h-1.5 rounded-full bg-prose-2)
+    animate-dot-1/dot-2/dot-3 classes for the three dots
+    Framer Motion: fades in, fades out when real message arrives
+
+INPUT (shrink-0, border-t border-rule, px-3 py-2):
+  A textarea (min-h 36px, input class, font-body text-sm, resize-none)
+  placeholder "Reply to team..." (disabled = grayed out, coming soon)
+  Below: font-mono text-2xs text-dim "Team replies coming in v2"
+
+─────────────────────────────────────
+CENTER: TASK BOARD (flex-1, border-r border-rule, flex flex-col, h-full)
+─────────────────────────────────────
+File: `components/simulation/TaskBoard.tsx`
+
+TASK HEADER (40px, border-b border-rule, px-4, flex items-center justify-between, shrink-0):
+  Left: font-body text-xs font-medium text-prose-2 "Today's Tasks"
+  Right: font-mono text-xs text-ghost "3 tasks · 2 pending"
+  Far right: A small XP ticker — when XP is awarded, shows "+80 XP" in go color, animate-xp-rise then fades out after 2s
+
+TASK LIST (flex-1, overflow-y-auto, divide-y divide-rule):
+Each task is a FULL-WIDTH SECTION (no card-in-a-card), hoverable (hover:bg-sheet-2 transition):
+
+TASK SECTION STRUCTURE (px-4 py-4):
+  ROW 1 (flex justify-between items-start):
+    Left: font-body text-sm font-medium text-prose "[Task title]"
+    Right: badge-hard / badge-medium / badge-easy
+
+  ROW 2 (flex gap-3 items-center mt-1.5):
+    task-type "CODE"
+    font-mono text-xs text-ghost "task_019"
+    timer-danger or timer-caution or timer-safe "01:47:22"
+
+  ROW 3 (description — collapsible):
+    font-body text-sm text-prose-2 leading-relaxed mt-2, line-clamp-2 by default
+    "Read more" — inline text-xs text-signal hover:underline on the same line after truncation
+    Expanded state: full text + "Show less"
+    The expand/collapse: Framer Motion height animation (not display:none)
+
+  CLIENT NOTE (if exists, below description):
+    A left-bordered row (border-l-2 border-rule, pl-3, mt-2):
+    font-mono text-xs text-ghost "Client: " + text-prose-2 italic "[client message]"
+
+  ROW ACTIONS (mt-3, flex items-center justify-between):
+    Left: Status display
+      PENDING: nothing (the deadline timer is enough urgency)
+      SUBMITTED: badge-paused "Under review"
+      EVALUATED: badge-done "Evaluated" + "score: 78/100" font-mono text-xs text-go
+    Right:
+      PENDING: btn-primary text-xs "Submit task" (opens submission overlay)
+      EVALUATED: btn-ghost text-xs "View feedback →"
+
+SUBMISSION OVERLAY (full-screen overlay, not modal):
+  - A fixed overlay (inset-0, bg-scrim z-50)
+  - A panel slides in from the RIGHT (width 60vw, h-full, bg-sheet, border-l border-rule):
+    Framer Motion: x: 60→0 animation
+    HEADER (px-5 py-3, border-b border-rule, flex justify-between):
+      "Submit: [task title]" font-body text-sm font-medium text-prose
+      X btn-icon
+    CONTENT (flex-1, overflow-y-auto, p-5):
+      For CODE tasks: Monaco Editor (full available height)
+        vs-dark theme, fontSize 13, fontFamily 'IBM Plex Mono', minimap disabled
+      For REPORT tasks: textarea (input class, h-full min-h-[300px], resize-none, font-mono)
+      For DESIGN tasks: dashed drop zone (border-dashed border-2 border-rule, rounded-md, centered Upload icon + text)
+    FOOTER (px-5 py-3, border-t border-rule, flex justify-between items-center, shrink-0):
+      Left: font-mono text-xs text-ghost "[line count] lines · [char count] chars"
+      Right: btn-ghost "Cancel" + btn-primary "Submit for review →"
+
+SUBMISSION FLOW:
+  1. User submits → overlay closes → task status → "submitted" → button disabled
+  2. setTimeout 2000ms → isTyping true → Priya typing indicator in chat
+  3. setTimeout 4000ms → isTyping false → "Got your submission! AI review underway..."
+  4. Poll GET /api/v1/tasks/{id}/evaluation every 2s
+  5. Result: status → "evaluated", score badge appears, toast notification
+  6. Karan reacts in chat
+
+─────────────────────────────────────
+RIGHT: CODE EDITOR (312px, flex flex-col, h-full)
+─────────────────────────────────────
+File: `components/simulation/EditorPanel.tsx`
+
+EDITOR HEADER (40px, border-b border-rule, px-3, flex items-center justify-between, shrink-0):
+  TAB SWITCHER (two tabs):
+    "Code" and "Notes" — a segmented control style:
+    Each tab: font-label text-xs uppercase px-2 py-1 rounded-base cursor-pointer
+    Active: bg-sheet-2 text-prose
+    Inactive: text-ghost hover:text-prose-2
+  RIGHT: Language selector (a plain native select styled with text-xs font-mono text-ghost bg-transparent border-0)
+  + Copy btn-icon + Reset btn-icon
+
+EDITOR AREA (flex-1, overflow-hidden):
+  CODE TAB: Monaco Editor
+    - Dynamic import: next/dynamic({ ssr: false })
+    - theme: "vs-dark"
+    - fontSize: 13
+    - fontFamily: "'IBM Plex Mono', monospace"
+    - minimap: { enabled: false }
+    - scrollBeyondLastLine: false
+    - wordWrap: "on"
+    - lineNumbers: "on"
+    - automaticLayout: true
+    - tabSize: 2
+    - renderLineHighlight: "gutter"
+  
+  NOTES TAB:
+    A plain textarea (100% height, bg-ink, font-mono text-sm text-prose-2, no border, p-4, resize-none)
+    placeholder: "Plan your approach here. Write pseudocode. Note your questions."
+
+EDITOR FOOTER (28px, border-t border-rule, px-3, flex items-center justify-between, shrink-0, bg-ink):
+  font-mono text-2xs text-ghost
+  Left: "[language] · [line count] lines"
+  Right: "Autosaved 2s ago" (updates via localStorage, key "ms_editor_{taskId}")
+
+MONACO IMPORT:
+  import dynamic from "next/dynamic";
+  const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
+    ssr: false,
+    loading: () => <div className="skeleton h-full w-full" />
+  });
+
+MOBILE LAYOUT (<768px):
+  Stack columns vertically. Bottom tab bar with 3 tabs: Chat / Tasks / Editor.
+  Each tab shows its column in full height.
+  Tab bar: fixed bottom, 52px, bg-ink, border-t border-rule
+
+STATE TYPES:
+  type TaskStatus = 'pending' | 'submitted' | 'evaluated';
+  type TaskType = 'code' | 'report' | 'design';
+  type Difficulty = 'easy' | 'medium' | 'hard';
+  interface Task {
+    id: string; title: string; description: string;
+    clientNote?: string; taskType: TaskType; difficulty: Difficulty;
+    deadlineMs: number; status: TaskStatus; score?: number;
+  }
+  interface ChatMessage {
+    id: string; personaId: 'priya'|'karan'|'sneha'|'mehta';
+    personaRole: string; message: string; timestamp: Date; isTyping?: boolean;
+  }
+```
+
+---
+
+### PROMPT 6 — AI Interview Page
+
+**File:** `app/interview/[interviewId]/page.tsx`
+
+```
+Build the AI Interview page for MentriQ Shadow.
+
+CRITICAL: This is a focused, high-stakes screen. The student is being "interviewed." The UI must create appropriate gravity — not intimidation, but focus. No decorative elements. No sidebar. No distractions.
+
+This page is FULL SCREEN, no sidebar, no topbar (standalone immersive experience).
+bg-ink, 100vh, no outer scroll.
+
+TECH: Next.js 14, TypeScript, Tailwind CSS, Framer Motion (entry + message animations), Lucide React.
+
+PAGE ARCHITECTURE:
+Header (52px fixed, top) → Chat area (flex-1, scrollable) → Input bar (fixed bottom)
+
+─────────────────────────────────────
+FIXED HEADER (52px)
+─────────────────────────────────────
+bg-ink, border-b border-rule, px-6, flex items-center justify-between
+
+LEFT: 
+  ArrowLeft btn-icon (disabled during interview — tooltip "Can't leave during interview")
+  THEN: Interview type badge (badge-interview "TECHNICAL" or "BEHAVIORAL" or "HR")
+  THEN: font-body text-sm text-prose-2 "MERN Stack Developer"
+
+CENTER:
+  TIMER (counting up): font-display text-xl text-prose "12:34"
+  Below timer: font-mono text-xs text-ghost "Question 3 of ~10"
+
+RIGHT:
+  28px avatar (av-meera class) 
+  font-body text-xs text-prose-2 "Meera · AI Interviewer" (next to avatar)
+  + "End Interview" btn-danger text-xs ml-4
+
+─────────────────────────────────────
+CHAT AREA (flex-1, max-w-2xl, mx-auto, overflow-y-auto, px-6, py-6)
+─────────────────────────────────────
+Auto-scroll on new message. chatEndRef at bottom.
+
+PRE-INTERVIEW STATE (not_started):
+  A centered card (card class, max-w-sm, mx-auto, p-8, text-center, mt-24):
+  - 40px av-meera avatar circle (centered)
+  - font-body text-base font-medium text-prose mt-4 "Your interviewer is ready."
+  - font-mono text-xs text-ghost mt-1 "Technical Interview · 8–12 questions · ~20 minutes"
+  - A separator line (divider, my-4)
+  - font-body text-sm text-prose-2 "Take a breath. Answer clearly. Think out loud."
+  - btn-primary full-width mt-6 "Begin Interview →"
+
+IN_PROGRESS STATE:
+
+AI MESSAGES (Meera — left aligned, max-w-[65%]):
+  First message in group:
+    Row: 32px av-meera + column (name + bubble)
+    Name: font-mono text-xs text-ghost "Meera · AI Interviewer · 9:01 AM"
+    Bubble: bg-sheet, border border-rule, rounded-md rounded-tl-none (first in group), px-4 py-3
+    Text: font-body text-sm text-prose leading-relaxed
+    Framer Motion: x: -12→0, opacity 0→1, duration 0.2s
+    
+  Follow-up messages (same sender): no avatar, just bubble (ml-10 to align)
+
+USER MESSAGES (right aligned, max-w-[65%]):
+  No avatar.
+  Bubble: bg-signal text-white rounded-md rounded-tr-none, px-4 py-3
+  Text: font-body text-sm leading-relaxed
+  Framer Motion: x: 12→0, opacity 0→1
+  Timestamp: font-mono text-xs opacity-50 text-right mt-0.5
+
+TYPING INDICATOR:
+  Same left-aligned structure as Meera, but bubble contains 3 animated dots instead of text.
+  Fades in immediately after user sends, fades out when response arrives.
+
+─────────────────────────────────────
+SCORE REVEAL (when complete)
+─────────────────────────────────────
+Hide input bar (Framer Motion height 0 + overflow-hidden).
+
+A "COMPLETE" banner appears at top of chat area (sticky):
+bg-go/10, border-b border-go/25, px-6 py-2, flex justify-between items-center
+"Interview complete." font-body text-sm font-medium text-prose + font-mono text-xs text-ghost "22 minutes · 11 questions"
+
+SCORES SECTION (below messages, border-t border-rule, pt-6):
+  OVERALL SCORE:
+    NOT a ring/circle. Instead: a large editorial display number.
+    font-display text-7xl text-prose "78" (counts up from 0 using useCountUp hook)
+    font-body text-sm text-ghost "/ 100" inline
+    badge-done "PASS" or badge-overdue "NEEDS WORK" depending on score ≥ 60
+    font-mono text-xs text-ghost mt-1 "Overall interview score"
+
+  XP AWARD:
+    font-mono text-xs text-go animate-xp-rise "+200 XP awarded"
+
+  DIMENSION SCORES (5 rows):
+    Each row (flex items-center gap-3, py-2, border-b border-rule last:border-0):
+    font-body text-sm text-prose-2 w-40 "[Dimension]"
+    Horizontal bar (flex-1, h-0.5, bg-rule, relative):
+      Fill: bg-go or bg-caution or bg-stop, height h-0.5, CSS animation
+    font-mono text-xs w-8 text-right "[score]"
+
+    Dimensions: Technical Knowledge / Communication / Confidence / Problem Solving / Cultural Fit
+
+  AI FEEDBACK (card class, p-4, mt-4):
+    font-label text-xs text-ghost uppercase "Meera's assessment"
+    font-body text-sm text-prose-2 leading-relaxed mt-2 "[feedback text]"
+
+  ACTIONS (flex gap-3, mt-6):
+    btn-primary "View full report →"
+    btn-secondary "Back to dashboard"
+
+─────────────────────────────────────
+FIXED BOTTOM INPUT BAR
+─────────────────────────────────────
+bg-ink, border-t border-rule, px-6, py-3
+Hidden when interview is complete.
+
+Max-width 2xl, mx-auto — matches chat area width.
+
+Textarea (input class, resize-none, min-h-[48px] max-h-[120px], font-body text-sm, w-full)
+placeholder "Type your answer... (Ctrl+Enter to send)"
+
+Below textarea (flex justify-between, mt-1.5):
+  font-mono text-xs text-ghost "Think clearly. Answer fully."
+  font-mono text-xs text-ghost "[char count] chars"
+
+Send button (absolute right-2 bottom-2 inside the textarea container): btn-icon with Send icon (14px)
+  Disabled when textarea empty.
+  Ctrl+Enter also sends.
+
+STATE:
+  type InterviewState = 'not_started' | 'in_progress' | 'complete';
+  interface Message { id: string; role: 'ai'|'user'; content: string; timestamp: Date; }
+  const [state, setState] = useState<InterviewState>('not_started');
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [input, setInput] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+  const [timer, setTimer] = useState(0);
+  const [scores, setScores] = useState<Scores|null>(null);
+```
+
+---
+
+### PROMPT 7 — Evaluation Results Page
+
+**File:** `app/evaluation/[taskId]/page.tsx`
+
+```
+Build the Evaluation Results page for MentriQ Shadow.
+
+This page reveals AI-reviewed scores after a task submission. It is the most "rewarding" screen in the product — but the reward is earned, not given. The aesthetic is serious satisfaction, not party celebration.
+
+TECH: Next.js 14, TypeScript, Tailwind CSS, Framer Motion, canvas-confetti (imported dynamically, only for scores ≥ 85), Lucide React.
+
+LAYOUT: Single scroll column, max-w-2xl, mx-auto, px-6, pt-24 pb-16.
+Full sidebar + topbar visible (this is within the app shell).
+
+─────────────────────────────────────
+SECTION 1: SCORE HERO
+─────────────────────────────────────
+Text-centered section.
+
+TASK CONTEXT (eyebrow):
+  font-mono text-xs text-ghost "task_019 · MERN-Stack-Dev · submitted 12 min before deadline"
+
+THE SCORE:
+  NOT a ring chart. NOT a progress circle. 
+  A single massive editorial number:
+  font-display text-[120px] leading-none text-prose tracking-tight "78"
+  
+  This is intentional. The number IS the hero. Like a magazine coverline.
+  The number counts up from 0 using useCountUp hook (duration 1.2s, starts at 500ms delay).
+  
+  Below the number, same line:
+  font-body text-lg text-prose-2 "/ 100"
+  
+  Below that (mt-3): The score label + XP
+  badge-done "Good Work" (or badge-overdue "Needs Work" for < 60, or badge-active "Exceptional" for >= 90)
+  font-mono text-sm text-go ml-3 animate-xp-rise "+120 XP"  (appears at 1.5s delay)
+
+CONTEXT CHIPS (3 small items, flex justify-center gap-3, mt-6):
+  Each chip: card class inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono text-ghost
+  - Clock (12px) "Submitted 12 min early"
+  - Code (12px) "80/100 code quality"
+  - CheckSquare (12px) "All requirements met"
+
+Confetti: if score >= 85, fire canvas-confetti once at 1.5s delay (import dynamically in handler)
+  confetti({ particleCount: 80, spread: 70, origin: { y: 0.4 }, colors: ['#2563EB', '#16A34A', '#7C3AED'] })
+
+─────────────────────────────────────
+SECTION 2: SCORE BREAKDOWN
+─────────────────────────────────────
+card class, p-6, mt-12
+
+Header: section-header class
+  section-title "Score breakdown"
+  badge-neutral "AI-reviewed"
+
+5 DIMENSION ROWS (border-b border-rule, last:border-0, py-3, each):
+  Stagger in with Framer Motion (delay 0/100/200/300/400ms, enter-right)
+  Each row: flex items-center gap-4
+    font-body text-sm text-prose w-44 "[Dimension label]"
+    Flex-1: Full-width bar track (h-px bg-rule, relative):
+      Fill: height h-px → h-1 (expand on mount), color by score, CSS animation (--bar-w var)
+      NOTE: The bar is 1px default, expanding to 3px on hover — adds subtle depth
+    font-mono text-sm text-prose w-8 text-right "[score]"
+
+Dimensions: Code Quality / Communication / Problem Solving / Time Management / Completeness
+
+─────────────────────────────────────
+SECTION 3: AI FEEDBACK
+─────────────────────────────────────
+card class, p-6, mt-4. Framer Motion enter-up at 600ms.
+
+header row (flex items-center gap-2, mb-4):
+  Terminal icon (16px, text-ghost)
+  font-body text-sm font-medium text-prose "AI Review"
+  badge-neutral text-2xs "Reviewed by LLaMA 3.3-70B"
+
+FEEDBACK BODY (font-body text-sm text-prose-2 leading-relaxed):
+  The feedback paragraph.
+
+STRENGTHS (mt-5):
+  font-label text-xs text-go uppercase tracking-widest "What worked"
+  A list (mt-2, space-y-2):
+    Each item: flex gap-2 items-start
+    Check (14px, text-go, shrink-0 mt-0.5) + font-body text-sm text-prose-2
+
+IMPROVEMENTS (mt-5):
+  font-label text-xs text-caution uppercase tracking-widest "Where to improve"
+  Same list structure, ArrowRight (14px, text-caution)
+
+SENIOR QUOTE (mt-5):
+  A pulled quote — left bordered (border-l-2 border-rule, pl-4, py-1):
+  font-mono text-xs text-ghost mb-1 "What a senior would say:"
+  font-body text-sm text-prose-2 italic "[the senior's comment]"
+
+─────────────────────────────────────
+SECTION 4: TEAM REACTIONS
+─────────────────────────────────────
+No card — just a bare section with spacing, mt-8.
+
+section-title "Team reaction"
+
+2 message rows (same style as simulation workspace):
+Framer Motion: enter-up at 800ms delay.
+  Row: 28px avatar + name font-mono text-xs text-ghost + message font-body text-sm text-prose-2
+
+─────────────────────────────────────
+SECTION 5: ACTIONS
+─────────────────────────────────────
+flex justify-between items-center, mt-10, pt-6, border-t border-rule
+
+Left: btn-secondary "← Back to simulation"
+Center: "Share" — LinkedIn + Twitter icon buttons (btn-secondary text-xs + icon)
+Right: btn-primary "Next task →"
+
+MOCK DATA at top of file:
+  const mock = {
+    taskTitle: "Fix JWT refresh token vulnerability",
+    taskDifficulty: "medium",
+    overallScore: 78,
+    xpEarned: 120,
+    submittedMsBefore: 12 * 60 * 1000,
+    scores: { code_quality: 80, communication: 75, problem_solving: 82, time_management: 85, completeness: 78 },
+    feedback: "Your patch correctly identifies the vulnerability in the token refresh flow and implements a stateless verification approach. The error boundary logic is clean and well-scoped. The one gap: you haven't handled the edge case where a valid token arrives milliseconds before expiry — this is a real production concern.",
+    strengths: ["Correctly isolated the vulnerability in middleware", "Clean separation of validation logic", "Submitted ahead of deadline"],
+    improvements: ["Missing edge case: token expiry race condition", "No unit tests for the patched flow", "Consider adding rate limiting to the refresh endpoint"],
+    seniorWouldSay: "The fix works. But in production, an untested security patch is a liability. Next time: fix → test → PR. Not fix → PR. The 30 minutes you save skipping tests costs 3 hours in incident response."
+  };
+```
+
+---
+
+### PROMPT 8 — Shadow Passport
+
+**File:** `app/passport/[userId]/page.tsx`
+
+```
+Build the Shadow Passport — a public profile page for MentriQ Shadow.
+
+This is a student's publicly shareable proof-of-work. They put this URL on their resume or LinkedIn.
+The page must feel like a document of record — not a social profile, not a portfolio site.
+
+Think: a well-designed CV or a bank statement. Authoritative, clean, data-forward.
+
+TECH: Next.js 14, TypeScript, Tailwind CSS (Server Component, no Framer Motion except scroll-triggered CSS).
+PUBLIC PAGE — no authentication required. Server-rendered for SEO.
+
+LAYOUT: max-w-3xl, mx-auto, px-6, py-16.
+
+EXPORT generateMetadata for OpenGraph:
+  title: "[Name]'s Shadow Passport · MentriQ Shadow"
+  description: "3 simulations completed · avg score 74/100 · Level 4 Junior Developer"
+
+─────────────────────────────────────
+SECTION 1: PASSPORT HEADER
+─────────────────────────────────────
+NOT a hero section. NOT a cover image. 
+
+A document header — like the top of a formal certificate:
+
+Top line: font-mono text-xs text-ghost "MentriQ Shadow · Shadow Passport · Issued Jan 2025"
+A full-width hairline (border-t border-rule, mt-2 mb-6)
+
+PROFILE ROW (flex items-start gap-5):
+  LEFT: 64px avatar circle (large initials, av-priya for demo)
+  RIGHT:
+    font-display text-4xl text-prose "[Name]"
+    font-body text-sm text-ghost mt-1 "MERN Stack Developer · Data Analyst"
+    Row (mt-3, flex gap-4):
+      badge-active "Level 4"
+      font-mono text-xs text-prose-2 "Junior Developer"
+    font-mono text-xs text-ghost mt-2 "Simulating since Jan 2025 · Last active 2 days ago"
+
+  FAR RIGHT (ml-auto):
+    badge-live "Verified by AI"
+    + Share btn-secondary text-xs (Share2 icon) mt-2
+
+STATS ROW (4 stats, grid-cols-4, gap-4, mt-6, border-t border-rule pt-6):
+  Each stat: stat-card class
+    stat-label
+    stat-value (font-display, editorial numbers)
+    stat-sub
+
+  Stats: Total XP "4,820" · Sims Done "3" · Avg Score "74%" · Interviews "2 passed"
+
+─────────────────────────────────────
+SECTION 2: SKILL PERFORMANCE
+─────────────────────────────────────
+card class, p-6, mt-8
+
+section-header class
+  section-title "Skill performance"
+  font-mono text-xs text-ghost "Based on 24 AI-reviewed submissions"
+
+5 rows (same as evaluation page — dimension + bar + score):
+  Code Quality / Communication / Problem Solving / Time Management / Technical Knowledge
+  Animate on scroll-into-view (CSS: IntersectionObserver adds "in-view" class, CSS transition on width)
+
+Below bars:
+  font-body text-sm text-go "↑ Improving — scores up 8 points over last 3 simulations"
+
+─────────────────────────────────────
+SECTION 3: SIMULATION HISTORY
+─────────────────────────────────────
+section-header class mt-8
+  section-title "Completed simulations"
+  badge-neutral "3 completed"
+
+A left-bordered timeline (border-l border-rule, ml-2, pl-6, space-y-6):
+Each entry:
+  A small circle on the timeline (absolute -left-3.5, w-2 h-2 bg-rule-2 rounded-full)
+  
+  card class, p-4:
+    HEADER (flex justify-between):
+      font-body text-sm font-medium text-prose "[Track name]"
+      font-mono text-xs text-ghost "[Date completed]"
+    STATS ROW (flex gap-4, mt-2, font-mono text-xs text-ghost):
+      "10 days" · "12 tasks submitted" · "Avg: 74/100" · "1,240 XP"
+    SCORE BAR (mt-3, h-0.5 bg-rule):
+      Fill at 74%: bg-go or bg-caution or bg-stop
+    BADGES (flex gap-2, mt-3):
+      Small badge chips for each badge earned in this simulation
+    btn-ghost text-xs "View full report →" mt-2
+
+─────────────────────────────────────
+SECTION 4: BADGES WALL
+─────────────────────────────────────
+card class, p-6, mt-8
+
+section-header class
+  section-title "Achievements"
+  font-mono text-xs text-ghost "12 of 28"
+
+grid-cols-5 gap-3 (4 cols on mobile):
+Each badge: same horizontal chip style as dashboard, but stacked (flex-col instead):
+  card-action class, p-3, text-center, flex-col, items-center
+  Icon (16px, colored) — centered
+  font-body text-xs text-prose mt-1 "[Badge name]"
+  font-mono text-2xs text-ghost "[Date]"
+Locked: opacity-30, cursor-default, Lock icon replacing badge icon
+
+─────────────────────────────────────
+SECTION 5: INTERVIEW PERFORMANCE
+─────────────────────────────────────
+card class, p-6, mt-8
+
+section-title "Interview history" mb-4
+
+3 interview rows (border-b border-rule last:border-0, py-4):
+  flex items-start gap-4
+  badge-interview "[TYPE]"
+  font-body text-sm text-prose-2 flex-1 "[Role · Date]"
+  font-display text-2xl text-prose "[score]%" (editorial number)
+
+─────────────────────────────────────
+SECTION 6: VERIFICATION
+─────────────────────────────────────
+border-t border-rule, mt-12, pt-8, text-center
+
+font-mono text-xs text-ghost "This Shadow Passport is verified by MentriQ AI"
+font-mono text-2xs text-dim mt-1 "Scores generated by LLaMA 3.3-70B evaluated against industry rubrics"
+font-mono text-2xs text-dim mt-1 "Last updated: Jan 23, 2025 · mentriqshadow.com/passport/[username]"
+```
+
+---
+
+### PROMPT 9 — UI Primitives Library
+
+**Files:** `components/ui/*.tsx`
+
+```
+Build the complete UI primitives library for MentriQ Shadow.
+
+DESIGN: Editorial Brutalism — ink backgrounds, sheet surfaces, rule borders, IBM Plex font family, sparingly-used semantic colors.
+
+TECH: React, TypeScript, Tailwind CSS, Framer Motion (Modal/Toast only), Lucide React.
+All "use client".
+Use cn() from @/lib/utils (clsx + tailwind-merge).
+
+BUILD THESE FILES:
+
+─────────────────────────────────────
+`components/ui/Button.tsx`
+─────────────────────────────────────
+Props: variant ('primary'|'secondary'|'ghost'|'danger'|'icon'), size ('xs'|'sm'|'md'|'lg'), loading, disabled, iconLeft (ReactNode), iconRight (ReactNode), fullWidth, onClick, children, className, type.
+
+Variant classes from globals.css: btn-primary, btn-secondary, btn-ghost, btn-danger, btn-icon
+Size adjustments (padding/text only):
+  xs: text-xs px-2 py-1 / sm: text-xs px-3 py-1.5 / md: text-sm px-4 py-2 / lg: text-sm px-5 py-2.5
+Loading: Loader2 icon (14px) animate-spin, disables button
+Disabled: opacity-40 pointer-events-none cursor-not-allowed
+
+─────────────────────────────────────
+`components/ui/Badge.tsx`
+─────────────────────────────────────
+Props: variant ('live'|'active'|'paused'|'done'|'overdue'|'hard'|'medium'|'easy'|'interview'|'neutral'|'plan'), size ('sm'|'md'), dot, children.
+
+Uses badge-* classes from globals.css.
+dot: a 5px circle (same color as variant) prepended, animate-pulse-slow for 'live' variant.
+
+─────────────────────────────────────
+`components/ui/Input.tsx`
+─────────────────────────────────────
+Props: label, error, hint, leadingIcon (ReactNode), trailingIcon (ReactNode), trailingAction ({icon, onClick}), value, onChange, placeholder, type, disabled, size ('sm'|'md'), rows (for textarea mode), className.
+
+label: font-label text-xs text-ghost uppercase tracking-widest mb-1.5
+error: border-stop/50 → input-error class, error text below font-mono text-xs text-stop mt-1
+hint: font-mono text-xs text-ghost mt-1
+leadingIcon: absolute left-3, pointer-events-none, text-ghost
+trailingAction: absolute right-2 (btn-icon)
+pl-9 when leadingIcon present.
+
+─────────────────────────────────────
+`components/ui/Modal.tsx`
+─────────────────────────────────────
+Props: isOpen, onClose, title, description, size ('sm'|'md'|'lg'|'xl'), children, footer (ReactNode), closeOnOverlayClick (default true), showClose (default true).
+
+Framer AnimatePresence. Overlay: fixed inset-0 bg-scrim z-50, fade in.
+Panel: centered, bg-sheet-2, shadow-deep, border border-rule, rounded-lg.
+sm: max-w-sm / md: max-w-md / lg: max-w-xl / xl: max-w-3xl
+Animation: scale 0.96→1 + opacity 0→1, spring({ stiffness: 400, damping: 35 })
+Header: font-body text-sm font-medium text-prose + X btn-icon top-right
+Body: overflow-y-auto (max-height: calc(100vh - 200px))
+Footer: border-t border-rule, pt-4 flex justify-end gap-2
+ESC key closes.
+
+─────────────────────────────────────
+`components/ui/Toast.tsx` + ToastProvider
+─────────────────────────────────────
+Types: 'success' | 'error' | 'warning' | 'info'
+
+Position: fixed bottom-4 right-4, z-50, space-y-2
+Each toast: card class, min-w-[300px], flex items-center gap-3, p-3
+  Icon: CheckCircle (go) / XCircle (stop) / AlertTriangle (caution) / Info (signal)
+  font-body text-sm text-prose
+  X btn-icon ml-auto
+Auto-dismiss: 4 seconds, Framer Motion exit (x: 40, opacity: 0)
+Progress bar at bottom: h-0.5 bg-rule-2, fill bg-signal, CSS animation from 100% to 0% over 4s
+
+useToast() hook: { toast } — toast({ type, message, duration? })
+ToastProvider: wrap in app/layout.tsx
+
+─────────────────────────────────────
+`components/ui/ProgressBar.tsx`
+─────────────────────────────────────
+Props: value (0-100), color ('signal'|'go'|'caution'|'stop'), height ('px'|'sm'|'base'), animated, label, showValue, className.
+
+Track: bg-rule rounded-full
+Fill: inline style { width: `${value}%` } — color via variant
+animated: adds animate-bar-fill class + --bar-w CSS variable
+height px: h-px / sm: h-0.5 / base: h-1
+
+─────────────────────────────────────
+`components/ui/Spinner.tsx`
+─────────────────────────────────────
+Props: size ('sm'|'md'|'lg'), color ('default'|'white').
+
+A div: rounded-full, border-2, animate-spin, border-t-transparent
+default: border-rule-2 border-t-transparent
+white: border-white/30 border-t-white
+sm: w-4 h-4 / md: w-5 h-5 / lg: w-8 h-8
+
+─────────────────────────────────────
+`lib/utils.ts`
+─────────────────────────────────────
+export function cn(...inputs: ClassValue[]): string  — clsx + twMerge
+export function formatDate(date: Date | string): string  — "Jan 23, 2025"
+export function formatRelativeTime(date: Date | string): string  — "2 hours ago"
+export function formatTimer(seconds: number): string  — "02:47:33"
+export function calcXP(score: number, difficulty: 'easy'|'medium'|'hard', base = 100): number
+  multipliers: easy 1.0, medium 1.5, hard 2.0
+  formula: Math.round(base * (score/100) * multipliers[difficulty])
+export function scoreLabel(score: number): 'Exceptional'|'Good Work'|'Needs Work'|'Keep Practicing'
+export function scoreColor(score: number): 'text-go'|'text-signal'|'text-caution'|'text-ghost'
+export function useCountUp(target: number, duration = 1200, startDelay = 0): number
+  — React hook, returns animated number from 0 to target
+export function getDifficultyVariant(d: 'easy'|'medium'|'hard'): 'easy'|'medium'|'hard'
+export function getTimerClass(msRemaining: number): 'timer-safe'|'timer-caution'|'timer-danger'|'timer-overdue'
+  safe: > 2h / caution: 30min–2h / danger: < 30min / overdue: <= 0
+```
+
+---
+
+### PROMPT 10 — API Client + Auth Hooks
+
+**Files:** `lib/api.ts`, `lib/hooks/useAuth.ts`, `lib/hooks/usePoll.ts`, `lib/hooks/useSimulation.ts`, `lib/hooks/useInterview.ts`
+
+```
+Build the complete data layer for MentriQ Shadow frontend.
+
+CRITICAL: These hooks connect to the existing Django REST Framework backend. DO NOT change API routes, response formats, or field names — the backend is fixed. The hooks must match the backend's exact response structure.
+
+TECH: TypeScript, Axios, React hooks only. No Redux, no Zustand. React Context + hooks only.
+
+─────────────────────────────────────
+`lib/api.ts` — Axios instance
+─────────────────────────────────────
+const api = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1",
+  headers: { "Content-Type": "application/json" },
+  timeout: 30000,
+});
+
+REQUEST INTERCEPTOR: attach JWT from localStorage "access_token"
+RESPONSE INTERCEPTOR: on 401 → try refresh with "refresh_token" → if fail, clear localStorage + redirect /login
+
+API NAMESPACES (typed methods):
+  authAPI: { login, register, refreshToken }
+  simulationAPI: { start, getSession, generateDay, getTeamMessage }
+  taskAPI: { getTask, submit (FormData for files), getEvaluation }
+  interviewAPI: { start, sendMessage, end }
+  userAPI: { getDashboard, getPassport }
+  celeryAPI: { getTaskStatus }
+
+All methods typed with request params and return types (use ApiResponse<T> generic wrapper).
+Handle multipart/form-data in taskAPI.submit by setting appropriate headers.
+
+─────────────────────────────────────
+`lib/hooks/useAuth.ts`
+─────────────────────────────────────
+Context: AuthContext with { user, loading, login, logout, register }
+User type: { id: string; name: string; email: string; plan: 'free'|'pro'|'elite'; careerTrack: string; level: number; xp: number; }
+
+login(email, password): calls authAPI.login → stores tokens in localStorage → sets user
+logout(): clears localStorage → sets user null → router.push('/login')
+register(name, email, password, careerTrack): calls authAPI.register → auto-login
+loading: true until initial token check resolves
+
+useAuth() hook: returns context. Throws if used outside AuthProvider.
+Export AuthProvider as default, useAuth as named export.
+
+─────────────────────────────────────
+`lib/hooks/usePoll.ts`
+─────────────────────────────────────
+Signature: usePoll<T>(fetchFn: () => Promise<T>, { interval, enabled, onSuccess, onError, stopCondition }: PollOptions<T>): { data, loading, error, stop }
+
+interval: number (ms) — default 2000
+enabled: boolean — start/stop polling
+onSuccess(data: T): void — called on each successful poll
+stopCondition(data: T): boolean — if returns true, polling stops automatically
+stop(): manually stop polling
+Cleanup: clears interval on unmount.
+
+─────────────────────────────────────
+`lib/hooks/useSimulation.ts`
+─────────────────────────────────────
+Signature: useSimulation(sessionId: string)
+Returns: { session, tasks, messages, loading, error, submitTask, sendTask, refreshMessages }
+
+submitTask(taskId: string, content: string, file?: File): calls taskAPI.submit, then starts polling evaluation
+refreshMessages(trigger: string): calls simulationAPI.getTeamMessage → appends to messages
+Polls evaluation: usePoll with stopCondition = (data) => data.status === 'evaluated'
+
+─────────────────────────────────────
+`lib/hooks/useInterview.ts`
+─────────────────────────────────────
+Signature: useInterview(interviewId: string)
+Returns: { messages, state, scores, isTyping, sendMessage, endInterview, timer }
+
+sendMessage(message: string): appends user message → sets isTyping true → calls interviewAPI.sendMessage → appends AI response → if is_complete, sets state 'complete', sets scores
+timer: counts up in seconds from when state becomes 'in_progress'
+endInterview(): calls interviewAPI.end → sets state 'complete'
+
+─────────────────────────────────────
+IMPORTANT:
+All hooks handle loading/error/success states.
+All API types match Django serializer output field names (snake_case, not camelCase in responses).
+Transform snake_case responses to camelCase only inside the hooks, not in components.
+JSDoc comments on all exported functions.
+```
+
+---
+
+### 📱 Responsive Breakpoints
+
+| Breakpoint | Behavior |
+|---|---|
+| Mobile < 640px | Single column. Bottom tab bar replaces sidebar. Simulation workspace uses tab switcher. |
+| Tablet 640–1024px | Sidebar collapses to 52px icons. 2-col grids. Editor panel hides (button to open as overlay). |
+| Desktop > 1024px | Full 3-panel workspace. All content visible. |
+
+---
+
+### ⚡ Performance Rules
+
+1. Monaco Editor: always `next/dynamic` with `ssr: false` — no exceptions.
+2. canvas-confetti: dynamic import inside the trigger handler, not at module level.
+3. Scroll animations: IntersectionObserver + CSS transitions only (no Framer Motion).
+4. Fonts: `display: "swap"` on all Google Fonts — prevents render blocking.
+5. Framer Motion: `LazyMotion` + `domAnimation` feature bundle to reduce bundle.
+6. Images: `next/image` with `priority` prop only for above-fold content.
+
+---
+
+### 🛡️ Route Protection
+
+**`components/layout/ProtectedRoute.tsx`:**
+
+```typescript
+"use client";
+import { useAuth } from "@/lib/hooks/useAuth";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import Spinner from "@/components/ui/Spinner";
+
+export default function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && !user) router.push("/login");
+  }, [user, loading, router]);
+
+  if (loading || !user) return (
+    <div className="flex h-screen items-center justify-center bg-ink">
+      <Spinner size="lg" color="default" />
+    </div>
+  );
+
+  return <>{children}</>;
+}
+```
+
+---
+
+### 🎮 Monaco Editor Setup
+
+**`components/simulation/CodeEditor.tsx`:**
+
+```typescript
+"use client";
+import dynamic from "next/dynamic";
+
+const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
+  ssr: false,
+  loading: () => <div className="skeleton h-full w-full" />,
+});
+
+export const EDITOR_OPTIONS = {
+  theme: "vs-dark",
+  fontSize: 13,
+  fontFamily: "'IBM Plex Mono', monospace",
+  fontLigatures: false,  // IBM Plex Mono does not have ligatures
+  minimap: { enabled: false },
+  scrollBeyondLastLine: false,
+  wordWrap: "on" as const,
+  automaticLayout: true,
+  tabSize: 2,
+  lineNumbersMinChars: 3,
+  folding: false,
+  renderLineHighlight: "gutter" as const,
+  contextmenu: false,
+  padding: { top: 12 },
+  scrollbar: { vertical: 'hidden' as const, horizontal: 'hidden' as const },
+};
+
+interface CodeEditorProps {
+  value: string;
+  onChange: (value: string) => void;
+  language?: string;
+  height?: string;
+}
+
+export default function CodeEditor({ value, onChange, language = "javascript", height = "100%" }: CodeEditorProps) {
+  return (
+    <MonacoEditor
+      height={height}
+      language={language}
+      value={value}
+      onChange={(v) => onChange(v ?? "")}
+      options={EDITOR_OPTIONS}
+      loading={<div className="skeleton h-full w-full" />}
+    />
+  );
+}
+```
+
+**`next.config.ts`:**
+
+```typescript
+const nextConfig = {
+  experimental: {
+    optimizePackageImports: ["lucide-react", "framer-motion"],
+  },
+};
+export default nextConfig;
+```
+
+---
+
+### 📋 Pages Overview
+
+| Route | File | Auth | Description |
+|---|---|---|---|
+| `/` | `app/page.tsx` | Public | Landing (editorial marketing) |
+| `/login` | `app/(auth)/login/page.tsx` | Public | Login |
+| `/register` | `app/(auth)/register/page.tsx` | Public | Register |
+| `/dashboard` | `app/dashboard/page.tsx` | Protected | Student workspace home |
+| `/simulation/[sessionId]` | `app/simulation/[sessionId]/page.tsx` | Protected | 3-panel workspace |
+| `/interview/[interviewId]` | `app/interview/[interviewId]/page.tsx` | Protected | Fullscreen interview |
+| `/evaluation/[taskId]` | `app/evaluation/[taskId]/page.tsx` | Protected | Score reveal |
+| `/passport/[userId]` | `app/passport/[userId]/page.tsx` | Public | Shareable profile |
+
+---
+
+### 🚀 Phase 3 Setup
+
+```bash
+cd frontend
+
+npx create-next-app@latest . \
+  --typescript \
+  --tailwind \
+  --eslint \
+  --app \
+  --src-dir=false \
+  --import-alias="@/*"
+
+npm install axios clsx tailwind-merge framer-motion
+npm install @monaco-editor/react
+npm install canvas-confetti && npm install -D @types/canvas-confetti
+npm install lucide-react date-fns
+
+npm run dev
+# → http://localhost:3000
+```
+
+**`frontend/.env.local`:**
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
+```
+
+---
+
+## Tech Stack
+
+### AI & ML
+| Tool | Purpose |
+|---|---|
+| Groq `llama-3.3-70b-versatile` | Simulation engine, team personas, code review |
+| Groq `llama-3.1-8b-instant` | Interview agent (fast multi-turn) |
+| OpenAI `text-embedding-3-large` | RAG embeddings |
+| LangChain | Chains, memory, RAG orchestration |
+| LangSmith | AI pipeline tracing |
+| Pinecone | Vector database |
+
+### Backend
+| Tool | Purpose |
+|---|---|
+| Django 5 | Web framework |
+| Django REST Framework | API |
+| djangorestframework-simplejwt | JWT auth |
+| SQLite (dev) / PostgreSQL (prod) | Database |
+| Celery | Async AI tasks |
+
+### Frontend
+| Tool | Purpose |
+|---|---|
+| Next.js 14 App Router | React framework |
+| Tailwind CSS | Utility styling with Editorial Brutalism system |
+| TypeScript | Type safety |
+| Framer Motion | Entry animations, modal transitions, score reveals |
+| @monaco-editor/react | In-browser code editor |
+| canvas-confetti | Score celebration (≥ 85 only) |
+| Lucide React | Icons |
+| Axios | HTTP client with JWT interceptors |
+| IBM Plex Sans/Condensed/Mono | Body, label, and code fonts |
+| Instrument Serif | Display/editorial numbers and headings |
+| clsx + tailwind-merge | Conditional class merging |
+
+### DevOps
+| Tool | Purpose |
+|---|---|
+| Vercel | Frontend hosting |
+| Railway / Render | Backend hosting |
+| LangSmith | AI monitoring |
+
+---
+
+## Environment Variables
+
+**`backend/.env`:**
+
+```env
+SECRET_KEY=django-insecure-change-this-in-production
+DEBUG=True
+GROQ_API_KEY=gsk_...
+OPENAI_API_KEY=sk_...
+PINECONE_API_KEY=...
+PINECONE_INDEX_NAME=mentriq-knowledge
+PINECONE_ENVIRONMENT=us-east-1
+LANGCHAIN_API_KEY=...
+LANGCHAIN_TRACING_V2=true
+LANGCHAIN_PROJECT=mentriq-shadow
+CELERY_TASK_ALWAYS_EAGER=True
+CORS_ALLOWED_ORIGINS=http://localhost:3000
+```
+
+**`frontend/.env.local`:**
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
+```
+
+---
+
+## Data Flow
+
+```
+Student selects career track
+      ↓
+POST /api/v1/simulations/start → session_id
+      ↓
+POST /api/v1/simulations/{id}/generate-day → Celery → RAG + Groq → Tasks saved
+      ↓
+Frontend polls GET /api/v1/celery-tasks/{id}/status/
+      ↓
+Student works in Simulation Workspace (3-column layout)
+      ↓
+POST /api/v1/tasks/{id}/submit → Celery evaluation task
+      ↓
+Celery: RAG rubrics → Groq reviewer → Evaluation saved
+      ↓
+Frontend polls GET /api/v1/tasks/{id}/evaluation → score + feedback
+      ↓
+Evaluation page: editorial score reveal
+      ↓
+POST /api/v1/simulations/{id}/team-message → Persona engine → Chat
+      ↓
+Student levels up → next day
+```
+
+---
+
+## Database Schema
+
+```sql
+users               -- id, email, password_hash, name, subscription_plan, created_at
+career_tracks       -- id, name, slug, description, difficulty_level
+simulation_sessions -- id, user_id, career_track_id, status, current_day, total_days, xp_earned
+tasks               -- id, session_id, title, description, task_type, difficulty, deadline_hours, status
+submissions         -- id, task_id, user_id, content, file_paths (JSON), submitted_at
+evaluations         -- id, submission_id, overall_score, dimension_scores (JSON), feedback, xp_awarded
+interview_sessions  -- id, user_id, simulation_session_id, interview_type, transcript (JSON), scores
+user_badges         -- id, user_id, badge_slug, awarded_at
+```
+
+---
+
+## API Endpoints Overview
+
+```
+POST   /api/v1/auth/register
+POST   /api/v1/auth/login
+POST   /api/v1/auth/token/refresh
+
+GET    /api/v1/users/{id}/dashboard
+GET    /api/v1/users/{id}/passport
+
+POST   /api/v1/simulations/start
+GET    /api/v1/simulations/{id}
+POST   /api/v1/simulations/{id}/generate-day
+POST   /api/v1/simulations/{id}/team-message
+
+GET    /api/v1/tasks/{id}
+POST   /api/v1/tasks/{id}/submit
+GET    /api/v1/tasks/{id}/evaluation
+
+POST   /api/v1/interviews/start
+POST   /api/v1/interviews/{id}/message
+POST   /api/v1/interviews/{id}/end
+
+GET    /api/v1/celery-tasks/{id}/status/
+```
+
+---
+
+## Career Tracks
+
+| Track | Phase | Status |
+|---|---|---|
+| MERN Stack Developer | MVP | 🔄 Building |
+| Data Analyst | MVP | 🔄 Building |
+| Frontend Developer | V2 | ⏳ Planned |
+| UI/UX Designer | V2 | ⏳ Planned |
+| Backend Developer | V3 | ⏳ Planned |
+| HR Executive | V3 | ⏳ Planned |
+
+---
+
+## Gamification System
+
+| Element | Description |
+|---|---|
+| XP Points | `base_xp × (score/100) × difficulty_multiplier` |
+| Career Level | Levels 1–10 based on total XP |
+| Badges | "First Submission", "Bug Slayer", "Interview Ace", "7-Day Streak", "Speed Demon" |
+| Daily Streak | Consecutive days with at least one submission |
+| Leaderboard | Weekly XP ranking within career track |
+| Shadow Passport | Public URL with verified performance data |
+
+---
+
+## Monetization
+
+| Plan | Price | Includes |
+|---|---|---|
+| Free | ₹0 | 1 simulation (7 days), basic AI feedback |
+| Student Pro | ₹299/month | Unlimited simulations, 5 AI interviews/month, Shadow Passport, all tracks |
+| Student Elite | ₹599/month | Everything + unlimited interviews, code sandbox, transcript export |
+| College License | ₹50,000–₹5,00,000/year | Bulk accounts, placement dashboard, analytics |
+
+---
+
+## Running the Project Locally
+
+### Phase 1 — Notebooks
+
+```bash
+cd notebooks
+python -m venv venv && source venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+jupyter notebook 05_rag_knowledge_base.ipynb   # run first
+jupyter notebook 01_simulation_engine.ipynb
+```
+
+### Phase 2 — Backend
+
+```bash
+cd backend
+python -m venv venv && source venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py runserver 8000
+```
+
+### Phase 3 — Frontend
+
+```bash
+cd frontend
+npm install
+cp .env.local.example .env.local
+npm run dev   # http://localhost:3000
+```
+
+---
+
+## Critical Rules for OpenCode
+
+**Follow these exactly. These prevent the "AI-generated look":**
+
+1. **Font discipline** — Only use: Instrument Serif (display numbers + editorial headings), IBM Plex Sans (all UI text), IBM Plex Sans Condensed (badges, uppercase labels), IBM Plex Mono (code, IDs, timestamps, timers). Never use Inter, Roboto, or Geist. Never use Syne.
+
+2. **Color discipline** — Signal blue (`#2563EB`) is used ONCE per screen, on the single primary CTA. Never use it for borders, badges, or decorative purposes. Semantic colors (go/caution/stop/mark) are used ONLY for their semantic meaning — never for variety.
+
+3. **No glow effects** — Remove any `box-shadow` that uses colored values (rgba blue, rgba green, etc.). Shadows use only rgba(0,0,0,...). The only exception: focus rings (signal blue, opacity 0.4).
+
+4. **No gradient text** — Never apply gradient via `bg-clip-text`. Score numbers and headings are solid `text-prose`.
+
+5. **Borders are hairlines** — All borders use `border-rule` (1px solid #2A2A32) or `border-rule-2`. No colored borders except the active nav left accent and the "Most Popular" pricing card.
+
+6. **Rounded corners are earned** — Default radius: `rounded-base` (6px) or `rounded-md` (8px). Only buttons use `rounded-pill`. Cards never exceed `rounded-lg` (12px).
+
+7. **Type hierarchy through weight and size, not color** — The primary text hierarchy uses size and `font-medium` weight. Don't use color variation within the same text block to create hierarchy.
+
+8. **Spacing is generous on the outside, tight on the inside** — Cards have 24px padding. Rows inside cards have 12px vertical gap. Sections between cards have 32px gap.
+
+9. **The backend API is unchanged** — All field names, routes, and response formats match the Django backend exactly. Transform snake_case to camelCase only inside hooks (`lib/hooks/`).
+
+10. **`<form>` tags never appear** — Use `<div>` wrappers and `onClick` handlers. This applies everywhere.
+
+11. **Monaco Editor is always `next/dynamic` with `ssr: false`** — No static imports, ever.
+
+12. **Skeleton loaders on every data component** — If `data === null`, render skeletons. Never render empty states with "No data found" text.
+
+---
+
+*Built with discipline for India's next generation of developers.*
+*Made in India 🇮🇳*

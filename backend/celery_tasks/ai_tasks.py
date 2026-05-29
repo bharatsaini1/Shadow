@@ -1,8 +1,7 @@
-from uuid import UUID
-
 from celery import shared_task
 from django.apps import apps
 from django.utils import timezone
+from django.db.models import Avg
 
 from services.ai_client import generate_simulation_day, evaluate_submission
 
@@ -22,8 +21,8 @@ def generate_day_task(self, session_id: str, user_id: str):
 
     previous_tasks = Task.objects.filter(session=session).order_by("created_at")
     previous_context_lines = [
-        f"Day {t.created_at.day}: {t.title} ({t.status})"
-        for t in previous_tasks
+        f"Task {i+1}: {t.title} ({t.status})"
+        for i, t in enumerate(previous_tasks)
     ]
     previous_context = (
         "\n".join(previous_context_lines[-5:])
@@ -66,7 +65,12 @@ def generate_day_task(self, session_id: str, user_id: str):
     if session.current_day > session.total_days:
         session.status = "completed"
         session.completed_at = timezone.now()
-    session.save(update_fields=["current_day", "status", "completed_at"])
+        Evaluation = apps.get_model("tasks", "Evaluation")
+        avg_score = Evaluation.objects.filter(
+            submission__task__session=session
+        ).aggregate(avg=Avg("overall_score"))["avg"]
+        session.industry_readiness_score = round(avg_score, 2) if avg_score else 0.0
+    session.save(update_fields=["current_day", "status", "completed_at", "industry_readiness_score"])
 
     return {
         "session_id": session_id,
@@ -136,10 +140,15 @@ def evaluate_submission_task(self, task_id: str, submission_id: str):
     user = submission.user
     user.xp_total += evaluation.xp_awarded
     user.save(update_fields=["xp_total"])
+    user.update_career_level()
+    user.update_daily_streak()
 
     session = task.session
     session.xp_earned += evaluation.xp_awarded
     session.save(update_fields=["xp_earned"])
+
+    from apps.tasks.badges import check_and_award_badges
+    check_and_award_badges(user)
 
     return {
         "task_id": task_id,
@@ -148,3 +157,23 @@ def evaluate_submission_task(self, task_id: str, submission_id: str):
         "overall_score": evaluation.overall_score,
         "xp_awarded": evaluation.xp_awarded,
     }
+
+
+@shared_task
+def cleanup_expired_certificates():
+    Certificate = apps.get_model("simulations", "Certificate")
+    now = timezone.now()
+    expired = Certificate.objects.filter(expires_at__lte=now)
+    count = expired.count()
+    for cert in expired:
+        if cert.file_url:
+            from pathlib import Path
+            from django.conf import settings
+            file_path = cert.file_url
+            if file_path.startswith("/media/"):
+                file_path = file_path[7:]
+            full_path = settings.MEDIA_ROOT / file_path
+            if full_path.exists():
+                full_path.unlink()
+    expired.delete()
+    return {"cleaned_up": count}

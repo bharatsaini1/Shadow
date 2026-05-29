@@ -2,22 +2,25 @@ import { CONFIG } from "./config";
 
 const BASE_URL = CONFIG.API_BASE_URL;
 
-function getToken() {
-  if (typeof window !== "undefined") {
-    return localStorage.getItem("auth_token");
-  }
-  return null;
+function getCsrfToken() {
+  if (typeof document === "undefined") return "";
+  const match = document.cookie.match(/csrftoken=([^;]+)/);
+  return match ? decodeURIComponent(match[1]) : "";
 }
 
-export async function apiRequest(method, endpoint, body = null) {
-  const headers = {
-    "Content-Type": "application/json",
-  };
-  const token = getToken();
-  if (token) {
-    headers["Authorization"] = `Token ${token}`;
+async function apiRequest(method, endpoint, body = null) {
+  const headers = { "Content-Type": "application/json" };
+
+  if (["POST", "PUT", "PATCH", "DELETE"].includes(method)) {
+    const csrf = getCsrfToken();
+    if (csrf) headers["X-CSRFToken"] = csrf;
   }
-  const config = { method, headers };
+
+  const config = {
+    method,
+    headers,
+    credentials: "include",
+  };
   if (body) config.body = JSON.stringify(body);
 
   let response;
@@ -27,19 +30,27 @@ export async function apiRequest(method, endpoint, body = null) {
     throw new Error("Network error — please check your connection");
   }
 
-  if (response.status === 401) {
+  if (response.status === 401 && endpoint !== "/auth/login" && endpoint !== "/auth/register" && endpoint !== "/auth/google") {
     if (typeof window !== "undefined") {
-      localStorage.clear();
+      localStorage.removeItem("user");
+      localStorage.removeItem("db_user_id");
       window.location.href = "/login";
     }
     return;
   }
 
-  if (response.status === 204) {
-    return null;
-  }
+  if (response.status === 204) return null;
 
-  const data = await response.json();
+  let data;
+  const raw = await response.text();
+  try {
+    data = JSON.parse(raw);
+  } catch (_) {
+    if (!response.ok) {
+      throw new Error(`Server error (${response.status}). Please try again.`);
+    }
+    throw new Error(`Unexpected response from server. Expected JSON but got: ${raw.slice(0, 200)}`);
+  }
 
   if (!response.ok) {
     const message = data.detail || data.message || data.error || "Something went wrong";

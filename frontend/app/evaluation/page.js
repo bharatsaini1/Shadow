@@ -1,166 +1,188 @@
 "use client";
 
-import { useEffect } from "react";
-import { api } from "@/lib/api";
-import { getUrlParam, showToast, animateCountUp } from "@/lib/utils";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { Clock, Code, CheckSquare, ChevronRight, Terminal, Check, ArrowRight, Share2, Loader2 } from "lucide-react";
+import ProtectedRoute from "@/components/layout/ProtectedRoute";
+import AppLayout from "@/components/layout/AppLayout";
+
+const DIMS = [
+  { key: "code_quality", label: "Code Quality", score: 82 },
+  { key: "communication", label: "Communication", score: 65 },
+  { key: "problem_solving", label: "Problem Solving", score: 78 },
+  { key: "time_management", label: "Time Management", score: 90 },
+  { key: "completeness", label: "Completeness", score: 75 },
+];
+
+const CHIPS = [
+  { icon: Clock, label: "Submitted 12 min before deadline" },
+  { icon: Code, label: "task_019 · MERN" },
+  { icon: CheckSquare, label: "3 revisions" },
+];
+
+const STRENGTHS = [
+  "Clean, well-documented code with proper error handling",
+  "Good understanding of JWT token lifecycle",
+  "Efficient implementation of token rotation",
+];
+
+const IMPROVEMENTS = [
+  "Could add more comprehensive test coverage for edge cases",
+  "Consider adding rate limiting as an additional security layer",
+];
 
 export default function EvaluationPage() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+  const [score, setScore] = useState(78);
+  const [countUp, setCountUp] = useState(0);
+
   useEffect(() => {
-    const taskId = getUrlParam("task_id");
-    if (!taskId) { showToast("No task ID provided", "error"); return; }
-    loadEvaluation(taskId);
-
-    async function loadEvaluation(tid) {
-      try {
-        document.getElementById("loading-evaluation").style.display = "block";
-        document.getElementById("evaluation-content").style.display = "none";
-        const data = await api.get(`/tasks/${tid}/evaluation`);
-        document.getElementById("loading-evaluation").style.display = "none";
-        document.getElementById("evaluation-content").style.display = "block";
-        renderScores(data);
-        renderFeedback(data);
-        renderSeniorCallout(data);
-        setupCTAs(tid, data);
-      } catch (err) {
-        document.getElementById("loading-evaluation").style.display = "none";
-        showToast(err.message, "error");
-      }
-    }
-
-    function renderScores(data) {
-      const overall = data.overall_score || 0;
-      const overallEl = document.getElementById("overall-score-value");
-      if (overallEl) animateCountUp(overallEl, overall);
-
-      const scores = [
-        { key: "code_quality", label: "Code Quality", value: data.code_quality_score || 0 },
-        { key: "communication", label: "Communication", value: data.communication_score || 0 },
-        { key: "problem_solving", label: "Problem Solving", value: data.problem_solving_score || 0 },
-        { key: "time_management", label: "Time Management", value: data.time_management_score || 0 },
-        { key: "completeness", label: "Completeness", value: data.completeness_score || 0 },
-      ];
-
-      const container = document.getElementById("score-bars");
-      if (!container) return;
-      container.innerHTML = scores.map((s) => `
-        <div class="mb-4">
-          <div class="flex justify-between mb-1">
-            <span class="text-sm text-[var(--color-text-muted)]">${s.label}</span>
-            <span class="text-sm font-semibold text-[var(--color-text)]">${s.value}</span>
-          </div>
-          <div class="h-2 bg-[var(--color-surface-2)] rounded-full overflow-hidden">
-            <div class="score-bar-fill h-full bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)] rounded-full w-0 transition-[width] duration-1000 ease-out" data-score="${s.value}"></div>
-          </div>
-        </div>
-      `).join("");
-
-      requestAnimationFrame(() => {
-        container.querySelectorAll(".score-bar-fill").forEach((bar) => {
-          const score = parseInt(bar.dataset.score) || 0;
-          setTimeout(() => { bar.style.width = `${score}%`; }, 300);
-        });
-      });
-
-      const xp = data.xp_earned || 0;
-      const xpEl = document.getElementById("xp-earned");
-      if (xpEl) {
-        setTimeout(() => {
-          animateCountUp(xpEl, xp);
-          const parent = xpEl.parentElement;
-          if (parent) parent.classList.add("celebration");
-        }, 800);
-      }
-    }
-
-    function renderFeedback(data) {
-      const feedbackEl = document.getElementById("feedback-text");
-      if (feedbackEl) feedbackEl.textContent = data.feedback || "No detailed feedback available.";
-      const strengthsEl = document.getElementById("strengths-list");
-      if (strengthsEl) {
-        const strengths = data.strengths || [];
-        strengthsEl.innerHTML = strengths.length ? strengths.map(s => `<li class="py-1 text-sm text-[var(--color-text-muted)]">${s}</li>`).join("") : '<li class="py-1 text-sm text-[var(--color-text-muted)]">No specific strengths noted.</li>';
-      }
-      const improvementsEl = document.getElementById("improvements-list");
-      if (improvementsEl) {
-        const improvements = data.improvement_suggestions || [];
-        improvementsEl.innerHTML = improvements.length ? improvements.map(s => `<li class="py-1 text-sm text-[var(--color-text-muted)]">${s}</li>`).join("") : '<li class="py-1 text-sm text-[var(--color-text-muted)]">Keep up the good work!</li>';
-      }
-    }
-
-    function renderSeniorCallout(data) {
-      const seniorEl = document.getElementById("senior-callout");
-      if (seniorEl) seniorEl.textContent = data.what_a_senior_would_say || "A senior developer would appreciate your effort on this task.";
-    }
-
-    function setupCTAs(tid, data) {
-      document.getElementById("next-task-btn")?.addEventListener("click", () => window.location.href = "/dashboard");
-      document.getElementById("start-interview-btn")?.addEventListener("click", async () => {
-        try {
-          const result = await api.post("/interviews/start", { simulation_session_id: "", interview_type: "technical" });
-          window.location.href = `/interview?interview_id=${result.interview_id}`;
-        } catch (err) { showToast(err.message, "error"); }
-      });
-    }
+    const timer = setTimeout(() => setLoading(false), 800);
+    return () => clearTimeout(timer);
   }, []);
 
-  return (
-    <main className="main-content evaluation-page">
-      <div id="loading-evaluation" className="text-center py-20 px-6">
-        <div className="spinner spinner-lg mx-auto"></div>
-        <p className="mt-4">Loading your evaluation...</p>
-      </div>
+  useEffect(() => {
+    if (!loading) {
+      let current = 0;
+      const step = Math.ceil(score / 30);
+      const interval = setInterval(() => {
+        current += 1;
+        setCountUp(current);
+        if (current >= score) clearInterval(interval);
+      }, 40);
+      return () => clearInterval(interval);
+    }
+  }, [loading, score]);
 
-      <div id="evaluation-content" className="hidden">
-        <div className="text-center mb-8">
-          <div className="mb-4">
-            <div id="score-ring" className="w-[120px] h-[120px] rounded-full border-4 border-[var(--color-primary)] flex items-center justify-center mx-auto">
-              <div className="text-center">
-                <div className="score-number text-4xl font-bold font-['Space_Grotesk']" id="overall-score-value">0</div>
-                <div className="text-xs text-[var(--color-text-muted)]">Overall</div>
+  const barColor = (val) => {
+    if (val >= 80) return "bg-go";
+    if (val >= 60) return "bg-caution";
+    return "bg-stop";
+  };
+
+  return (
+    <ProtectedRoute>
+      <AppLayout>
+        {loading ? (
+          <div className="flex items-center justify-center py-24">
+            <Loader2 size={24} className="animate-spin text-ink-ghost dark:text-ghost" />
+          </div>
+        ) : (
+          <div className="max-w-2xl mx-auto pb-16">
+            {/* Section 1: Score Hero */}
+            <div className="text-center pt-12">
+              <p className="font-mono text-xs text-ink-ghost dark:text-ghost mb-8">
+                task_019 · MERN · submitted 12 min before deadline
+              </p>
+              <div className="font-display text-[120px] leading-none text-ink-prose dark:text-prose tracking-tight" style={{ fontVariationSettings: '"opsz" 120, "wght" 600' }}>
+                {countUp}
+              </div>
+              <p className="font-body text-lg text-ink-prose-2 dark:text-prose-2 mt-2">/ 100</p>
+              <div className="flex items-center justify-center gap-3 mt-4">
+                <span className="badge-done text-sm">EXCELLENT</span>
+                <span className="font-mono text-sm text-go animate-xp-rise">+120 XP</span>
+              </div>
+              <div className="flex items-center justify-center gap-3 mt-6">
+                {CHIPS.map((chip, i) => (
+                  <div key={i} className="card inline-flex items-center gap-1.5 px-3 py-1.5 font-mono text-xs text-ink-ghost dark:text-ghost">
+                    <chip.icon size={12} />
+                    {chip.label}
+                  </div>
+                ))}
               </div>
             </div>
-          </div>
-          <h2>Task Evaluation</h2>
-          <p>Here&apos;s how your submission was scored across key areas.</p>
-        </div>
 
-        <div className="bg-[var(--color-surface)] rounded-[var(--radius-md)] p-6 border border-white/5 mb-6">
-          <h3>Score Breakdown</h3>
-          <div id="score-bars"></div>
-        </div>
+            {/* Section 2: Score Breakdown */}
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="card p-6 mt-12"
+            >
+              <div className="section-header">
+                <div className="section-title">Score Breakdown</div>
+                <span className="badge-neutral">AI-reviewed</span>
+              </div>
+              <div className="space-y-4">
+                {DIMS.map((dim, i) => (
+                  <motion.div
+                    key={dim.key}
+                    initial={{ opacity: 0, x: -12 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.5 + i * 0.08 }}
+                  >
+                    <div className="flex items-center gap-4">
+                      <span className="font-body text-sm w-36 text-ink-prose-2 dark:text-prose-2 shrink-0">{dim.label}</span>
+                      <div className="flex-1 h-px bg-rule-light dark:bg-rule">
+                        <div className={`h-full ${barColor(dim.score)}`} style={{ width: `${dim.score}%` }} />
+                      </div>
+                      <span className="font-mono text-sm w-8 text-right text-ink-ghost dark:text-ghost">{dim.score}</span>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
 
-        <div id="xp-celebration" className="text-center p-6 bg-[var(--color-surface)] rounded-[var(--radius-md)] border border-white/5 mb-6">
-          <div className="text-3xl mb-2">⚡</div>
-          <div className="text-2xl font-bold font-['Space_Grotesk'] text-[var(--color-accent)]">+<span id="xp-earned">0</span> XP</div>
-          <div className="text-sm text-[var(--color-text-muted)]">Earned from this task</div>
-        </div>
+            {/* Section 3: AI Feedback */}
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              className="card p-6 mt-4"
+            >
+              <div className="flex items-center gap-2 mb-4">
+                <Terminal size={14} className="text-ink-ghost dark:text-ghost" />
+                <span className="font-body text-sm font-semibold text-ink-prose dark:text-prose">AI Review</span>
+                <span className="badge-neutral ml-auto">LLaMA 3.3-70B</span>
+              </div>
 
-        <div className="bg-[var(--color-surface)] rounded-[var(--radius-md)] p-6 border border-white/5 mb-6">
-          <h3>Feedback</h3>
-          <div id="feedback-text" className="text-sm text-[var(--color-text-muted)] mb-5"></div>
-          <div className="grid grid-cols-2 gap-5">
-            <div className="bg-[var(--color-surface-2)] rounded-[var(--radius-md)] p-4">
-              <h4>💪 Strengths</h4>
-              <ul id="strengths-list"></ul>
+              <p className="font-body text-sm text-ink-prose-2 dark:text-prose-2 leading-relaxed mb-6">
+                The submission demonstrates a solid understanding of JWT refresh token mechanics. The implementation correctly invalidates used refresh tokens via a Redis-backed blacklist, which is a production-grade approach. The code is clean and well-structured, though additional test coverage and rate limiting would make this truly production-ready.
+              </p>
+
+              <div className="space-y-4">
+                <div>
+                  <p className="font-mono text-xs text-go uppercase tracking-wider mb-2">What worked</p>
+                  <div className="space-y-1.5">
+                    {STRENGTHS.map((s, i) => (
+                      <div key={i} className="flex items-start gap-2">
+                        <Check size={12} className="text-go mt-0.5 shrink-0" />
+                        <span className="font-body text-sm text-ink-prose-2 dark:text-prose-2">{s}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <p className="font-mono text-xs text-caution uppercase tracking-wider mb-2">Where to improve</p>
+                  <div className="space-y-1.5">
+                    {IMPROVEMENTS.map((s, i) => (
+                      <div key={i} className="flex items-start gap-2">
+                        <ArrowRight size={12} className="text-caution mt-0.5 shrink-0" />
+                        <span className="font-body text-sm text-ink-prose-2 dark:text-prose-2">{s}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-l-2 border-rule-light dark:border-rule pl-4 mt-6 font-body text-sm italic text-ink-ghost dark:text-ghost">
+                &ldquo;Good work overall. The blacklist approach is solid. For next time, I&apos;d like to see a more comprehensive test suite — aim for 90% coverage on auth-related code. Also consider adding a rate limiter as a defense-in-depth measure.&rdquo;
+              </div>
+            </motion.div>
+
+            {/* Actions */}
+            <div className="flex items-center justify-between mt-8">
+              <div className="flex items-center gap-2">
+                <button className="btn-secondary text-sm"><Share2 size={14} /> Share results</button>
+              </div>
+              <button onClick={() => router.push("/dashboard")} className="btn-primary text-sm">Back to dashboard <ChevronRight size={14} /></button>
             </div>
-            <div className="bg-[var(--color-surface-2)] rounded-[var(--radius-md)] p-4">
-              <h4>🎯 Areas to Improve</h4>
-              <ul id="improvements-list"></ul>
-            </div>
           </div>
-        </div>
-
-        <div className="bg-[rgba(91,78,255,0.08)] border border-[rgba(91,78,255,0.2)] rounded-[var(--radius-md)] p-5 mb-6">
-          <span className="text-xs text-[var(--color-primary)] font-semibold uppercase tracking-wider">What a Senior Would Say</span>
-          <p id="senior-callout" className="mt-2 text-sm"></p>
-        </div>
-
-        <div className="flex gap-3 justify-center flex-wrap py-6">
-          <button className="btn btn-primary" id="next-task-btn">Next Task</button>
-          <button className="btn btn-accent" id="start-interview-btn">Start Interview</button>
-          <a href="/dashboard" className="btn btn-secondary">Back to Dashboard</a>
-        </div>
-      </div>
-    </main>
+        )}
+      </AppLayout>
+    </ProtectedRoute>
   );
 }

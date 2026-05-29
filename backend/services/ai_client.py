@@ -28,11 +28,19 @@ def _post(endpoint: str, payload: dict) -> dict:
 def generate_simulation_day(
     role: str, day: int, previous_context: str, difficulty: str
 ) -> dict:
+    difficulty_map = {
+        "beginner": "easy",
+        "easy": "easy",
+        "intermediate": "intermediate",
+        "hard": "hard",
+        "advanced": "hard",
+    }
+    normalized = difficulty_map.get(difficulty.lower(), "intermediate")
     return _post("/ai/simulate/generate-day", {
         "role": role,
         "day": day,
         "previous_context": previous_context,
-        "difficulty": difficulty,
+        "difficulty": normalized,
     })
 
 
@@ -95,4 +103,18 @@ def generate_team_message(
         "context": context,
         "student_performance": student_performance,
         "message_history": message_history,
+    })
+
+
+def generate_team_chat_response(
+    persona: str,
+    user_message: str,
+    conversation_history: list,
+    context: dict,
+) -> dict:
+    return _post("/ai/persona/chat", {
+        "persona": persona,
+        "user_message": user_message,
+        "conversation_history": conversation_history,
+        "context": context,
     })

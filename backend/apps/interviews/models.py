@@ -26,6 +26,7 @@ class InterviewSession(models.Model):
         null=True,
         blank=True,
     )
+    role = models.CharField(max_length=200, default="Software Engineer")
     interview_type = models.CharField(max_length=50, choices=TYPES)
     status = models.CharField(max_length=20, choices=STATUS, default="active")
     transcript = models.JSONField(default=list)

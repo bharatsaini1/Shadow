@@ -20,17 +20,17 @@ First, reason through the evaluation step by step. Then provide scores in JSON f
 
 You MUST respond with valid JSON only. No markdown, no explanation.
 The JSON must use this exact structure:
-{
+{{
   "overall_score": 78,
-  "scores": {
+  "scores": {{
     "code_quality": 80,
     "communication": 75,
     "problem_solving": 82,
     "time_management": 70,
     "completeness": 85
-  },
+  }},
   "feedback": "Your solution correctly handles...",
   "strengths": ["Clean code structure", "Good error handling"],
   "improvement_suggestions": ["Add input validation", "Optimize database query"],
   "what_a_senior_would_say": "A senior would notice that..."
-}
+}}

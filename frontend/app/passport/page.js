@@ -1,146 +1,167 @@
 "use client";
 
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Award, Star, Code, Target, MessageSquare, Flame, Palette, Zap, Check, ChevronRight, BarChart3, Shield, Clock } from "lucide-react";
 import { api } from "@/lib/api";
-import { getUrlParam, showToast } from "@/lib/utils";
+import { showToast, sanitizeHtml } from "@/lib/utils";
+import { getUserId } from "@/lib/auth";
+import ProtectedRoute from "@/components/layout/ProtectedRoute";
+import AppLayout from "@/components/layout/AppLayout";
+
+const SKILLS = [
+  { name: "MERN Stack", score: 88, icon: Code },
+  { name: "Problem Solving", score: 78, icon: Target },
+  { name: "Communication", score: 65, icon: MessageSquare },
+  { name: "Consistency", score: 92, icon: Flame },
+];
+
+const RECENT_BADGES = [
+  { name: "First Task Complete", icon: Star, color: "text-go", slug: "first-task" },
+  { name: "Debug Master", icon: Zap, color: "text-signal", slug: "debug-master" },
+  { name: "Streak Warrior", icon: Flame, color: "text-caution", slug: "streak-warrior" },
+];
 
 export default function PassportPage() {
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState(null);
+
   useEffect(() => {
-    const userId = getUrlParam("user_id");
-
-    async function loadPassport() {
-      if (!userId) {
-        document.getElementById("passport-loading").style.display = "none";
-        document.getElementById("passport-content").style.display = "block";
-        document.getElementById("passport-name").textContent = "No user specified";
-        return;
-      }
-
-      try {
-        const data = await api.get(`/auth/${userId}/passport`);
-        document.getElementById("passport-loading").style.display = "none";
-        document.getElementById("passport-content").style.display = "block";
-
-        const name = data.name || "Anonymous";
-        const level = data.career_level || 1;
-        document.getElementById("passport-name").textContent = name;
-        document.getElementById("passport-level").textContent = `Level ${level}`;
-        document.getElementById("passport-avatar").textContent = name[0] || "?";
-
-        renderSimulations(data.simulations || []);
-        renderInterviews(data.interviews || []);
-        renderBadges(data.badges || []);
-      } catch (err) {
-        document.getElementById("passport-loading").style.display = "none";
-        document.getElementById("passport-content").style.display = "block";
-        document.getElementById("passport-name").textContent = "Failed to load";
-        document.querySelector(".passport-tagline").textContent = err.message;
-      }
-
-      document.getElementById("share-passport-btn")?.addEventListener("click", () => {
-        navigator.clipboard.writeText(window.location.href)
-          .then(() => showToast("Passport URL copied to clipboard!", "success"))
-          .catch(() => showToast("Failed to copy URL", "error"));
-      });
-    }
-
-    function renderSimulations(simulations) {
-      const container = document.getElementById("passport-simulations");
-      if (!simulations.length) {
-        container.innerHTML = '<div class="empty-state"><p>No simulations completed yet.</p></div>';
-        return;
-      }
-      container.innerHTML = simulations.map(sim => `
-        <div class="flex items-center justify-between p-3 bg-[var(--color-surface-2)] rounded-[var(--radius-sm)]">
-          <div>
-            <h4 class="m-0 text-sm">${sim.career_track || "Simulation"}</h4>
-            <span class="text-[var(--color-text-muted)] text-xs">Day ${sim.current_day || 1}/${sim.total_days || 10}</span>
-          </div>
-          <div class="font-semibold text-[var(--color-primary)]">${sim.industry_readiness_score || "—"}</div>
-        </div>
-      `).join("");
-    }
-
-    function renderInterviews(interviews) {
-      const container = document.getElementById("passport-interviews");
-      if (!interviews.length) {
-        container.innerHTML = '<div class="empty-state"><p>No interviews completed yet.</p></div>';
-        return;
-      }
-      container.innerHTML = interviews.map(iv => `
-        <div class="p-3 bg-[var(--color-surface-2)] rounded-[var(--radius-sm)] text-center">
-          <h4 class="m-0 text-sm">${iv.interview_type || "Interview"}</h4>
-          <div class="text-xl font-bold text-[var(--color-primary)]">${iv.overall_score || "—"}</div>
-          <div class="text-xs text-[var(--color-text-muted)]">${iv.interview_type || "Technical"}</div>
-        </div>
-      `).join("");
-    }
-
-    function renderBadges(badges) {
-      const container = document.getElementById("passport-badges");
-      if (!badges.length) {
-        container.innerHTML = '<div class="empty-state"><p>No badges earned yet.</p></div>';
-        return;
-      }
-      const badgeIcons = { "first-submission": "🏆", "bug-slayer": "🐛", "interview-ace": "🎯", "7-day-streak": "🔥", "code-master": "💻", "design-pro": "🎨" };
-      container.innerHTML = badges.map(badge => `
-        <div class="text-center p-3">
-          <div class="text-3xl mb-1">${badgeIcons[badge.badge_slug] || "⭐"}</div>
-          <span class="text-xs text-[var(--color-text-muted)]">${badge.name || badge.badge_slug?.replace("-", " ") || "Badge"}</span>
-        </div>
-      `).join("");
-    }
-
-    loadPassport();
+    const uid = getUserId();
+    if (!uid) return;
+    loadData(uid);
   }, []);
 
+  async function loadData(uid) {
+    try {
+      const result = await api.get(`/auth/${uid}/passport`);
+      setData(result);
+    } catch (err) {
+      showToast(err.message, "error");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  if (loading) {
+    return (
+      <ProtectedRoute>
+        <AppLayout>
+          <div className="max-w-2xl mx-auto space-y-4">
+            <div className="skeleton h-8 w-1/3 mb-2" />
+            <div className="skeleton h-4 w-2/3 mb-6" />
+            {Array.from({ length: 3 }).map((_, i) => <div key={i} className="skeleton h-24 w-full rounded-md" />)}
+          </div>
+        </AppLayout>
+      </ProtectedRoute>
+    );
+  }
+
   return (
-    <main className="max-w-[720px] mx-auto p-6 pt-10">
-      <div id="passport-loading" className="text-center py-20 px-6">
-        <div className="spinner spinner-lg mx-auto"></div>
-        <p className="mt-4">Loading Shadow Passport...</p>
-      </div>
+    <ProtectedRoute>
+      <AppLayout>
+        <div className="max-w-2xl mx-auto">
+          {/* Header */}
+          <div className="mb-8">
+            <div className="flex items-center gap-2 mb-1">
+              <Shield size={20} className="text-signal" />
+              <h1 className="font-display text-2xl text-ink-prose dark:text-prose" style={{ fontVariationSettings: '"opsz" 24, "wght" 600' }}>
+                Shadow Passport
+              </h1>
+            </div>
+            <p className="font-body text-sm text-ink-prose-2 dark:text-prose-2">Your verified work history. Share it with employers.</p>
+          </div>
 
-      <div id="passport-content" className="hidden">
-        <div className="text-center mb-8">
-          <div id="passport-avatar" className="w-20 h-20 rounded-full bg-[var(--color-primary)] flex items-center justify-center text-3xl font-bold mx-auto mb-4">?</div>
-          <h2 id="passport-name" className="mb-1">Loading...</h2>
-          <div id="passport-level" className="text-[var(--color-primary)] font-semibold mb-1">Level 1</div>
-          <p className="passport-tagline text-sm text-[var(--color-text-muted)] m-0">Aspiring Developer</p>
-        </div>
+          {/* Stats row */}
+          <div className="grid grid-cols-3 gap-4 mb-8">
+            <div className="stat-card">
+              <div className="stat-label">Simulations</div>
+              <div className="stat-value text-2xl">12</div>
+              <div className="stat-sub">3 in progress</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-label">Avg. Score</div>
+              <div className="stat-value text-2xl">78%</div>
+              <div className="stat-sub">+5% this week</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-label">XP Earned</div>
+              <div className="stat-value text-2xl">4,820</div>
+              <div className="stat-sub">Level 4 · Junior</div>
+            </div>
+          </div>
 
-        <div className="mb-6">
-          <h3 className="mb-3">🎮 Completed Simulations</h3>
-          <div id="passport-simulations" className="flex flex-col gap-2">
-            <div className="empty-state"><p>No simulations completed yet.</p></div>
+          {/* Skill bars */}
+          <div className="card p-6 mb-6">
+            <div className="section-header">
+              <div className="section-title">Skills Assessment</div>
+            </div>
+            <div className="space-y-4">
+              {SKILLS.map((skill, i) => (
+                <motion.div
+                  key={skill.name}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.06 }}
+                >
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <skill.icon size={14} className="text-ink-ghost dark:text-ghost" />
+                    <span className="font-body text-sm text-ink-prose dark:text-prose">{skill.name}</span>
+                    <span className="font-mono text-xs text-ink-ghost dark:text-ghost ml-auto">{skill.score}%</span>
+                  </div>
+                  <div className="h-0.5 bg-rule-light dark:bg-rule">
+                    <div className={`h-full w-[${skill.score}%] ${skill.score >= 80 ? "bg-go" : skill.score >= 60 ? "bg-caution" : "bg-stop"}`} />
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
+          {/* Recent badges */}
+          <div className="card p-6 mb-6">
+            <div className="section-header">
+              <div className="section-title">Recent Badges</div>
+              <a href="/badges" className="link-warm text-xs">View all <ChevronRight size={10} className="inline" /></a>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {RECENT_BADGES.map((badge) => (
+                <div key={badge.slug} className="card-action inline-flex items-center gap-2 px-3 py-2">
+                  <badge.icon size={14} className={badge.color} />
+                  <span className="font-body text-sm text-ink-prose dark:text-prose">{badge.name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Career timeline */}
+          <div className="card p-6">
+            <div className="section-header">
+              <div className="section-title">Career Timeline</div>
+            </div>
+            <div className="space-y-4">
+              {[
+                { title: "MERN Stack Simulation", subtitle: "Day 3 of 10 · 78% avg", date: "Jan 2025", active: true },
+                { title: "Data Analysis Simulation", subtitle: "Completed · 82% score", date: "Dec 2024", active: false },
+                { title: "UI/UX Workshop", subtitle: "Completed · Certificate earned", date: "Nov 2024", active: false },
+              ].map((entry, i) => (
+                <div key={i} className="flex items-start gap-3 pb-4 border-b border-rule-light dark:border-rule last:border-0 last:pb-0">
+                  <div className={`w-2 h-2 rounded-full mt-1.5 ${entry.active ? "bg-signal" : "bg-rule-light-2 dark:bg-rule-2"}`} />
+                  <div className="flex-1">
+                    <div className="font-body text-sm font-medium text-ink-prose dark:text-prose">{entry.title}</div>
+                    <div className="font-body text-xs text-ink-prose-2 dark:text-prose-2 mt-0.5">{entry.subtitle}</div>
+                  </div>
+                  <span className="font-mono text-xs text-ink-ghost dark:text-ghost">{entry.date}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Share button */}
+          <div className="mt-8 text-center">
+            <button className="btn-primary text-sm">Share your passport <ChevronRight size={14} /></button>
           </div>
         </div>
-
-        <div className="mb-6">
-          <h3 className="mb-3">🎤 Interview Scores</h3>
-          <div id="passport-interviews" className="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-2">
-            <div className="empty-state"><p>No interviews completed yet.</p></div>
-          </div>
-        </div>
-
-        <div className="mb-6">
-          <h3 className="mb-3">🏅 Badges</h3>
-          <div id="passport-badges" className="flex gap-3 flex-wrap">
-            <div className="empty-state"><p>No badges earned yet.</p></div>
-          </div>
-        </div>
-
-        <div className="text-center p-8 bg-[var(--color-surface)] rounded-[var(--radius-md)] border border-white/5 mb-6">
-          <div className="w-12 h-12 rounded-full bg-[var(--color-success)] flex items-center justify-center mx-auto mb-3 font-bold text-xl">✓</div>
-          <h4>Verified by MentriQ Shadow</h4>
-          <p className="text-sm text-[var(--color-text-muted)]">This passport is a verified record of real simulation-based work experience.</p>
-        </div>
-
-        <div className="flex gap-3 justify-center">
-          <button className="btn btn-primary" id="share-passport-btn">Share Passport</button>
-          <a href="/dashboard" className="btn btn-secondary">Back to Dashboard</a>
-        </div>
-      </div>
-    </main>
+      </AppLayout>
+    </ProtectedRoute>
   );
 }

@@ -1,4 +1,6 @@
 import json
+import re
+from pathlib import Path
 from datetime import datetime, timedelta, timezone
 from langchain_groq import ChatGroq
 from langchain_core.messages import SystemMessage, HumanMessage
@@ -9,10 +11,23 @@ MODEL_NAME = "llama-3.3-70b-versatile"
 BASE_XP = 100
 DIFFICULTY_MULTIPLIER = {"easy": 1.0, "intermediate": 1.5, "medium": 1.5, "hard": 2.0}
 
-SYSTEM_TEMPLATE = open("app/prompts/reviewer_system.txt", encoding="utf-8").read()
+PROMPTS_DIR = Path(__file__).resolve().parent.parent / "prompts"
+SYSTEM_TEMPLATE = (PROMPTS_DIR / "reviewer_system.txt").read_text(encoding="utf-8")
 
 REQUIRED_SCORE_FIELDS = ["code_quality", "communication", "problem_solving", "time_management", "completeness"]
 REQUIRED_FIELDS = ["overall_score", "scores", "feedback", "strengths", "improvement_suggestions", "what_a_senior_would_say"]
+
+JSON_RE = re.compile(r"\{.*\}", re.DOTALL)
+
+
+def _parse_json(text: str) -> dict:
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        match = JSON_RE.search(text)
+        if match:
+            return json.loads(match.group(0))
+        raise
 
 
 def _is_on_time(submitted_at: str, task_created_at: str, deadline_hours: int) -> bool:
@@ -53,12 +68,12 @@ async def evaluate_submission(
             api_key=get_settings().groq_api_key,
         )
 
-        response = model.bind(response_format={"type": "json_object"}).invoke([
+        response = await model.bind(response_format={"type": "json_object"}).ainvoke([
             SystemMessage(content=system_prompt),
             HumanMessage(content="Evaluate this submission and return JSON scores."),
         ])
 
-        result = json.loads(response.content)
+        result = _parse_json(response.content)
 
         missing = [f for f in REQUIRED_FIELDS if f not in result]
         if missing:
@@ -81,6 +96,7 @@ async def evaluate_submission(
             "strengths": result.get("strengths", []),
             "improvement_suggestions": result.get("improvement_suggestions", []),
             "what_a_senior_would_say": result.get("what_a_senior_would_say", ""),
+            "error": "",
         }
 
     except Exception as e:

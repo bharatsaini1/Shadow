@@ -83,19 +83,29 @@ class WebhookView(APIView):
 
     def post(self, request):
         webhook_secret = settings.RAZORPAY_KEY_SECRET
-        received_signature = request.META.get("HTTP_X_RAZORPAY_SIGNATURE", "")
+        if not webhook_secret:
+            return Response(
+                {"error": "Webhook not configured"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
 
-        if webhook_secret and received_signature:
-            expected_signature = hmac.new(
-                webhook_secret.encode(),
-                request.body,
-                hashlib.sha256,
-            ).hexdigest()
-            if not hmac.compare_digest(received_signature, expected_signature):
-                return Response(
-                    {"error": "Invalid signature"},
-                    status=status.HTTP_401_UNAUTHORIZED,
-                )
+        received_signature = request.META.get("HTTP_X_RAZORPAY_SIGNATURE", "")
+        if not received_signature:
+            return Response(
+                {"error": "Missing signature"},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        expected_signature = hmac.new(
+            webhook_secret.encode(),
+            request.body,
+            hashlib.sha256,
+        ).hexdigest()
+        if not hmac.compare_digest(received_signature, expected_signature):
+            return Response(
+                {"error": "Invalid signature"},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
 
         try:
             payload = json.loads(request.body)
@@ -111,6 +121,9 @@ class WebhookView(APIView):
 
             try:
                 payment = Payment.objects.get(razorpay_order_id=order_id)
+                if payment.status == "completed":
+                    return Response({"status": "already_processed"}, status=status.HTTP_200_OK)
+
                 payment.status = "completed"
                 payment.completed_at = timezone.now()
                 payment.save(update_fields=["status", "completed_at"])

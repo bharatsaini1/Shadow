@@ -1,6 +1,7 @@
 import uuid
-from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.contrib.auth.models import AbstractUser
+from django.utils import timezone
 
 
 class User(AbstractUser):
@@ -29,3 +30,28 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
+
+    def update_career_level(self):
+        new_level = 1
+        xp = self.xp_total
+        threshold = 100
+        while xp >= threshold:
+            new_level += 1
+            xp -= threshold
+            threshold = int(threshold * 1.5)
+        if new_level != self.career_level:
+            self.career_level = new_level
+            self.save(update_fields=["career_level"])
+        return new_level
+
+    def update_daily_streak(self):
+        today = timezone.now().date()
+        if self.last_active_date == today:
+            return self.daily_streak
+        if self.last_active_date == today - timezone.timedelta(days=1):
+            self.daily_streak += 1
+        elif self.last_active_date != today:
+            self.daily_streak = 1
+        self.last_active_date = today
+        self.save(update_fields=["daily_streak", "last_active_date"])
+        return self.daily_streak

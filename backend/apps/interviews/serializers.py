@@ -6,14 +6,14 @@ class InterviewSessionSerializer(serializers.ModelSerializer):
     class Meta:
         model = InterviewSession
         fields = [
-            "id", "user", "simulation_session", "interview_type", "status",
+            "id", "user", "simulation_session", "role", "interview_type", "status",
             "transcript", "technical_score", "communication_score",
             "confidence_score", "problem_solving_score", "cultural_fit_score",
             "overall_score", "feedback", "interview_summary", "strengths",
             "areas_for_improvement", "started_at", "completed_at",
         ]
         read_only_fields = [
-            "id", "user", "status", "transcript", "technical_score",
+            "id", "user", "role", "status", "transcript", "technical_score",
             "communication_score", "confidence_score", "problem_solving_score",
             "cultural_fit_score", "overall_score", "feedback", "interview_summary",
             "strengths", "areas_for_improvement", "started_at", "completed_at",
@@ -25,6 +25,7 @@ class StartInterviewSerializer(serializers.Serializer):
         choices=["technical", "hr", "behavioral"]
     )
     simulation_session_id = serializers.UUIDField(required=False, allow_null=True)
+    role = serializers.CharField(required=False, allow_blank=True)
 
 
 class InterviewMessageSerializer(serializers.Serializer):

@@ -9,6 +9,21 @@ class PersonaRequest(BaseModel):
     message_history: list[str] = []
 
 
+class PersonaChatRequest(BaseModel):
+    persona: str = Field(..., pattern=r"^(team_lead|senior_dev|client|hr)$")
+    user_message: str
+    conversation_history: list[dict] = []
+    context: dict = {}
+
+
+class PersonaChatResponse(BaseModel):
+    persona_name: str
+    persona_role: str
+    message: str
+    message_type: str
+    error: str | None = None
+
+
 class PersonaResponse(BaseModel):
     persona_name: str
     persona_role: str

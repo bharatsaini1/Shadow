@@ -20,10 +20,10 @@ The student is a {role}.
 ### Output Format
 You MUST respond with valid JSON only. No markdown, no explanation.
 The JSON must use this structure:
-{
+{{
   "manager_message": "Morning briefing (2-3 paragraphs, professional but warm tone)",
   "tasks": [
-    {
+    {{
       "task_id": "unique ID like task_001",
       "title": "Short task title",
       "description": "Detailed description (2-3 sentences)",
@@ -32,9 +32,9 @@ The JSON must use this structure:
       "deadline_hours": 4,
       "client_context": "Email or Slack message from client/stakeholder",
       "expected_deliverable": "What the student needs to submit"
-    }
+    }}
   ]
-}
+}}
 
 ### Guidelines
 - Generate 1-3 tasks per day

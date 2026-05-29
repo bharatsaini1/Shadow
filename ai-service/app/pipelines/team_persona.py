@@ -1,10 +1,13 @@
 import json
 import random
+from pathlib import Path
 from langchain_groq import ChatGroq
 from langchain_core.messages import SystemMessage, HumanMessage
 from app.config import get_settings
 
 MODEL_NAME = "llama-3.3-70b-versatile"
+
+PROMPTS_DIR = Path(__file__).resolve().parent.parent / "prompts"
 
 PERSONAS = {
     "team_lead": {
@@ -60,7 +63,7 @@ PERSONAS = {
     },
 }
 
-SYSTEM_TEMPLATE = open("app/prompts/persona_system.txt", encoding="utf-8").read()
+SYSTEM_TEMPLATE = (PROMPTS_DIR / "persona_system.txt").read_text(encoding="utf-8")
 
 
 async def generate_message(
@@ -93,7 +96,7 @@ async def generate_message(
             api_key=get_settings().groq_api_key,
         )
 
-        response = model.invoke([
+        response = await model.ainvoke([
             SystemMessage(content=system_prompt),
             HumanMessage(content=f"Generate a {persona_config['message_type']} message for this {trigger} event."),
         ])
@@ -117,5 +120,75 @@ async def generate_message(
             "message": f"Hi! Here's a quick update on the {trigger} event.",
             "message_type": cfg.get("message_type", "slack"),
             "timestamp_offset_minutes": 0,
+            "error": str(e),
+        }
+
+
+CHAT_SYSTEM_TEMPLATE = """{persona_prompt}
+
+### Conversation Context
+The user is a junior developer working on a simulation. Respond as your persona character.
+Keep responses concise (max 5 Slack lines). Stay in character.
+Do NOT break character. Do NOT reveal you are an AI.
+If asked something unrelated to work, redirect conversation back to the task.
+
+### Previous Messages
+{conversation_history}
+
+### User's Latest Message
+{user_message}"""
+
+
+async def generate_chat_response(
+    persona: str,
+    user_message: str,
+    conversation_history: list[dict] | None = None,
+    context: dict | None = None,
+) -> dict:
+    try:
+        persona_config = PERSONAS.get(persona)
+        if not persona_config:
+            raise ValueError(f"Unknown persona: {persona}")
+
+        if conversation_history is None:
+            conversation_history = []
+
+        history_text = "\n".join(
+            f"{'User' if msg.get('role') == 'user' else persona_config['name']}: {msg.get('content', '')}"
+            for msg in conversation_history[-6:]
+        ) if conversation_history else "No previous messages."
+
+        system_prompt = CHAT_SYSTEM_TEMPLATE.format(
+            persona_prompt=persona_config["system_prompt"],
+            conversation_history=history_text,
+            user_message=user_message,
+        )
+
+        model = ChatGroq(
+            model=MODEL_NAME,
+            temperature=0.8,
+            max_tokens=512,
+            api_key=get_settings().groq_api_key,
+        )
+
+        response = await model.ainvoke([
+            SystemMessage(content=system_prompt),
+            HumanMessage(content=user_message),
+        ])
+
+        return {
+            "persona_name": persona_config["name"],
+            "persona_role": persona_config["role"],
+            "message": response.content.strip(),
+            "message_type": persona_config["message_type"],
+        }
+
+    except Exception as e:
+        cfg = PERSONAS.get(persona, {})
+        return {
+            "persona_name": cfg.get("name", persona),
+            "persona_role": cfg.get("role", ""),
+            "message": "Hey! I'm a bit busy right now, but feel free to ask about the tasks.",
+            "message_type": cfg.get("message_type", "slack"),
             "error": str(e),
         }

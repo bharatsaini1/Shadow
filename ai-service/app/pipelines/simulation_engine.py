@@ -1,4 +1,6 @@
 import json
+import re
+from pathlib import Path
 from langchain_groq import ChatGroq
 from langchain_core.messages import SystemMessage, HumanMessage
 from app.config import get_settings
@@ -6,7 +8,20 @@ from app.pipelines import rag
 
 MODEL_NAME = "llama-3.3-70b-versatile"
 
-SYSTEM_TEMPLATE = open("app/prompts/simulation_system.txt", encoding="utf-8").read()
+PROMPTS_DIR = Path(__file__).resolve().parent.parent / "prompts"
+SYSTEM_TEMPLATE = (PROMPTS_DIR / "simulation_system.txt").read_text(encoding="utf-8")
+
+JSON_RE = re.compile(r"\{.*\}", re.DOTALL)
+
+
+def _parse_json(text: str) -> dict:
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        match = JSON_RE.search(text)
+        if match:
+            return json.loads(match.group(0))
+        raise
 
 
 def _build_system_prompt(
@@ -77,16 +92,17 @@ async def generate_day(
             api_key=get_settings().groq_api_key,
         )
 
-        response = model.bind(response_format={"type": "json_object"}).invoke([
+        response = await model.bind(response_format={"type": "json_object"}).ainvoke([
             SystemMessage(content=system_prompt),
             HumanMessage(content=user_message),
         ])
 
-        result = json.loads(response.content)
+        result = _parse_json(response.content)
 
         if "manager_message" not in result or "tasks" not in result:
             raise ValueError("Response missing required fields")
 
+        result["error"] = ""
         return result
 
     except Exception as e:
